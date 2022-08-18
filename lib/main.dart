@@ -1,4 +1,6 @@
 import 'package:carshare/components/bottom_navigation_bar.dart';
+import 'package:carshare/pages/car_detail_screen.dart';
+import 'package:carshare/pages/car_reviews_screen.dart';
 import 'package:carshare/pages/home_screen.dart';
 import 'package:carshare/pages/my_cars_screen.dart';
 import 'package:carshare/pages/my_reviews_screen.dart';
@@ -33,6 +35,8 @@ class MyApp extends StatelessWidget {
         AppRoutes.PROFILE_EDIT: (context) => const ProfileEditScreen(),
         AppRoutes.MY_REVIEWS: (context) => const MyReviewsScreen(),
         AppRoutes.MY_CARS: (context) => const MyCarsScreen(),
+        AppRoutes.CAR_DETAIL: (context) => const CarDetailScreen(),
+        AppRoutes.CAR_REVIEW: (context) => const CarReviewsScreen(),
       },
     );
   }
