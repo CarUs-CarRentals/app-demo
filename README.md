@@ -4,4 +4,4 @@ Um projeto Flutter
 
 ## Introdução
 
-Este é o desenvolvimento de um app de compatilhamento e locação de veículos
+Este é o desenvolvimento de um app de compartilhamento e locação de veículos
