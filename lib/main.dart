@@ -1,10 +1,16 @@
+import 'package:carshare/components/bottom_navigation_bar.dart';
+import 'package:carshare/pages/home_screen.dart';
+import 'package:carshare/pages/my_cars_screen.dart';
+import 'package:carshare/pages/my_reviews_screen.dart';
+import 'package:carshare/pages/my_trips_screen.dart';
+import 'package:carshare/pages/profile_edit_screen.dart';
+import 'package:carshare/pages/profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'utils/app_routes.dart';
 
-void main() => runApp(const MainApp());
+void main() => runApp(MyApp());
 
-class MainApp extends StatelessWidget {
-  const MainApp({Key? key}) : super(key: key);
-
+class MyApp extends StatelessWidget {
   static const String _title = '';
 
   @override
@@ -13,41 +19,40 @@ class MainApp extends StatelessWidget {
 
     return MaterialApp(
       title: _title,
-      home: const MyHomePage(),
+      home: const MainMenu(),
       theme: myTheme.copyWith(
         colorScheme: myTheme.colorScheme.copyWith(
           primary: Colors.deepPurple,
           secondary: Colors.grey[700],
         ),
       ),
+      routes: {
+        AppRoutes.HOME: (context) => const HomeScreen(),
+        AppRoutes.MY_TRIPS: (context) => const MyTripsScreen(),
+        AppRoutes.PROFILE: (context) => const ProfileScreen(),
+        AppRoutes.PROFILE_EDIT: (context) => const ProfileEditScreen(),
+        AppRoutes.MY_REVIEWS: (context) => const MyReviewsScreen(),
+        AppRoutes.MY_CARS: (context) => const MyCarsScreen(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class MainMenu extends StatefulWidget {
+  const MainMenu({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainMenu> createState() => _MainMenuState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MainMenuState extends State<MainMenu> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Minhas Viagens',
-      style: optionStyle,
-    ),
-    Text(
-      'Conta',
-      style: optionStyle,
-    ),
+  // static const TextStyle optionStyle =
+  //     TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static const List<Widget> _screenOptions = <Widget>[
+    HomeScreen(),
+    MyTripsScreen(),
+    ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -59,9 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+      body: _screenOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
