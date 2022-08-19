@@ -1,4 +1,3 @@
-import 'package:carshare/components/bottom_navigation_bar.dart';
 import 'package:carshare/components/car_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -19,6 +18,7 @@ class HomeScreen extends StatelessWidget {
           mainAxisSpacing: 20,
         ),
         children: <Widget>[
+          CarItem(),
           CarItem(),
         ],
       ),
