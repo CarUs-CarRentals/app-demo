@@ -1,12 +1,11 @@
-import 'package:carshare/components/bottom_navigation_bar.dart';
 import 'package:carshare/pages/car_detail_screen.dart';
 import 'package:carshare/pages/car_reviews_screen.dart';
-import 'package:carshare/pages/home_screen.dart';
 import 'package:carshare/pages/my_cars_screen.dart';
 import 'package:carshare/pages/my_reviews_screen.dart';
 import 'package:carshare/pages/my_trips_screen.dart';
 import 'package:carshare/pages/profile_edit_screen.dart';
 import 'package:carshare/pages/profile_screen.dart';
+import 'package:carshare/pages/tabs_screen.dart';
 import 'package:flutter/material.dart';
 import 'utils/app_routes.dart';
 
@@ -21,7 +20,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: _title,
-      home: const MainMenu(),
+      //home: const MainMenu(),
       theme: myTheme.copyWith(
         colorScheme: myTheme.colorScheme.copyWith(
           primary: Colors.deepPurple,
@@ -29,7 +28,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       routes: {
-        AppRoutes.HOME: (context) => const HomeScreen(),
+        AppRoutes.HOME: (context) => const TabsScreen(),
         AppRoutes.MY_TRIPS: (context) => const MyTripsScreen(),
         AppRoutes.PROFILE: (context) => const ProfileScreen(),
         AppRoutes.PROFILE_EDIT: (context) => const ProfileEditScreen(),
@@ -42,53 +41,53 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MainMenu extends StatefulWidget {
-  const MainMenu({Key? key}) : super(key: key);
+// class MainMenu extends StatefulWidget {
+//   const MainMenu({Key? key}) : super(key: key);
 
-  @override
-  State<MainMenu> createState() => _MainMenuState();
-}
+//   @override
+//   State<MainMenu> createState() => _MainMenuState();
+// }
 
-class _MainMenuState extends State<MainMenu> {
-  int _selectedIndex = 0;
-  // static const TextStyle optionStyle =
-  //     TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _screenOptions = <Widget>[
-    HomeScreen(),
-    MyTripsScreen(),
-    ProfileScreen(),
-  ];
+// class _MainMenuState extends State<MainMenu> {
+//   int _selectedIndex = 0;
+//   // static const TextStyle optionStyle =
+//   //     TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+//   static const List<Widget> _screenOptions = <Widget>[
+//     HomeScreen(),
+//     MyTripsScreen(),
+//     ProfileScreen(),
+//   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+//   void _onItemTapped(int index) {
+//     setState(() {
+//       _selectedIndex = index;
+//     });
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screenOptions.elementAt(_selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.speed),
-            label: 'Minhas Viagens',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Conta',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Theme.of(context).colorScheme.secondary,
-        onTap: _onItemTapped,
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: _screenOptions.elementAt(_selectedIndex),
+//       bottomNavigationBar: BottomNavigationBar(
+//         items: const <BottomNavigationBarItem>[
+//           BottomNavigationBarItem(
+//             icon: Icon(Icons.home),
+//             label: 'Home',
+//           ),
+//           BottomNavigationBarItem(
+//             icon: Icon(Icons.speed),
+//             label: 'Minhas Viagens',
+//           ),
+//           BottomNavigationBarItem(
+//             icon: Icon(Icons.person),
+//             label: 'Conta',
+//           ),
+//         ],
+//         currentIndex: _selectedIndex,
+//         selectedItemColor: Theme.of(context).colorScheme.primary,
+//         unselectedItemColor: Theme.of(context).colorScheme.secondary,
+//         onTap: _onItemTapped,
+//       ),
+//     );
+//   }
+//}
