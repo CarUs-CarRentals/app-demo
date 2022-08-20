@@ -50,23 +50,39 @@ class ProfileScreen extends StatelessWidget {
               height: availableHeight,
               child: ListView(
                 children: [
+                  ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      child: Padding(
+                        padding: const EdgeInsets.all(6.0),
+                      ),
+                    ),
+                    title: Text(
+                      'Olá, Nome do Usuario',
+                      style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                  ),
                   const Divider(),
                   _createItem(
                     Icons.person,
                     'Editar dados pessoais',
-                    () => _selectProfileEdit,
+                    () => _selectProfileEdit(context),
                   ),
                   const Divider(),
                   _createItem(
                     Icons.reviews,
                     'Minhas avaliações',
-                    () => _selectMyReviews,
+                    () => _selectMyReviews(context),
                   ),
                   const Divider(),
                   _createItem(
                     Icons.directions_car,
                     'Meus carros',
-                    () => _selectMyCars,
+                    () => _selectMyCars(context),
                   ),
                   const Divider(),
                   // Row(
