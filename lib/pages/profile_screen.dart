@@ -16,76 +16,57 @@ class ProfileScreen extends StatelessWidget {
     Navigator.of(context).pushNamed(AppRoutes.MY_CARS);
   }
 
-  _createSectionOption(
-    BuildContext context,
-    IconData icon,
-    String label,
-    Function screenDestiny,
-  ) {
-    return Row(
-      children: [
-        Icon(
-          // <-- Icon
-          icon,
-          size: 24.0,
+  Widget _createItem(IconData icon, String label, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        size: 24,
+      ),
+      title: Text(
+        label,
+        style: const TextStyle(
+          fontFamily: 'RobotCondensed',
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
         ),
-        TextButton(
-          onPressed: () => screenDestiny(context),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              label,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
+      onTap: onTap,
     );
-    // const Divider(
-    //   color: Colors.black,
-    // );
   }
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+
+    final availableHeight = mediaQuery.size.height - mediaQuery.padding.top;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-                //width: double.infinity,
-                ),
-            Container(
-              padding: EdgeInsets.all(10),
-              margin: EdgeInsets.all(10),
+            SizedBox(
               width: double.infinity,
-              height: 600,
+              height: availableHeight,
               child: ListView(
                 children: [
                   const Divider(),
-                  _createSectionOption(
-                    context,
+                  _createItem(
                     Icons.person,
                     'Editar dados pessoais',
-                    _selectProfileEdit,
+                    () => _selectProfileEdit,
                   ),
                   const Divider(),
-                  _createSectionOption(
-                    context,
+                  _createItem(
                     Icons.reviews,
                     'Minhas avaliações',
-                    _selectMyReviews,
+                    () => _selectMyReviews,
                   ),
                   const Divider(),
-                  _createSectionOption(
-                    context,
+                  _createItem(
                     Icons.directions_car,
                     'Meus carros',
-                    _selectMyCars,
+                    () => _selectMyCars,
                   ),
                   const Divider(),
                   // Row(
