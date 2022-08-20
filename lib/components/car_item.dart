@@ -1,3 +1,4 @@
+import 'package:carshare/models/car.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -5,11 +6,13 @@ import 'package:flutter/src/widgets/framework.dart';
 import '../utils/app_routes.dart';
 
 class CarItem extends StatelessWidget {
-  const CarItem({Key? key}) : super(key: key);
+  final Car car;
+  const CarItem(this.car);
 
   void _selectCar(BuildContext context) {
     Navigator.of(context).pushNamed(
       AppRoutes.CAR_DETAIL,
+      arguments: car,
     );
   }
 
@@ -17,24 +20,72 @@ class CarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => _selectCar(context),
-      splashColor: Theme.of(context).primaryColor,
-      borderRadius: BorderRadius.circular(15),
-      child: Container(
-        padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            gradient: LinearGradient(
-              colors: [
-                Colors.orange.withOpacity(0.5),
-                Colors.orange,
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            )),
-        child: Text(
-          'CARRO DA LISTA',
-          style: Theme.of(context).textTheme.titleMedium,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
         ),
+        elevation: 4,
+        margin: const EdgeInsets.all(10),
+        child: Column(children: [
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(15),
+                  topRight: Radius.circular(15),
+                ),
+                child: Image.network(
+                  car.imageUrl,
+                  height: 250,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned(
+                right: 10,
+                bottom: 20,
+                child: Container(
+                  width: 300,
+                  color: Colors.black54,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 5,
+                    horizontal: 20,
+                  ),
+                  child: Text(
+                    car.model,
+                    style: TextStyle(
+                      fontSize: 26,
+                      color: Colors.white,
+                    ),
+                    softWrap: true,
+                    overflow: TextOverflow.fade,
+                  ),
+                ),
+              )
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.all(20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.star),
+                    SizedBox(width: 6),
+                    Text((car.review).toString()),
+                  ],
+                ),
+                Row(
+                  children: [
+                    SizedBox(width: 6),
+                    Text('R\$ ${car.price}/dia'),
+                  ],
+                ),
+              ],
+            ),
+          )
+        ]),
       ),
     );
   }
