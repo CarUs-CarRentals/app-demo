@@ -1,3 +1,4 @@
+import 'package:carshare/pages/auth_screen.dart';
 import 'package:carshare/pages/car_detail_screen.dart';
 import 'package:carshare/pages/car_reviews_screen.dart';
 import 'package:carshare/pages/my_cars_screen.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       routes: {
+        AppRoutes.AUTH: (context) => const AuthScreen(),
         AppRoutes.HOME: (context) => const TabsScreen(),
         AppRoutes.MY_RENTALS: (context) => const MyRentalsScreen(),
         AppRoutes.PROFILE: (context) => const ProfileScreen(),
