@@ -15,7 +15,7 @@ class _TabsScreenState extends State<TabsScreen> {
   int _selectedIndex = 0;
   final List<Widget> _screenOptions = <Widget>[
     HomeScreen(),
-    MyTripsScreen(),
+    MyRentalsScreen(),
     ProfileScreen(),
   ];
 
@@ -39,7 +39,7 @@ class _TabsScreenState extends State<TabsScreen> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.speed),
-              label: 'Minhas Viagens',
+              label: 'Minhas Locações',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),

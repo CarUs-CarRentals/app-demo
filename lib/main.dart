@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         AppRoutes.HOME: (context) => const TabsScreen(),
-        AppRoutes.MY_TRIPS: (context) => const MyTripsScreen(),
+        AppRoutes.MY_RENTALS: (context) => const MyRentalsScreen(),
         AppRoutes.PROFILE: (context) => const ProfileScreen(),
         AppRoutes.PROFILE_EDIT: (context) => const ProfileEditScreen(),
         AppRoutes.MY_REVIEWS: (context) => const MyReviewsScreen(),

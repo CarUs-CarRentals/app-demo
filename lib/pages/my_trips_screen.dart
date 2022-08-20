@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-class MyTripsScreen extends StatelessWidget {
-  const MyTripsScreen({Key? key}) : super(key: key);
+class MyRentalsScreen extends StatelessWidget {
+  const MyRentalsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class MyTripsScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: const <Widget>[
             Text(
-              'MINHAS VIAGENS',
+              'MEU HISTÓRICO DE LOCAÇÕES',
             ),
           ],
         ),
