@@ -1,6 +1,8 @@
+import 'package:carshare/models/auth.dart';
 import 'package:carshare/pages/auth_screen.dart';
 import 'package:carshare/pages/car_detail_screen.dart';
 import 'package:carshare/pages/car_reviews_screen.dart';
+import 'package:carshare/pages/isAuth_screen.dart';
 import 'package:carshare/pages/my_cars_screen.dart';
 import 'package:carshare/pages/my_reviews_screen.dart';
 import 'package:carshare/pages/my_trips_screen.dart';
@@ -8,6 +10,7 @@ import 'package:carshare/pages/profile_edit_screen.dart';
 import 'package:carshare/pages/profile_screen.dart';
 import 'package:carshare/pages/tabs_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'utils/app_routes.dart';
 
 void main() => runApp(MyApp());
@@ -19,26 +22,33 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData myTheme = ThemeData();
 
-    return MaterialApp(
-      title: _title,
-      //home: const MainMenu(),
-      theme: myTheme.copyWith(
-        colorScheme: myTheme.colorScheme.copyWith(
-          primary: Colors.deepPurple,
-          secondary: Colors.grey[700],
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => Auth(),
         ),
+      ],
+      child: MaterialApp(
+        title: _title,
+        //home: const MainMenu(),
+        theme: myTheme.copyWith(
+          colorScheme: myTheme.colorScheme.copyWith(
+            primary: Colors.deepPurple,
+            secondary: Colors.grey[700],
+          ),
+        ),
+        routes: {
+          AppRoutes.IS_AUTH: (context) => const IsAuthScreen(),
+          //AppRoutes.HOME: (context) => const TabsScreen(),
+          AppRoutes.MY_RENTALS: (context) => const MyRentalsScreen(),
+          AppRoutes.PROFILE: (context) => const ProfileScreen(),
+          AppRoutes.PROFILE_EDIT: (context) => const ProfileEditScreen(),
+          AppRoutes.MY_REVIEWS: (context) => const MyReviewsScreen(),
+          AppRoutes.MY_CARS: (context) => const MyCarsScreen(),
+          AppRoutes.CAR_DETAIL: (context) => const CarDetailScreen(),
+          AppRoutes.CAR_REVIEW: (context) => const CarReviewsScreen(),
+        },
       ),
-      routes: {
-        AppRoutes.AUTH: (context) => const AuthScreen(),
-        AppRoutes.HOME: (context) => const TabsScreen(),
-        AppRoutes.MY_RENTALS: (context) => const MyRentalsScreen(),
-        AppRoutes.PROFILE: (context) => const ProfileScreen(),
-        AppRoutes.PROFILE_EDIT: (context) => const ProfileEditScreen(),
-        AppRoutes.MY_REVIEWS: (context) => const MyReviewsScreen(),
-        AppRoutes.MY_CARS: (context) => const MyCarsScreen(),
-        AppRoutes.CAR_DETAIL: (context) => const CarDetailScreen(),
-        AppRoutes.CAR_REVIEW: (context) => const CarReviewsScreen(),
-      },
     );
   }
 }

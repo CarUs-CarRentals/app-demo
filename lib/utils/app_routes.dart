@@ -1,6 +1,6 @@
 class AppRoutes {
-  static const AUTH = '/';
-  static const HOME = '/home';
+  static const IS_AUTH = '/';
+  //static const HOME = '/home';
   static const CARS_SEARCH = '/cars-search';
   static const CAR_DETAIL = '/car-detail';
   static const CAR_REVIEW = '/car-review';
