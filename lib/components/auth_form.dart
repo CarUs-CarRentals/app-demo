@@ -1,5 +1,8 @@
+import 'package:carshare/exceptions/auth_exception.dart';
+import 'package:carshare/models/auth.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -33,8 +36,59 @@ class _AuthFormState extends State<AuthForm> {
     });
   }
 
-  void _submit() {
-    Navigator.of(context).pushNamed(AppRoutes.HOME);
+  void _showErrorDialog(String msg) {
+    showDialog(
+      context: context,
+      builder: ((cxt) => AlertDialog(
+            title: Text('Ocorreu um Erro'),
+            content: Text(msg),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('Fechar'),
+              ),
+            ],
+          )),
+    );
+  }
+
+  Future<void> _submit() async {
+    final isValid = _formKey.currentState?.validate() ?? false;
+
+    if (!isValid) {
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+    _formKey.currentState?.save();
+    Auth auth = Provider.of(context, listen: false);
+    //Navigator.of(context).pushNamed(AppRoutes.HOME);
+
+    try {
+      if (_isLogin()) {
+        await auth.login(
+          _authData['email']!,
+          _authData['password']!,
+        );
+      } else {
+        await auth.singup(
+          _authData['email']!,
+          _authData['password']!,
+        );
+      }
+    } on AuthException catch (error) {
+      _showErrorDialog(error.toString());
+    } catch (error) {
+      _showErrorDialog('Ocorreu um erro inesperado!');
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    print(auth.isAuth);
   }
 
   @override
@@ -69,6 +123,7 @@ class _AuthFormState extends State<AuthForm> {
                 decoration: InputDecoration(labelText: 'Senha'),
                 keyboardType: TextInputType.emailAddress,
                 obscureText: true,
+                controller: _passwordController,
                 onSaved: (password) => _authData['password'] = password ?? '',
                 validator: (_password) {
                   final password = _password ?? '';
