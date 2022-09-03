@@ -1,9 +1,16 @@
+import 'package:carshare/models/auth.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   void _selectProfileEdit(BuildContext context) {
     Navigator.of(context).pushNamed(AppRoutes.PROFILE_EDIT);
   }
@@ -14,6 +21,16 @@ class ProfileScreen extends StatelessWidget {
 
   void _selectMyCars(BuildContext context) {
     Navigator.of(context).pushNamed(AppRoutes.MY_CARS);
+  }
+
+  void _selectLogOut(BuildContext context) {
+    Provider.of<Auth>(
+      context,
+      listen: false,
+    ).logout();
+    Navigator.of(context).pushReplacementNamed(
+      AppRoutes.IS_AUTH,
+    );
   }
 
   Widget _createItem(IconData icon, String label, VoidCallback onTap) {
@@ -37,6 +54,11 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+    Auth auth = Provider.of(context, listen: false);
+
+    //Get user name from email
+    String? myEmail = auth.email;
+    myEmail = myEmail?.split("@")[0];
 
     final availableHeight = mediaQuery.size.height - mediaQuery.padding.top;
 
@@ -59,7 +81,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                     title: Text(
-                      'Olá, Nome do Usuario',
+                      'Olá, $myEmail',
                       style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -83,6 +105,12 @@ class ProfileScreen extends StatelessWidget {
                     Icons.directions_car,
                     'Meus carros',
                     () => _selectMyCars(context),
+                  ),
+                  const Divider(),
+                  _createItem(
+                    Icons.exit_to_app,
+                    'Sair',
+                    () => _selectLogOut(context),
                   ),
                   const Divider(),
                   // Row(

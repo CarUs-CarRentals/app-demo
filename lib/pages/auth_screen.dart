@@ -26,21 +26,27 @@ class AuthScreen extends StatelessWidget {
             ),
             Container(
               width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    child: Text(
-                      'CarUs',
-                      style: TextStyle(
-                          fontSize: 45,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary),
+              child: SingleChildScrollView(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top,
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: Text(
+                        'CarUs',
+                        style: TextStyle(
+                            fontSize: 45,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary),
+                      ),
                     ),
-                  ),
-                  AuthForm(),
-                ],
+                    AuthForm(),
+                  ],
+                ),
               ),
             ),
           ],
