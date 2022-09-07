@@ -240,7 +240,10 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
               )
             ],
           ),
-          Text(description),
+          Text(
+            description,
+            textAlign: TextAlign.left,
+          ),
         ],
       ),
     );

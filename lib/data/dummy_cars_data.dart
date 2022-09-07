@@ -27,7 +27,7 @@ const dummyCars = [
     model: 'Argo',
     imageUrl:
         'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjBeSC8rsRqCHliDIA9OW8pAuhC0fIYfEbJ82rJnuz-4vvJtGl-jr5LJk-29BYbNILnREDIK72oLg53NfIy87JMuj8kEeA5ZppUo2WEkrp5jUEERl6wJoowB6pkwZ9QuCmzvVhD4qHgQP97RCdkydgmio3zX0RfoCRFpn9Iuojdom4Cpm1b8ErE_xXuDw/s600/Novo-Argo-2023%20%283%29.jpg',
-    price: 359.75,
+    price: 159.75,
     review: 3,
     brand: 'Fiat',
     category: CarCategory.hatchback,
@@ -39,6 +39,25 @@ const dummyCars = [
     seats: 5,
     trunk: 50,
     userId: 1,
-    year: 2012,
-  )
+    year: 2016,
+  ),
+  Car(
+      id: '3',
+      model: 'Corolla',
+      imageUrl:
+          'https://motorshow.com.br/wp-content/uploads/sites/2/2022/06/29-toyota-corolla-747x420.jpg',
+      price: 359.75,
+      review: 5,
+      brand: 'Toyota',
+      category: CarCategory.sedan,
+      color: 'Branco',
+      doors: 4,
+      fuel: CarFuel.petrol,
+      gearShift: CarGearShift.automatic,
+      plate: 'FDG2C58',
+      seats: 5,
+      trunk: 300,
+      userId: 2,
+      year: 2023,
+      description: 'Baita carro de tiozão, muito bom tbm.')
 ];
