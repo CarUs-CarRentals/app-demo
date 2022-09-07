@@ -7,19 +7,18 @@ import '../utils/app_routes.dart';
 
 class CarItem extends StatelessWidget {
   final Car car;
-  const CarItem(this.car);
-
-  void _selectCar(BuildContext context) {
-    Navigator.of(context).pushNamed(
-      AppRoutes.CAR_DETAIL,
-      arguments: car,
-    );
-  }
+  const CarItem(
+    this.car, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => _selectCar(context),
+      onTap: () => Navigator.of(context).pushNamed(
+        AppRoutes.CAR_DETAIL,
+        arguments: car,
+      ),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -52,7 +51,7 @@ class CarItem extends StatelessWidget {
                     horizontal: 20,
                   ),
                   child: Text(
-                    car.model,
+                    car.shortDescription,
                     style: TextStyle(
                       fontSize: 26,
                       color: Colors.white,

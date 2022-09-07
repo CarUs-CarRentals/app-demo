@@ -1,7 +1,9 @@
+import 'package:carshare/models/car.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class CarDetailScreen extends StatelessWidget {
   const CarDetailScreen({Key? key}) : super(key: key);
@@ -10,19 +12,90 @@ class CarDetailScreen extends StatelessWidget {
     Navigator.of(context).pushNamed(AppRoutes.CAR_REVIEW);
   }
 
+  _titleSection(
+      BuildContext context, String title, int review, int year, int carHost) {
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 20, left: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Row(
+                children: [
+                  RatingBarIndicator(
+                    rating: review.toDouble(),
+                    itemBuilder: (context, _) => Icon(
+                      Icons.star,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    itemCount: 5,
+                    itemSize: 16.0,
+                  )
+                ],
+              ),
+              VerticalDivider(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              Row(
+                children: [
+                  SizedBox(width: 6),
+                  Text((year).toString()),
+                ],
+              ),
+              VerticalDivider(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              Row(
+                children: [
+                  SizedBox(width: 6),
+                  Text(
+                      'De: ${carHost == 1 ? 'Igor Felipe Ponchielli' : (carHost).toString()}'),
+                ],
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  _optionalCarSection(BuildContext context) {}
+
+  _localDataSection(BuildContext context) {}
+
+  _moreDetailSection(BuildContext context) {}
+
+  _rentalSection(BuildContext context) {}
+
   @override
   Widget build(BuildContext context) {
+    final car = ModalRoute.of(context)!.settings.arguments as Car;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
+        title: Text(car.shortDescription),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Detalhe do carro selecionado',
+            Container(
+              height: 200,
+              width: double.infinity,
+              child: Image.network(
+                car.imageUrl,
+                fit: BoxFit.cover,
+              ),
             ),
+            _titleSection(context, car.shortDescription, car.review, car.year,
+                car.userId),
             TextButton(
               onPressed: () => _selectCarReview(context),
               child: Text(
