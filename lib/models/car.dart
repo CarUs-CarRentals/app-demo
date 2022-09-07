@@ -1,4 +1,4 @@
-enum Fuel {
+enum CarFuel {
   petrol,
   diesel,
   cng,
@@ -6,12 +6,12 @@ enum Fuel {
   electric,
 }
 
-enum GearShift {
+enum CarGearShift {
   manual,
   automatic,
 }
 
-enum Category {
+enum CarCategory {
   suv,
   sedan,
   hatchback,
@@ -26,11 +26,11 @@ class Car {
   final String brand;
   final String color;
   final int doors;
-  final Fuel fuel;
-  final GearShift gearShift;
+  final CarFuel fuel;
+  final CarGearShift gearShift;
   final String model;
   final String plate;
-  final Category category;
+  final CarCategory category;
   final int seats;
   final int trunk;
   final int year;
@@ -65,19 +65,19 @@ class Car {
 
   String get categoryText {
     switch (category) {
-      case Category.suv:
+      case CarCategory.suv:
         return 'SUV';
-      case Category.sedan:
+      case CarCategory.sedan:
         return 'Sedã';
-      case Category.hatchback:
+      case CarCategory.hatchback:
         return 'Hatch';
-      case Category.sport:
+      case CarCategory.sport:
         return 'Esportivo';
-      case Category.convertible:
+      case CarCategory.convertible:
         return 'Conversível';
-      case Category.wagon:
+      case CarCategory.wagon:
         return 'Perua';
-      case Category.truck:
+      case CarCategory.truck:
         return 'Picape';
       default:
         return 'Desconhecido';
@@ -86,15 +86,15 @@ class Car {
 
   String get fuelText {
     switch (fuel) {
-      case Fuel.petrol:
+      case CarFuel.petrol:
         return 'Gasolina';
-      case Fuel.diesel:
+      case CarFuel.diesel:
         return 'Diesel';
-      case Fuel.cng:
+      case CarFuel.cng:
         return 'GNV';
-      case Fuel.electric:
+      case CarFuel.electric:
         return 'Elétrico';
-      case Fuel.ethanol:
+      case CarFuel.ethanol:
         return 'Etanol';
       default:
         return 'Desconhecido';
@@ -103,9 +103,9 @@ class Car {
 
   String get gearShiftText {
     switch (gearShift) {
-      case GearShift.automatic:
+      case CarGearShift.automatic:
         return 'Automático';
-      case GearShift.manual:
+      case CarGearShift.manual:
         return 'Manual';
       default:
         return 'Desconhecido';

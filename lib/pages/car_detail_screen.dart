@@ -1,5 +1,6 @@
 import 'package:carshare/models/car.dart';
 import 'package:carshare/utils/app_routes.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -67,7 +68,65 @@ class CarDetailScreen extends StatelessWidget {
     );
   }
 
-  _optionalCarSection(BuildContext context) {}
+  _optionalCarSection(BuildContext context, String gearShift, String category,
+      String fuel, int doors, int seats) {
+    return LayoutBuilder(builder: (ctx, constraints) {
+      return Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _optionalIcon(
+                  constraints.maxWidth * 0.2,
+                  Icons.settings,
+                  gearShift,
+                ),
+                _optionalIcon(
+                  constraints.maxWidth * 0.2,
+                  Icons.category,
+                  category,
+                ),
+                _optionalIcon(
+                  constraints.maxWidth * 0.2,
+                  Icons.local_gas_station,
+                  fuel,
+                ),
+                _optionalIcon(
+                  constraints.maxWidth * 0.2,
+                  Icons.sensor_door_sharp,
+                  '${doors.toString()} portas',
+                ),
+                _optionalIcon(
+                  constraints.maxWidth * 0.2,
+                  Icons.event_seat,
+                  '${seats.toString()} assentos',
+                ),
+              ],
+            ),
+          ),
+          Divider(),
+        ],
+      );
+    });
+  }
+
+  _optionalIcon(double width, IconData icon, String label) {
+    return SizedBox(
+      width: width,
+      child: InkWell(
+        onTap: null,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(icon), // <-- Icon
+            Text(label), // <-- Text
+          ],
+        ),
+      ),
+    );
+  }
 
   _localDataSection(BuildContext context) {}
 
@@ -94,8 +153,21 @@ class CarDetailScreen extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            _titleSection(context, car.shortDescription, car.review, car.year,
-                car.userId),
+            _titleSection(
+              context,
+              car.shortDescription,
+              car.review,
+              car.year,
+              car.userId,
+            ),
+            _optionalCarSection(
+              context,
+              car.gearShiftText,
+              car.categoryText,
+              car.fuelText,
+              car.doors,
+              car.seats,
+            ),
             TextButton(
               onPressed: () => _selectCarReview(context),
               child: Text(
