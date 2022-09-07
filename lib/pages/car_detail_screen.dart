@@ -55,6 +55,10 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     });
   }
 
+  _submitRental() {
+    print('Alugar');
+  }
+
   _titleSection(
       BuildContext context, String title, int review, int year, int carHost) {
     return Column(
@@ -100,7 +104,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 children: [
                   SizedBox(width: 6),
                   Text(
-                      'De: ${carHost == 1 ? 'Igor Felipe Ponchielli' : (carHost).toString()}'),
+                      'De: ${carHost == 1 ? 'Proprietario' : (carHost).toString()}'),
                 ],
               ),
             ],
@@ -171,52 +175,49 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   }
 
   _localDataSection(BuildContext context) {
-    return SizedBox(
-      height: 140,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(_selectedPickupDate == null
-                      ? 'Nenhuma data selecionada'
-                      : '${DateFormat('dd/MM/y').format(_selectedPickupDate)}'),
-                ),
-                TextButton(
-                  onPressed: _showPickupDatePicker,
-                  child: Text(
-                    'Data para pegar o veículo',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: Column(
+        children: [
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(_selectedPickupDate == null
+                    ? 'Nenhuma data selecionada'
+                    : '${DateFormat('dd/MM/y').format(_selectedPickupDate)}'),
+              ),
+              TextButton(
+                onPressed: _showPickupDatePicker,
+                child: Text(
+                  'Data para pegar o veículo',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
                   ),
-                )
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(_selectedReturnDate == null
-                      ? 'Nenhuma data selecionada'
-                      : '${DateFormat('dd/MM/y').format(_selectedReturnDate)}'),
                 ),
-                TextButton(
-                  onPressed: _showReturnDatePicker,
-                  child: Text(
-                    'Data para devolver o veículo',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
+              )
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(_selectedReturnDate == null
+                    ? 'Nenhuma data selecionada'
+                    : '${DateFormat('dd/MM/y').format(_selectedReturnDate)}'),
+              ),
+              TextButton(
+                onPressed: _showReturnDatePicker,
+                child: Text(
+                  'Data para devolver o veículo',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
                   ),
-                )
-              ],
-            ),
-          ],
-        ),
+                ),
+              )
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -245,7 +246,73 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     );
   }
 
-  _rentalSection(BuildContext context) {}
+  Widget _InfoItem(IconData icon, String label, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        size: 24,
+      ),
+      title: Text(
+        label,
+        style: const TextStyle(
+          fontFamily: 'RobotCondensed',
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      onTap: onTap,
+    );
+  }
+
+  _rentalSection(BuildContext context, double carPrice) {
+    return SizedBox(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      'R\$ ${carPrice.toString()}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'por dia',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                  ],
+                ),
+                VerticalDivider(),
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: _submitRental,
+                      style: ElevatedButton.styleFrom(
+                        primary: Theme.of(context).colorScheme.primary,
+                      ),
+                      child: const Text(
+                        'Continuar',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -285,16 +352,30 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
             _localDataSection(context),
             Divider(),
             _descriptionSection(context, car.description),
-            TextButton(
-              onPressed: () => _selectCarReview(context),
-              child: Text(
-                'Avaliações do Carro',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+            Divider(),
+            _InfoItem(
+              Icons.reviews,
+              'Avaliações',
+              () => _selectCarReview(context),
             ),
+            Divider(),
+            _InfoItem(
+              Icons.person,
+              'Visualizar prorietario do veículo',
+              () => null,
+            ),
+            Divider(),
+            _rentalSection(context, car.price),
+            // TextButton(
+            //   onPressed: () => _selectCarReview(context),
+            //   child: Text(
+            //     'Avaliações do Carro',
+            //     style: TextStyle(
+            //       color: Theme.of(context).colorScheme.primary,
+            //       fontWeight: FontWeight.bold,
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
