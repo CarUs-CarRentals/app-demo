@@ -5,12 +5,54 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 
-class CarDetailScreen extends StatelessWidget {
+class CarDetailScreen extends StatefulWidget {
   const CarDetailScreen({Key? key}) : super(key: key);
+
+  @override
+  State<CarDetailScreen> createState() => _CarDetailScreenState();
+}
+
+class _CarDetailScreenState extends State<CarDetailScreen> {
+  DateTime _selectedPickupDate = DateTime.now();
+  DateTime _selectedReturnDate = DateTime.now();
 
   void _selectCarReview(BuildContext context) {
     Navigator.of(context).pushNamed(AppRoutes.CAR_REVIEW);
+  }
+
+  _showPickupDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 30)),
+    ).then((pickedDate) {
+      if (pickedDate == null) {
+        return;
+      }
+      setState(() {
+        _selectedPickupDate = pickedDate;
+        _selectedReturnDate = _selectedPickupDate;
+      });
+    });
+  }
+
+  _showReturnDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: _selectedPickupDate,
+      firstDate: _selectedPickupDate,
+      lastDate: _selectedPickupDate.add(const Duration(days: 30)),
+    ).then((pickedDate) {
+      if (pickedDate == null) {
+        return;
+      }
+      setState(() {
+        _selectedReturnDate = pickedDate;
+      });
+    });
   }
 
   _titleSection(
@@ -128,9 +170,80 @@ class CarDetailScreen extends StatelessWidget {
     );
   }
 
-  _localDataSection(BuildContext context) {}
+  _localDataSection(BuildContext context) {
+    return SizedBox(
+      height: 140,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: [
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Text(_selectedPickupDate == null
+                      ? 'Nenhuma data selecionada'
+                      : '${DateFormat('dd/MM/y').format(_selectedPickupDate)}'),
+                ),
+                TextButton(
+                  onPressed: _showPickupDatePicker,
+                  child: Text(
+                    'Data para pegar o veículo',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Text(_selectedReturnDate == null
+                      ? 'Nenhuma data selecionada'
+                      : '${DateFormat('dd/MM/y').format(_selectedReturnDate)}'),
+                ),
+                TextButton(
+                  onPressed: _showReturnDatePicker,
+                  child: Text(
+                    'Data para devolver o veículo',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-  _moreDetailSection(BuildContext context) {}
+  _descriptionSection(BuildContext context, String description) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      width: double.infinity,
+      child: Column(
+        children: [
+          Row(
+            children: const [
+              Text(
+                'Descrição do Veículo:',
+                textAlign: TextAlign.left,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 30),
+              )
+            ],
+          ),
+          Text(description),
+        ],
+      ),
+    );
+  }
 
   _rentalSection(BuildContext context) {}
 
@@ -168,6 +281,10 @@ class CarDetailScreen extends StatelessWidget {
               car.doors,
               car.seats,
             ),
+            Divider(),
+            _localDataSection(context),
+            Divider(),
+            _descriptionSection(context, car.description),
             TextButton(
               onPressed: () => _selectCarReview(context),
               child: Text(

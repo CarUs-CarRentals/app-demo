@@ -3,24 +3,25 @@ import 'package:carshare/models/car.dart';
 
 const dummyCars = [
   Car(
-    id: '1',
-    model: 'Ka',
-    imageUrl:
-        'https://2.bp.blogspot.com/-tcCwlEwU0Hc/U9J6_6l0ITI/AAAAAAABbH8/6l7FOq6lrIU/s1600/Novo-Ford-Ka-2015+(2).jpg',
-    price: 199.99,
-    review: 4,
-    brand: 'Ford',
-    category: CarCategory.hatchback,
-    color: 'Preto',
-    doors: 2,
-    fuel: CarFuel.petrol,
-    gearShift: CarGearShift.manual,
-    plate: 'FUU0C47',
-    seats: 5,
-    trunk: 50,
-    userId: 1,
-    year: 2012,
-  ),
+      id: '1',
+      model: 'Ka',
+      imageUrl:
+          'https://2.bp.blogspot.com/-tcCwlEwU0Hc/U9J6_6l0ITI/AAAAAAABbH8/6l7FOq6lrIU/s1600/Novo-Ford-Ka-2015+(2).jpg',
+      price: 199.99,
+      review: 4,
+      brand: 'Ford',
+      category: CarCategory.hatchback,
+      color: 'Preto',
+      doors: 2,
+      fuel: CarFuel.petrol,
+      gearShift: CarGearShift.manual,
+      plate: 'FUU0C47',
+      seats: 5,
+      trunk: 50,
+      userId: 1,
+      year: 2012,
+      description:
+          'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy\n text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.\n It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.\n\n It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'),
   Car(
     id: '2',
     model: 'Argo',
