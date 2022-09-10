@@ -73,7 +73,7 @@ class _AuthFormState extends State<AuthForm> {
           _authData['password']!,
         );
       } else {
-        await auth.singup(
+        await auth.signup(
           _authData['email']!,
           _authData['password']!,
         );
