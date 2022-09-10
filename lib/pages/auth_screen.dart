@@ -28,8 +28,8 @@ class AuthScreen extends StatelessWidget {
               width: double.infinity,
               child: SingleChildScrollView(
                 padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top,
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                  top: MediaQuery.of(context).padding.top * 5,
+                  bottom: MediaQuery.of(context).viewInsets.bottom / 12,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
