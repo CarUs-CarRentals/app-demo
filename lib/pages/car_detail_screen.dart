@@ -1,3 +1,4 @@
+import 'package:carshare/components/rental_date_form.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/foundation.dart';
@@ -15,44 +16,8 @@ class CarDetailScreen extends StatefulWidget {
 }
 
 class _CarDetailScreenState extends State<CarDetailScreen> {
-  DateTime _selectedPickupDate = DateTime.now();
-  DateTime _selectedReturnDate = DateTime.now();
-
   void _selectCarReview(BuildContext context) {
     Navigator.of(context).pushNamed(AppRoutes.CAR_REVIEW);
-  }
-
-  _showPickupDatePicker() {
-    showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(const Duration(days: 30)),
-    ).then((pickedDate) {
-      if (pickedDate == null) {
-        return;
-      }
-      setState(() {
-        _selectedPickupDate = pickedDate;
-        _selectedReturnDate = _selectedPickupDate;
-      });
-    });
-  }
-
-  _showReturnDatePicker() {
-    showDatePicker(
-      context: context,
-      initialDate: _selectedPickupDate,
-      firstDate: _selectedPickupDate,
-      lastDate: _selectedPickupDate.add(const Duration(days: 30)),
-    ).then((pickedDate) {
-      if (pickedDate == null) {
-        return;
-      }
-      setState(() {
-        _selectedReturnDate = pickedDate;
-      });
-    });
   }
 
   _submitRental() {
@@ -170,54 +135,6 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
             Text(label), // <-- Text
           ],
         ),
-      ),
-    );
-  }
-
-  _localDataSection(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Column(
-        children: [
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Text(_selectedPickupDate == null
-                    ? 'Nenhuma data selecionada'
-                    : '${DateFormat('dd/MM/y').format(_selectedPickupDate)}'),
-              ),
-              TextButton(
-                onPressed: _showPickupDatePicker,
-                child: Text(
-                  'Data para pegar o veículo',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              )
-            ],
-          ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Text(_selectedReturnDate == null
-                    ? 'Nenhuma data selecionada'
-                    : '${DateFormat('dd/MM/y').format(_selectedReturnDate)}'),
-              ),
-              TextButton(
-                onPressed: _showReturnDatePicker,
-                child: Text(
-                  'Data para devolver o veículo',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              )
-            ],
-          ),
-        ],
       ),
     );
   }
@@ -352,7 +269,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
               car.seats,
             ),
             Divider(),
-            _localDataSection(context),
+            RentalDateForm(),
             Divider(),
             _descriptionSection(context, car.description),
             Divider(),
