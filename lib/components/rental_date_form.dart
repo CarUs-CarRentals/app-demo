@@ -76,14 +76,24 @@ class _RentalDateFormState extends State<RentalDateForm> {
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
         children: [
+          Row(children: const [
+            Text(
+              'Período de Locação:',
+              textAlign: TextAlign.left,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          ]),
           Row(
             children: <Widget>[
               Expanded(
-                child: ElevatedButton(
-                  onPressed: () => pickPickupDateTime(),
-                  child: Text(
-                    DateFormat('dd/MM/y - HH:mm').format(_selectedPickupDate),
-                  ),
+                child: ListTile(
+                  dense: true,
+                  onTap: () => pickPickupDateTime(),
+                  title: Center(
+                      child: Text(
+                    'Data Inicial: ${DateFormat('EEEE, dd/MM/y - HH:mm').format(_selectedPickupDate)}',
+                    style: TextStyle(fontSize: 14),
+                  )),
                 ),
               ),
             ],
@@ -91,10 +101,14 @@ class _RentalDateFormState extends State<RentalDateForm> {
           Row(
             children: <Widget>[
               Expanded(
-                child: ElevatedButton(
-                  onPressed: () => pickReturnDateTime(),
-                  child: Text(
-                    DateFormat('dd/MM/y - HH:mm').format(_selectedReturnDate),
+                child: ListTile(
+                  dense: true,
+                  onTap: () => pickReturnDateTime(),
+                  title: Center(
+                    child: Text(
+                      'Data Final: ${DateFormat('EEEE, dd/MM/y - HH:mm').format(_selectedReturnDate)}',
+                      style: TextStyle(fontSize: 14),
+                    ),
                   ),
                 ),
               ),

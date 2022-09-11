@@ -117,7 +117,6 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
               ],
             ),
           ),
-          Divider(),
         ],
       );
     });

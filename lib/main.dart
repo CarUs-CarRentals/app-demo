@@ -8,7 +8,6 @@ import 'package:carshare/pages/my_reviews_screen.dart';
 import 'package:carshare/pages/my_trips_screen.dart';
 import 'package:carshare/pages/profile_edit_screen.dart';
 import 'package:carshare/pages/profile_screen.dart';
-import 'package:carshare/pages/tabs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'utils/app_routes.dart';
