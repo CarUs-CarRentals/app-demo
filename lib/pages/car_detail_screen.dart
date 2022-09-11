@@ -1,5 +1,6 @@
 import 'package:carshare/components/rental_date_form.dart';
 import 'package:carshare/models/car.dart';
+import 'package:carshare/models/review.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -151,14 +152,22 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 textAlign: TextAlign.left,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              Padding(
-                padding: EdgeInsets.only(bottom: 30),
-              )
             ],
           ),
-          Text(
-            description,
-            textAlign: TextAlign.left,
+          Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: 15,
+              vertical: 5,
+            ),
+            child: Row(children: [
+              Flexible(
+                child: Text(
+                  description,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontSize: 14),
+                ),
+              ),
+            ]),
           ),
         ],
       ),
