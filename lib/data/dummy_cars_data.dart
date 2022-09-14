@@ -8,7 +8,7 @@ const dummyCars = [
       imageUrl:
           'https://2.bp.blogspot.com/-tcCwlEwU0Hc/U9J6_6l0ITI/AAAAAAABbH8/6l7FOq6lrIU/s1600/Novo-Ford-Ka-2015+(2).jpg',
       price: 199.99,
-      review: 4,
+      review: 4.5,
       brand: 'Ford',
       category: CarCategory.hatchback,
       color: 'Preto',
