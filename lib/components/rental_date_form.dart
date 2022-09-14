@@ -90,10 +90,12 @@ class _RentalDateFormState extends State<RentalDateForm> {
                   dense: true,
                   onTap: () => pickPickupDateTime(),
                   title: Center(
-                      child: Text(
-                    'Data Inicial: ${DateFormat('EEEE, dd/MM/y - HH:mm').format(_selectedPickupDate)}',
-                    style: TextStyle(fontSize: 14),
-                  )),
+                    child: Text(
+                      'Data Inicial: ${DateFormat('EEEE, dd/MM/y - HH:mm').format(_selectedPickupDate)}',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  trailing: Icon(Icons.arrow_forward),
                 ),
               ),
             ],
@@ -110,6 +112,7 @@ class _RentalDateFormState extends State<RentalDateForm> {
                       style: TextStyle(fontSize: 14),
                     ),
                   ),
+                  trailing: Icon(Icons.arrow_forward),
                 ),
               ),
             ],

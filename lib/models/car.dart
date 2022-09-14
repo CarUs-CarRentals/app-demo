@@ -37,7 +37,7 @@ class Car {
   final int userId;
   final String imageUrl;
   final double price;
-  final int review;
+  final double review;
   final String description;
 
   const Car(

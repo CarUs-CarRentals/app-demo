@@ -9,16 +9,11 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 
-class CarDetailScreen extends StatefulWidget {
-  const CarDetailScreen({Key? key}) : super(key: key);
-
-  @override
-  State<CarDetailScreen> createState() => _CarDetailScreenState();
-}
-
-class _CarDetailScreenState extends State<CarDetailScreen> {
+class CarDetailScreen extends StatelessWidget {
   void _selectCarReview(BuildContext context) {
-    Navigator.of(context).pushNamed(AppRoutes.CAR_REVIEW);
+    Navigator.of(context).pushNamed(
+      AppRoutes.CAR_REVIEW,
+    );
   }
 
   _submitRental() {
@@ -26,7 +21,12 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   }
 
   _titleSection(
-      BuildContext context, String title, int review, int year, int carHost) {
+    BuildContext context,
+    String title,
+    double review,
+    int year,
+    int carHost,
+  ) {
     return Column(
       children: [
         Container(
@@ -69,8 +69,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
               Row(
                 children: [
                   SizedBox(width: 6),
-                  Text(
-                      'De: ${carHost == 1 ? 'Proprietario' : (carHost).toString()}'),
+                  Text('De: ${(carHost).toString()}'),
                 ],
               ),
             ],

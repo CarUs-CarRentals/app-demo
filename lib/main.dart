@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
             secondary: Colors.grey[700],
           ),
         ),
+        debugShowCheckedModeBanner: false,
         routes: {
           AppRoutes.IS_AUTH: (context) => const IsAuthScreen(),
           //AppRoutes.HOME: (context) => const TabsScreen(),
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
           AppRoutes.PROFILE_EDIT: (context) => const ProfileEditScreen(),
           AppRoutes.MY_REVIEWS: (context) => const MyReviewsScreen(),
           AppRoutes.MY_CARS: (context) => const MyCarsScreen(),
-          AppRoutes.CAR_DETAIL: (context) => const CarDetailScreen(),
+          AppRoutes.CAR_DETAIL: (context) => CarDetailScreen(),
           AppRoutes.CAR_REVIEW: (context) => const CarReviewsScreen(),
         },
       ),
