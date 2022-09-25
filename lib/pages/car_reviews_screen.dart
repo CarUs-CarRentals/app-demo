@@ -1,10 +1,13 @@
 import 'package:carshare/data/dummy_cars_review_data.dart';
+import 'package:carshare/models/car.dart';
 import 'package:carshare/models/review.dart';
+import 'package:carshare/models/review_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class CarReviewsScreen extends StatelessWidget {
   const CarReviewsScreen({Key? key}) : super(key: key);
@@ -35,14 +38,22 @@ class CarReviewsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final carInfo = ModalRoute.of(context)?.settings.arguments as Car;
+
+    final provider = Provider.of<ReviewList>(context);
+    final List<Review> carReviews =
+        provider.reviews.where((review) => review.carId == carInfo.id).toList();
+
+    print("carINFO: ${carInfo.id}");
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Avaliações do Veículo'),
       ),
       body: ListView.builder(
-          itemCount: dummyReviewsCars.length,
+          itemCount: carReviews.length,
           itemBuilder: (ctx, index) {
-            final review = dummyReviewsCars[index];
+            final review = carReviews[index];
             return Card(
               child: Column(
                 mainAxisSize: MainAxisSize.min,

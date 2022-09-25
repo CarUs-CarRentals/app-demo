@@ -10,9 +10,10 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 
 class CarDetailScreen extends StatelessWidget {
-  void _selectCarReview(BuildContext context) {
+  void _selectCarReview(BuildContext context, Car car) {
     Navigator.of(context).pushNamed(
       AppRoutes.CAR_REVIEW,
+      arguments: car,
     );
   }
 
@@ -243,7 +244,7 @@ class CarDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final car = ModalRoute.of(context)!.settings.arguments as Car;
+    final car = ModalRoute.of(context)?.settings.arguments as Car;
 
     return Scaffold(
       appBar: AppBar(
@@ -283,7 +284,7 @@ class CarDetailScreen extends StatelessWidget {
             _InfoItem(
               Icons.reviews,
               'Avaliações',
-              () => _selectCarReview(context),
+              () => _selectCarReview(context, car),
             ),
             Divider(),
             _InfoItem(

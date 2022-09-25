@@ -1,4 +1,6 @@
 import 'package:carshare/models/auth.dart';
+import 'package:carshare/models/car.dart';
+import 'package:carshare/models/review_list.dart';
 import 'package:carshare/pages/auth_screen.dart';
 import 'package:carshare/pages/car_detail_screen.dart';
 import 'package:carshare/pages/car_reviews_screen.dart';
@@ -26,6 +28,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => Auth(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => ReviewList(),
+        ),
       ],
       child: MaterialApp(
         builder: (context, child) => MediaQuery(
@@ -49,7 +54,7 @@ class MyApp extends StatelessWidget {
           AppRoutes.MY_REVIEWS: (context) => const MyReviewsScreen(),
           AppRoutes.MY_CARS: (context) => const MyCarsScreen(),
           AppRoutes.CAR_DETAIL: (context) => CarDetailScreen(),
-          AppRoutes.CAR_REVIEW: (context) => const CarReviewsScreen(),
+          AppRoutes.CAR_REVIEW: (context) => CarReviewsScreen(),
         },
       ),
     );

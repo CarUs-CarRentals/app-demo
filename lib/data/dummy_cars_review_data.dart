@@ -51,4 +51,12 @@ List<Review> dummyReviewsCars = [
     value: 4,
     date: DateTime.now(),
   ),
+  Review(
+    id: '7',
+    userName: 'Rodolfo',
+    carId: '3',
+    title: 'Gostei! 🔝🔝🔝',
+    value: 5,
+    date: DateTime.now().add(Duration(days: -8)),
+  ),
 ];
