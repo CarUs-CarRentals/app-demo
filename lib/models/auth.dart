@@ -47,6 +47,7 @@ class Auth with ChangeNotifier {
     final body = jsonDecode(response.body);
 
     if (body['error'] != null) {
+      print(response);
       throw AuthException(body['error']['message']);
     } else {
       _token = body['idToken'];
@@ -66,7 +67,7 @@ class Auth with ChangeNotifier {
         'expireDate': _expiryDate?.toIso8601String(),
       });
 
-      _autoLogout();
+      //_autoLogout();
       notifyListeners();
     }
   }
@@ -94,7 +95,7 @@ class Auth with ChangeNotifier {
     _userId = userData['userId'];
     _expiryDate = expiryDate;
 
-    _autoLogout();
+    //_autoLogout();
     notifyListeners();
   }
 
