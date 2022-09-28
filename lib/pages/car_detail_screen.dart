@@ -1,7 +1,9 @@
+import 'package:carshare/components/place_detail_item.dart';
 import 'package:carshare/components/rental_date_form.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/review.dart';
 import 'package:carshare/utils/app_routes.dart';
+import 'package:carshare/widgets/location_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -141,12 +143,14 @@ class CarDetailScreen extends StatelessWidget {
 
   _descriptionSection(BuildContext context, String description) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
       width: double.infinity,
       child: Column(
         children: [
           Row(
             children: const [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+              ),
               Text(
                 'Descrição do Veículo:',
                 textAlign: TextAlign.left,
@@ -156,10 +160,12 @@ class CarDetailScreen extends StatelessWidget {
           ),
           Container(
             padding: EdgeInsets.symmetric(
-              horizontal: 15,
               vertical: 5,
             ),
             child: Row(children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+              ),
               Flexible(
                 child: Text(
                   description,
@@ -278,6 +284,8 @@ class CarDetailScreen extends StatelessWidget {
             ),
             Divider(),
             RentalDateForm(),
+            //LocationInput(),
+            PlaceDetailItem(),
             Divider(),
             _descriptionSection(context, car.description),
             Divider(),

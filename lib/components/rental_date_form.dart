@@ -70,20 +70,53 @@ class _RentalDateFormState extends State<RentalDateForm> {
         ),
       );
 
+  Widget _DataTile(IconData icon, String label, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        size: 24,
+      ),
+      title: Text(
+        label,
+        style: const TextStyle(
+          fontFamily: 'RobotCondensed',
+          fontSize: 14,
+        ),
+      ),
+      trailing: Icon(
+        Icons.keyboard_arrow_right_outlined,
+        size: 24,
+      ),
+      onTap: onTap,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
         children: [
-          Row(children: const [
-            Text(
-              'Período de Locação:',
-              textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-          ]),
           Row(
+            children: const [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+              ),
+              Text(
+                'Período de Locação:',
+                textAlign: TextAlign.left,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ],
+          ),
+          _DataTile(
+              Icons.calendar_today,
+              'Data Inicial: ${DateFormat('EEE, dd/MM/y - HH:mm').format(_selectedPickupDate)}',
+              pickPickupDateTime),
+          _DataTile(
+              Icons.calendar_today,
+              'Data Final: ${DateFormat('EEE, dd/MM/y - HH:mm').format(_selectedReturnDate)}',
+              pickPickupDateTime)
+          /*Row(
             children: <Widget>[
               Expanded(
                 child: ListTile(
@@ -116,7 +149,7 @@ class _RentalDateFormState extends State<RentalDateForm> {
                 ),
               ),
             ],
-          ),
+          ),*/
         ],
       ),
     );

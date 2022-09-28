@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:carshare/data/store.dart';
 import 'package:carshare/exceptions/auth_exception.dart';
+import 'package:carshare/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -34,7 +35,7 @@ class Auth with ChangeNotifier {
   Future<void> _authenticate(
       String email, String password, String urlFragment) async {
     final url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:$urlFragment?key=AIzaSyBuK3MDrIYCayYs6zEhvbKUY7HAJj1wi6w';
+        'https://identitytoolkit.googleapis.com/v1/accounts:$urlFragment?key=${Constants.GOOGLE_API_KEY}';
     final response = await http.post(
       Uri.parse(url),
       body: jsonEncode({
