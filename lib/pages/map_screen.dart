@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:carshare/models/place.dart';
+import 'package:carshare/utils/location_util.dart';
 import 'package:custom_marker/marker_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
