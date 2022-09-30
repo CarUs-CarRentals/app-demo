@@ -1,15 +1,9 @@
 import 'package:carshare/components/place_detail_item.dart';
 import 'package:carshare/components/rental_date_form.dart';
 import 'package:carshare/models/car.dart';
-import 'package:carshare/models/review.dart';
 import 'package:carshare/utils/app_routes.dart';
-import 'package:carshare/widgets/location_input.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:intl/intl.dart';
 
 class CarDetailScreen extends StatelessWidget {
   void _selectCarReview(BuildContext context, Car car) {
@@ -285,7 +279,8 @@ class CarDetailScreen extends StatelessWidget {
             Divider(),
             RentalDateForm(),
             //LocationInput(),
-            PlaceDetailItem(),
+            PlaceDetailItem(car.location.latitude, car.location.longitude,
+                car.location.address),
             Divider(),
             _descriptionSection(context, car.description),
             Divider(),
