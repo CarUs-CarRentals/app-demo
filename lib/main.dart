@@ -11,6 +11,8 @@ import 'package:carshare/pages/my_trips_screen.dart';
 import 'package:carshare/pages/profile_edit_screen.dart';
 import 'package:carshare/pages/profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'utils/app_routes.dart';
 
@@ -22,6 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData myTheme = ThemeData();
+    //Intl.defaultLocale = 'pt_BR';
 
     return MultiProvider(
       providers: [
@@ -33,6 +36,12 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [Locale('pt', 'BR')],
         builder: (context, child) => MediaQuery(
             data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
             child: child!),

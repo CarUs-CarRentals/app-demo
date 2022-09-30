@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:intl/date_symbol_data_file.dart';
 import 'package:intl/intl.dart';
 
 class RentalDateForm extends StatefulWidget {
@@ -110,11 +111,11 @@ class _RentalDateFormState extends State<RentalDateForm> {
           ),
           _DataTile(
               Icons.calendar_today,
-              'Data Inicial: ${DateFormat('EEE, dd/MM/y - HH:mm').format(_selectedPickupDate)}',
+              'Data Inicial: ${DateFormat('EEE, dd/MM/y - HH:mm', 'pt_BR').format(_selectedPickupDate)}',
               pickPickupDateTime),
           _DataTile(
               Icons.calendar_today,
-              'Data Final: ${DateFormat('EEE, dd/MM/y - HH:mm').format(_selectedReturnDate)}',
+              'Data Final: ${DateFormat('EEE, dd/MM/y - HH:mm', 'pt_BR').format(_selectedReturnDate)}',
               pickPickupDateTime)
           /*Row(
             children: <Widget>[
