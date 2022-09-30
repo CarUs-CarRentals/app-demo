@@ -1,3 +1,5 @@
+import 'package:location/location.dart';
+
 enum CarFuel {
   petrol,
   diesel,
@@ -21,6 +23,18 @@ enum CarCategory {
   truck,
 }
 
+class Location {
+  final double latitude;
+  final double longitude;
+  final String address;
+
+  const Location({
+    required this.latitude,
+    required this.longitude,
+    required this.address,
+  });
+}
+
 class Car {
   final String id;
   final String brand;
@@ -39,6 +53,7 @@ class Car {
   final double price;
   final double review;
   final String description;
+  final Location location;
 
   const Car(
       {required this.brand,
@@ -57,7 +72,8 @@ class Car {
       required this.imageUrl,
       required this.price,
       required this.review,
-      this.description = ''});
+      this.description = '',
+      required this.location});
 
   String get shortDescription {
     return '$brand $model';
