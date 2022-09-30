@@ -11,8 +11,10 @@ class PlaceDetailItem extends StatefulWidget {
   double carLatitude;
   double carlongitude;
   String carAddress;
+  String imageUrl;
 
-  PlaceDetailItem(this.carLatitude, this.carlongitude, this.carAddress,
+  PlaceDetailItem(
+      this.carLatitude, this.carlongitude, this.carAddress, this.imageUrl,
       {Key? key})
       : super(key: key);
 
@@ -29,6 +31,7 @@ class _PlaceDetailItemState extends State<PlaceDetailItem> {
         isReadOnly: true,
         initialLocation: PlaceLocation(
             latitude: widget.carLatitude, longitude: widget.carlongitude),
+        imageUrlMarker: widget.imageUrl,
       ),
     ));
 

@@ -15,10 +15,13 @@ class MapScreen extends StatefulWidget {
       longitude: -49.0760,
     ),
     this.isReadOnly = false,
+    this.imageUrlMarker =
+        "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/256x256/question.png",
   });
 
   final PlaceLocation initialLocation;
   final bool isReadOnly;
+  final String imageUrlMarker;
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -35,8 +38,12 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   _getIconMarker() async {
-    final result = await MarkerIcon.markerFromIcon(
-            Icons.directions_car_filled_sharp, Colors.black87, 90)
+    final result = await MarkerIcon.downloadResizePictureCircle(
+            widget.imageUrlMarker,
+            size: 120,
+            addBorder: true,
+            borderColor: Colors.white,
+            borderSize: 15)
         .then((BitmapDescriptor bitmap) {
       setState(() {
         _marker = bitmap;

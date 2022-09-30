@@ -280,7 +280,7 @@ class CarDetailScreen extends StatelessWidget {
             RentalDateForm(),
             //LocationInput(),
             PlaceDetailItem(car.location.latitude, car.location.longitude,
-                car.location.address),
+                car.location.address, car.imageUrl),
             Divider(),
             _descriptionSection(context, car.description),
             Divider(),
