@@ -23,16 +23,22 @@ enum CarCategory {
   truck,
 }
 
-class Location {
+class CarLocation {
   final double latitude;
   final double longitude;
   final String address;
 
-  const Location({
+  const CarLocation({
     required this.latitude,
     required this.longitude,
     required this.address,
   });
+}
+
+class CarImages {
+  final List<String> imageUrl;
+
+  const CarImages({required this.imageUrl});
 }
 
 class Car {
@@ -49,11 +55,11 @@ class Car {
   final int trunk;
   final int year;
   final int userId;
-  final String imageUrl;
+  final CarImages imagesUrl;
   final double price;
   final double review;
   final String description;
-  final Location location;
+  final CarLocation location;
 
   const Car(
       {required this.brand,
@@ -69,7 +75,7 @@ class Car {
       required this.category,
       required this.id,
       required this.model,
-      required this.imageUrl,
+      required this.imagesUrl,
       required this.price,
       required this.review,
       this.description = '',

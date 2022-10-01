@@ -1,17 +1,59 @@
 import 'package:carshare/models/car.dart';
+import 'package:carshare/models/place.dart';
 import 'package:carshare/utils/location_util.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/app_routes.dart';
 
-class CarItem extends StatelessWidget {
+class CarItem extends StatefulWidget {
   final Car car;
+  final LatLng currentLocation;
   const CarItem(
-    this.car, {
+    this.car,
+    this.currentLocation, {
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<CarItem> createState() => _CarItemState();
+}
+
+class _CarItemState extends State<CarItem> {
+  String? carDistance = '';
+  // double myLatitude = 0;
+  // double myLongitude = 0;
+
+  // void getLocation() async {
+  //   final location = await Location().getLocation();
+
+  //   setState(() {
+  //     myLatitude = location.latitude as double;
+  //     myLongitude = location.longitude as double;
+  //   });
+  // }
+
+  _getCarDistance() async {
+    final myLocation = widget.currentLocation;
+
+    final carLocation = PlaceLocation(
+            latitude: widget.car.location.latitude,
+            longitude: widget.car.location.longitude)
+        .toLatLng();
+    await LocationUtil.getDistance(myLocation, carLocation).then((String text) {
+      setState(() {
+        carDistance = text;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCarDistance();
+  }
 
   _bottomSection(BuildContext context) {
     return Container(
@@ -21,7 +63,7 @@ class CarItem extends StatelessWidget {
           Row(
             children: [
               Text(
-                car.shortDescription,
+                widget.car.shortDescription,
                 textAlign: TextAlign.left,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
@@ -42,12 +84,12 @@ class CarItem extends StatelessWidget {
                           Icons.star,
                           size: 16,
                         ),
-                        Text((car.review).toString()),
+                        Text((widget.car.review).toString()),
                         VerticalDivider(
                           width: 10,
                         ),
                         Text(
-                          "99 Avaliações",
+                          "99 Locações",
                         ),
                       ],
                     ),
@@ -55,7 +97,7 @@ class CarItem extends StatelessWidget {
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                     Row(children: [
-                      Text('R\$ ${car.price}/dia'),
+                      Text('R\$ ${widget.car.price}/dia'),
                     ])
                   ],
                 ),
@@ -68,7 +110,7 @@ class CarItem extends StatelessWidget {
                       color: Colors.grey[500],
                     ),
                     Text(
-                      '99 km de distancia',
+                      carDistance!.isEmpty ? '' : '${carDistance} de distância',
                       textScaleFactor: 0.9,
                       style: TextStyle(color: Colors.grey[500]),
                     ),
@@ -87,7 +129,7 @@ class CarItem extends StatelessWidget {
     return InkWell(
       onTap: () => Navigator.of(context).pushNamed(
         AppRoutes.CAR_DETAIL,
-        arguments: car,
+        arguments: widget.car,
       ),
       child: Card(
         shape: RoundedRectangleBorder(
@@ -104,57 +146,15 @@ class CarItem extends StatelessWidget {
                   topRight: Radius.circular(15),
                 ),
                 child: Image.network(
-                  car.imageUrl,
+                  widget.car.imagesUrl.imageUrl[0],
                   height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
               ),
-              // Positioned(
-              //   right: 10,
-              //   bottom: 20,
-              //   child: Container(
-              //     width: 300,
-              //     color: Colors.black54,
-              //     padding: EdgeInsets.symmetric(
-              //       vertical: 5,
-              //       horizontal: 20,
-              //     ),
-              //     child: Text(
-              //       car.shortDescription,
-              //       style: TextStyle(
-              //         fontSize: 26,
-              //         color: Colors.white,
-              //       ),
-              //       softWrap: true,
-              //       overflow: TextOverflow.fade,
-              //     ),
-              //   ),
-              // )
             ],
           ),
           _bottomSection(context),
-          // Padding(
-          //   padding: EdgeInsets.all(20),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //     children: [
-          //       Row(
-          //         children: [
-          //           Icon(Icons.star),
-          //           SizedBox(width: 6),
-          //           Text((car.review).toString()),
-          //         ],
-          //       ),
-          //       Row(
-          //         children: [
-          //           SizedBox(width: 6),
-          //           Text('R\$ ${car.price}/dia'),
-          //         ],
-          //       ),
-          //     ],
-          //   ),
-          // )
         ]),
       ),
     );

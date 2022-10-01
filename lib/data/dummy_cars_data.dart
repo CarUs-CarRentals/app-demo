@@ -5,8 +5,11 @@ const dummyCars = [
   Car(
     id: '1',
     model: 'Ka',
-    imageUrl:
-        'https://2.bp.blogspot.com/-tcCwlEwU0Hc/U9J6_6l0ITI/AAAAAAABbH8/6l7FOq6lrIU/s1600/Novo-Ford-Ka-2015+(2).jpg',
+    imagesUrl: CarImages(imageUrl: [
+      'http://s.glbimg.com/jo/g1/f/original/2011/07/03/avaliacao_02.jpg',
+      'http://s.glbimg.com/jo/g1/f/original/2011/07/03/avaliacao_01.jpg',
+      'http://s.glbimg.com/jo/g1/f/original/2011/07/03/avaliacao_03_.jpg',
+    ]),
     price: 199.99,
     review: 4.5,
     brand: 'Ford',
@@ -22,7 +25,7 @@ const dummyCars = [
     year: 2012,
     description:
         'Compacto, o Ka tem 3,83 metros de comprimento, 1,42 m de altura, 1.81 m de largura e 2,45 m de distância entre-eixos. A capacidade do porta-malas é de 263 litros e a do tanque de combustível é de 45 litros.',
-    location: Location(
+    location: CarLocation(
         latitude: -26.7376,
         longitude: -49.1744,
         address:
@@ -31,8 +34,10 @@ const dummyCars = [
   Car(
     id: '2',
     model: 'Argo',
-    imageUrl:
-        'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjBeSC8rsRqCHliDIA9OW8pAuhC0fIYfEbJ82rJnuz-4vvJtGl-jr5LJk-29BYbNILnREDIK72oLg53NfIy87JMuj8kEeA5ZppUo2WEkrp5jUEERl6wJoowB6pkwZ9QuCmzvVhD4qHgQP97RCdkydgmio3zX0RfoCRFpn9Iuojdom4Cpm1b8ErE_xXuDw/s600/Novo-Argo-2023%20%283%29.jpg',
+    imagesUrl: CarImages(imageUrl: [
+      'https://s2.glbimg.com/UJjVWZEe2D_61_QxwVGSBg__22o=/0x0:620x413/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_cf9d035bf26b4646b105bd958f32089d/internal_photos/bs/2020/v/Y/t3nvI4QxevsA3Nucd3eg/2017-05-31-fiat-argo-hgt-18-opening-edition-mopar-3.jpg',
+      'https://s2.glbimg.com/x-oPXdx0tllFO5zxeeYnWXUhPEQ=/0x0:620x413/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_cf9d035bf26b4646b105bd958f32089d/internal_photos/bs/2020/8/2/h95BbUQ1mOkYFoI9Jglw/2017-05-31-fiat-argo-hgt-18-at-4.jpg',
+    ]),
     price: 159.75,
     review: 3,
     brand: 'Fiat',
@@ -46,7 +51,7 @@ const dummyCars = [
     trunk: 50,
     userId: 1,
     year: 2016,
-    location: Location(
+    location: CarLocation(
         latitude: -26.9069,
         longitude: -49.0760,
         address:
@@ -55,8 +60,9 @@ const dummyCars = [
   Car(
     id: '3',
     model: 'Corolla',
-    imageUrl:
-        'https://motorshow.com.br/wp-content/uploads/sites/2/2022/06/29-toyota-corolla-747x420.jpg',
+    imagesUrl: CarImages(imageUrl: [
+      'https://motorshow.com.br/wp-content/uploads/sites/2/2022/06/29-toyota-corolla-747x420.jpg'
+    ]),
     price: 359.75,
     review: 5,
     brand: 'Toyota',
@@ -71,7 +77,7 @@ const dummyCars = [
     userId: 2,
     year: 2023,
     description: 'Baita carro de tiozão, muito bom tbm.',
-    location: Location(
+    location: CarLocation(
         latitude: -26.8958,
         longitude: -49.2484,
         address: "R. Timbó, 337 - Rio Morto, Indaial - SC, 89130-000, Brazil"),

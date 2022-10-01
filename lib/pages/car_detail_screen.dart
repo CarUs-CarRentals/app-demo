@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carshare/components/place_detail_item.dart';
 import 'package:carshare/components/rental_date_form.dart';
 import 'package:carshare/models/car.dart';
@@ -253,13 +254,26 @@ class CarDetailScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Container(
-              height: 200,
-              width: double.infinity,
-              child: Image.network(
-                car.imageUrl,
-                fit: BoxFit.cover,
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 200,
+                viewportFraction: 1.0,
+                enlargeCenterPage: false,
+                enableInfiniteScroll: false,
               ),
+              items: [...car.imagesUrl.imageUrl].map((imageUrl) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
             ),
             _titleSection(
               context,
@@ -280,7 +294,7 @@ class CarDetailScreen extends StatelessWidget {
             RentalDateForm(),
             //LocationInput(),
             PlaceDetailItem(car.location.latitude, car.location.longitude,
-                car.location.address, car.imageUrl),
+                car.location.address, car.imagesUrl.imageUrl[0]),
             Divider(),
             _descriptionSection(context, car.description),
             Divider(),
