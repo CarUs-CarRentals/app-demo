@@ -4,35 +4,36 @@ import 'package:carshare/models/car.dart';
 const dummyCars = [
   Car(
     id: '1',
+    userId: 1,
+    brand: 'Ford',
     model: 'Ka',
     imagesUrl: CarImages(imageUrl: [
       'http://s.glbimg.com/jo/g1/f/original/2011/07/03/avaliacao_02.jpg',
       'http://s.glbimg.com/jo/g1/f/original/2011/07/03/avaliacao_01.jpg',
       'http://s.glbimg.com/jo/g1/f/original/2011/07/03/avaliacao_03_.jpg',
     ]),
-    price: 199.99,
-    review: 4.5,
-    brand: 'Ford',
-    category: CarCategory.hatchback,
-    color: 'Preto',
-    doors: 2,
+    year: 2012,
+    plate: 'FUU0C47',
     fuel: CarFuel.petrol,
     gearShift: CarGearShift.manual,
-    plate: 'FUU0C47',
-    seats: 5,
+    category: CarCategory.hatchback,
+    color: 'Preto',
     trunk: 50,
-    userId: 1,
-    year: 2012,
+    doors: 2,
+    seats: 5,
+    price: 199.99,
+    review: 4.5,
     description:
         'Compacto, o Ka tem 3,83 metros de comprimento, 1,42 m de altura, 1.81 m de largura e 2,45 m de distância entre-eixos. A capacidade do porta-malas é de 263 litros e a do tanque de combustível é de 45 litros.',
     location: CarLocation(
         latitude: -26.7376,
         longitude: -49.1744,
         address:
-            "Rua Hermann Weege, 151 - Centro, Pomerode - SC, 89107-000, Brazil"),
+            "Rua Hermann Weege, 151 - Centro, Pomerode - SC, 89107-000, Brasil"),
   ),
   Car(
     id: '2',
+    userId: 1,
     model: 'Argo',
     imagesUrl: CarImages(imageUrl: [
       'https://s2.glbimg.com/UJjVWZEe2D_61_QxwVGSBg__22o=/0x0:620x413/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_cf9d035bf26b4646b105bd958f32089d/internal_photos/bs/2020/v/Y/t3nvI4QxevsA3Nucd3eg/2017-05-31-fiat-argo-hgt-18-opening-edition-mopar-3.jpg',
@@ -49,7 +50,6 @@ const dummyCars = [
     plate: 'FDA0C48',
     seats: 5,
     trunk: 50,
-    userId: 1,
     year: 2016,
     location: CarLocation(
         latitude: -26.9069,
@@ -59,6 +59,7 @@ const dummyCars = [
   ),
   Car(
     id: '3',
+    userId: 2,
     model: 'Corolla',
     imagesUrl: CarImages(imageUrl: [
       'https://motorshow.com.br/wp-content/uploads/sites/2/2022/06/29-toyota-corolla-747x420.jpg'
@@ -74,7 +75,6 @@ const dummyCars = [
     plate: 'FDG2C58',
     seats: 5,
     trunk: 300,
-    userId: 2,
     year: 2023,
     description: 'Baita carro de tiozão, muito bom tbm.',
     location: CarLocation(

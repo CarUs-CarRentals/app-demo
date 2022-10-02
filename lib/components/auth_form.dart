@@ -100,12 +100,58 @@ class _AuthFormState extends State<AuthForm> {
       ),
       child: Container(
         padding: const EdgeInsets.all(16),
-        height: _isLogin() ? 320 : 400,
+        height: _isLogin() ? 320 : 532,
         width: deviceSize.width * 0.75,
         child: Form(
           key: _formKey,
           child: Column(
             children: [
+              if (_isSignup())
+                Row(
+                  children: [
+                    SizedBox(
+                      width: deviceSize.width * 0.335,
+                      child: TextFormField(
+                        decoration: const InputDecoration(labelText: 'Nome'),
+                        keyboardType: TextInputType.name,
+                        validator: (_name) {
+                          final name = _name ?? '';
+                          if (name.trim().isEmpty) {
+                            return 'Informe um nome';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: deviceSize.width * 0.335,
+                      child: TextFormField(
+                        decoration:
+                            const InputDecoration(labelText: 'Sobrenome'),
+                        keyboardType: TextInputType.name,
+                        validator: (_lastname) {
+                          final lastname = _lastname ?? '';
+                          if (lastname.trim().isEmpty) {
+                            return 'Informe um sobrenome';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              if (_isSignup())
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Login'),
+                  keyboardType: TextInputType.text,
+                  validator: (_login) {
+                    final login = _login ?? '';
+                    if (login.trim().isEmpty) {
+                      return 'Informe um login';
+                    }
+                    return null;
+                  },
+                ),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'E-mail'),
                 keyboardType: TextInputType.emailAddress,

@@ -46,6 +46,7 @@ class Auth with ChangeNotifier {
     );
 
     final body = jsonDecode(response.body);
+    print(jsonDecode(response.body));
 
     if (body['error'] != null) {
       print(response);
@@ -85,7 +86,6 @@ class Auth with ChangeNotifier {
     if (isAuth) return;
 
     final userData = await Store.getMap('userData');
-    print("UserData: ##########" + userData.toString());
     if (userData.isEmpty) return;
 
     final expiryDate = DateTime.parse(userData['expireDate']);
