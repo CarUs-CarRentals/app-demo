@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carshare/components/carousel_car.dart';
 import 'package:carshare/components/place_detail_item.dart';
 import 'package:carshare/components/rental_date_form.dart';
 import 'package:carshare/models/car.dart';
@@ -128,8 +129,14 @@ class CarDetailScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(icon), // <-- Icon
-            Text(label), // <-- Text
+            Icon(
+              icon,
+              color: Colors.black26,
+            ), // <-- Icon
+            Text(
+              label,
+              style: TextStyle(color: Colors.black26),
+            ), // <-- Text
           ],
         ),
       ),
@@ -188,6 +195,10 @@ class CarDetailScreen extends StatelessWidget {
           fontSize: 14,
           fontWeight: FontWeight.bold,
         ),
+      ),
+      trailing: Icon(
+        Icons.keyboard_arrow_right_outlined,
+        size: 32,
       ),
       onTap: onTap,
     );
@@ -254,7 +265,7 @@ class CarDetailScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            CarouselSlider(
+            /*CarouselSlider(
               options: CarouselOptions(
                 height: 200,
                 viewportFraction: 1.0,
@@ -274,7 +285,22 @@ class CarDetailScreen extends StatelessWidget {
                   },
                 );
               }).toList(),
-            ),
+            ),*/
+            CarouselCar(
+                carsImages: [...car.imagesUrl.imageUrl].map((imageUrl) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
+                  );
+                }).toList(),
+                imagesList: car.imagesUrl.imageUrl.toList()),
             _titleSection(
               context,
               car.shortDescription,

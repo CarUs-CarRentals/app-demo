@@ -86,7 +86,7 @@ class _RentalDateFormState extends State<RentalDateForm> {
       ),
       trailing: Icon(
         Icons.keyboard_arrow_right_outlined,
-        size: 24,
+        size: 32,
       ),
       onTap: onTap,
     );
@@ -113,10 +113,13 @@ class _RentalDateFormState extends State<RentalDateForm> {
               Icons.calendar_today,
               'Data Inicial: ${DateFormat('EEE, dd/MM/y - HH:mm', 'pt_BR').format(_selectedPickupDate)}',
               pickPickupDateTime),
+          Divider(),
           _DataTile(
               Icons.calendar_today,
               'Data Final: ${DateFormat('EEE, dd/MM/y - HH:mm', 'pt_BR').format(_selectedReturnDate)}',
-              pickPickupDateTime)
+              pickPickupDateTime),
+          Divider(),
+
           /*Row(
             children: <Widget>[
               Expanded(

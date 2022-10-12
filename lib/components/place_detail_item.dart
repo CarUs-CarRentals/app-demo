@@ -54,7 +54,7 @@ class _PlaceDetailItemState extends State<PlaceDetailItem> {
       ),
       trailing: Icon(
         Icons.keyboard_arrow_right_outlined,
-        size: 24,
+        size: 32,
       ),
       onTap: _selectOnMap,
     );
