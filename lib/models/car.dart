@@ -59,9 +59,10 @@ class Car {
   final double price;
   final double review;
   final String description;
+  int distance;
   final CarLocation location;
 
-  const Car(
+  Car(
       {required this.brand,
       required this.color,
       required this.doors,
@@ -79,7 +80,12 @@ class Car {
       required this.price,
       required this.review,
       this.description = '',
+      this.distance = 0,
       required this.location});
+
+  set setCurrentDistance(int distance) {
+    this.distance = distance;
+  }
 
   String get shortDescription {
     return '$brand $model';

@@ -1,5 +1,6 @@
 import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/car.dart';
+import 'package:carshare/models/car_list.dart';
 import 'package:carshare/models/review_list.dart';
 import 'package:carshare/pages/auth_screen.dart';
 import 'package:carshare/pages/car_detail_screen.dart';
@@ -33,6 +34,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => ReviewList(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CarList(),
         ),
       ],
       child: MaterialApp(

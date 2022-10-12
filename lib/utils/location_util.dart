@@ -19,13 +19,13 @@ class LocationUtil {
     return jsonDecode(response.body)['results'][0]['formatted_address'];
   }
 
-  static Future<String> getDistance(
+  static Future<Map<String, dynamic>> getDistance(
       LatLng originPosition, LatLng destinationPosition) async {
     final url =
         'https://maps.googleapis.com/maps/api/distancematrix/json?origins=${originPosition.latitude},${originPosition.longitude}&destinations=${destinationPosition.latitude},${destinationPosition.longitude}&key=${Constants.GOOGLE_API_KEY}';
     final response = await http.get(Uri.parse(url));
-    print(jsonDecode(response.body)['rows'][0]['elements'][0]);
-    return jsonDecode(response.body)['rows'][0]['elements'][0]['distance']
-        ['text'];
+    print(jsonDecode(response.body)['rows'][0]['elements'][0]['distance']);
+    return jsonDecode(response.body)['rows'][0]['elements'][0]['distance'];
+    //['text'];
   }
 }

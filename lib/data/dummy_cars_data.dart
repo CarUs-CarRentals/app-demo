@@ -1,7 +1,6 @@
-import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/car.dart';
 
-const dummyCars = [
+List<Car> dummyCars = [
   Car(
     id: '1',
     userId: 1,
@@ -81,5 +80,35 @@ const dummyCars = [
         latitude: -26.8958,
         longitude: -49.2484,
         address: "R. Timbó, 337 - Rio Morto, Indaial - SC, 89130-000, Brazil"),
+  ),
+  Car(
+    id: '4',
+    userId: 3,
+    model: 'Panamera',
+    imagesUrl: CarImages(imageUrl: [
+      'https://www.carrosnaweb.com.br/imagensbd007/Panamera-turbo-2017-1.jpg',
+      'https://www.carrosnaweb.com.br/imagensbd007/Panamera-turbo-2017-2.jpg',
+      'https://www.carrosnaweb.com.br/imagensbd007/Panamera-turbo-2017-3.jpg',
+      'https://www.carrosnaweb.com.br/imagensbd007/Panamera-turbo-2017-7.jpg',
+    ]),
+    price: 359.75,
+    review: 5,
+    brand: 'Porsche',
+    category: CarCategory.sedan,
+    color: 'Preto',
+    doors: 4,
+    fuel: CarFuel.petrol,
+    gearShift: CarGearShift.automatic,
+    plate: 'FRTC48',
+    seats: 4,
+    trunk: 495,
+    year: 2020,
+    description:
+        'Velocidade Maxima 306km/h\nConsumo médio de 6,5km/l\nDevolver com o tanque cheio.',
+    location: CarLocation(
+        latitude: -26.5074,
+        longitude: -49.1288,
+        address:
+            "Parque Malwee - Rua Wolfgang Weege, 770, Jaraguá do Sul - SC, 89262-000, Brazil"),
   )
 ];

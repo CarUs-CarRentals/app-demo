@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/place.dart';
 import 'package:carshare/utils/location_util.dart';
@@ -42,9 +44,10 @@ class _CarItemState extends State<CarItem> {
             latitude: widget.car.location.latitude,
             longitude: widget.car.location.longitude)
         .toLatLng();
-    await LocationUtil.getDistance(myLocation, carLocation).then((String text) {
+    await LocationUtil.getDistance(myLocation, carLocation)
+        .then((Map<String, dynamic> jsonString) {
       setState(() {
-        carDistance = text;
+        carDistance = jsonString['text'];
       });
     });
   }
