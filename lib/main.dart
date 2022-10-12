@@ -11,6 +11,7 @@ import 'package:carshare/pages/my_reviews_screen.dart';
 import 'package:carshare/pages/my_trips_screen.dart';
 import 'package:carshare/pages/profile_edit_screen.dart';
 import 'package:carshare/pages/profile_screen.dart';
+import 'package:carshare/pages/profile_user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
           //AppRoutes.HOME: (context) => const TabsScreen(),
           AppRoutes.MY_RENTALS: (context) => const MyRentalsScreen(),
           AppRoutes.PROFILE: (context) => const ProfileScreen(),
+          AppRoutes.PROFILE_USER: (context) => const ProfileUserScreen(),
           AppRoutes.PROFILE_EDIT: (context) => const ProfileEditScreen(),
           AppRoutes.MY_REVIEWS: (context) => const MyReviewsScreen(),
           AppRoutes.MY_CARS: (context) => const MyCarsScreen(),

@@ -1,18 +1,15 @@
-import 'dart:convert';
-
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/place.dart';
 import 'package:carshare/utils/location_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/app_routes.dart';
 
 class CarItem extends StatefulWidget {
   final Car car;
   final LatLng currentLocation;
+
   const CarItem(
     this.car,
     this.currentLocation, {
@@ -25,17 +22,6 @@ class CarItem extends StatefulWidget {
 
 class _CarItemState extends State<CarItem> {
   String? carDistance = '';
-  // double myLatitude = 0;
-  // double myLongitude = 0;
-
-  // void getLocation() async {
-  //   final location = await Location().getLocation();
-
-  //   setState(() {
-  //     myLatitude = location.latitude as double;
-  //     myLongitude = location.longitude as double;
-  //   });
-  // }
 
   _getCarDistance() async {
     final myLocation = widget.currentLocation;
@@ -83,12 +69,12 @@ class _CarItemState extends State<CarItem> {
                     Row(
                       children: [
                         SizedBox(width: 6),
-                        Icon(
+                        const Icon(
                           Icons.star,
                           size: 16,
                         ),
                         Text((widget.car.review).toString()),
-                        VerticalDivider(
+                        const VerticalDivider(
                           width: 10,
                         ),
                         Text(
@@ -106,7 +92,7 @@ class _CarItemState extends State<CarItem> {
                 ),
                 Row(
                   children: [
-                    SizedBox(width: 6),
+                    const SizedBox(width: 6),
                     Icon(
                       Icons.pin_drop_outlined,
                       size: 15,
@@ -134,31 +120,36 @@ class _CarItemState extends State<CarItem> {
         AppRoutes.CAR_DETAIL,
         arguments: widget.car,
       ),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-        elevation: 4,
-        margin: const EdgeInsets.all(10),
-        child: Column(children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(15),
-                  topRight: Radius.circular(15),
-                ),
-                child: Image.network(
-                  widget.car.imagesUrl.imageUrl[0],
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+      child: Column(
+        children: [
+          Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            elevation: 4,
+            margin:
+                const EdgeInsets.only(top: 5, left: 10, right: 10, bottom: 15),
+            child: Column(children: [
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
+                    ),
+                    child: Image.network(
+                      widget.car.imagesUrl.imageUrl[0],
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
               ),
-            ],
+              _bottomSection(context),
+            ]),
           ),
-          _bottomSection(context),
-        ]),
+        ],
       ),
     );
   }

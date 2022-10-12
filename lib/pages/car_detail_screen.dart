@@ -15,6 +15,13 @@ class CarDetailScreen extends StatelessWidget {
     );
   }
 
+  void _selectOwnerProfile(BuildContext context, Car car) {
+    Navigator.of(context).pushNamed(
+      AppRoutes.PROFILE_USER,
+      arguments: car,
+    );
+  }
+
   _submitRental() {
     print('Alugar');
   }
@@ -332,8 +339,8 @@ class CarDetailScreen extends StatelessWidget {
             Divider(),
             _InfoItem(
               Icons.person,
-              'Visualizar prorietario do veículo',
-              () => null,
+              'Visualizar proprietario do veículo',
+              () => _selectOwnerProfile(context, car),
             ),
             Divider(),
             _rentalSection(context, car.price),
