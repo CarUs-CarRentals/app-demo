@@ -63,18 +63,18 @@ class _HomeScreenState extends State<HomeScreen> {
               return ListView.builder(
                   itemCount: cars.length,
                   itemBuilder: (context, index) {
-                    cars[index].distance = 0;
+                    if (cars[index].distance == 0) {
+                      cars.asMap().forEach((idx, value) {
+                        final distance = _calculateDistance(
+                            myLocation.latitude,
+                            myLocation.longitude,
+                            cars[idx].location.latitude,
+                            cars[idx].location.longitude);
 
-                    cars.asMap().forEach((idx, value) {
-                      final distance = _calculateDistance(
-                          myLocation.latitude,
-                          myLocation.longitude,
-                          cars[idx].location.latitude,
-                          cars[idx].location.longitude);
-
-                      cars[idx].distance = distance;
-                      print("id: ${cars[idx].id} - ${cars[idx].distance}");
-                    });
+                        cars[idx].distance = distance;
+                        print("id: ${cars[idx].id} - ${cars[idx].distance}");
+                      });
+                    }
 
                     final sortedCars = cars
                       ..sort(((item1, item2) =>
