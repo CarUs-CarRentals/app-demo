@@ -153,13 +153,13 @@ class _AuthFormState extends State<AuthForm> {
                   },
                 ),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'E-mail'),
+                decoration: const InputDecoration(labelText: 'Login'),
                 keyboardType: TextInputType.emailAddress,
                 onSaved: (email) => _authData['email'] = email ?? '',
                 validator: (_email) {
                   final email = _email ?? '';
                   if (email.trim().isEmpty || !email.contains('@')) {
-                    return 'Informe um e-mail válido.';
+                    return 'Informe um login válido.';
                   }
                   return null;
                 },
