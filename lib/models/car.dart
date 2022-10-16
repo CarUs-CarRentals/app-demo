@@ -1,3 +1,4 @@
+import 'package:carshare/models/user.dart';
 import 'package:location/location.dart';
 
 enum CarFuel {
@@ -54,7 +55,7 @@ class Car {
   final int seats;
   final int trunk;
   final int year;
-  final int userId;
+  final User user;
   final CarImages imagesUrl;
   final double price;
   final double review;
@@ -72,7 +73,7 @@ class Car {
       required this.seats,
       required this.trunk,
       required this.year,
-      required this.userId,
+      required this.user,
       required this.category,
       required this.id,
       required this.model,

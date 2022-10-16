@@ -2,6 +2,7 @@ import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/car_list.dart';
 import 'package:carshare/models/review_list.dart';
+import 'package:carshare/models/user_list.dart';
 import 'package:carshare/pages/auth_screen.dart';
 import 'package:carshare/pages/car_detail_screen.dart';
 import 'package:carshare/pages/car_reviews_screen.dart';
@@ -39,6 +40,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => CarList(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => UserList(),
+        )
       ],
       child: MaterialApp(
         localizationsDelegates: [

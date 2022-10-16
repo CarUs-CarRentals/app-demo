@@ -3,6 +3,7 @@ import 'package:carshare/components/carousel_car.dart';
 import 'package:carshare/components/place_detail_item.dart';
 import 'package:carshare/components/rental_date_form.dart';
 import 'package:carshare/models/car.dart';
+import 'package:carshare/models/user.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -31,7 +32,7 @@ class CarDetailScreen extends StatelessWidget {
     String title,
     double review,
     int year,
-    int carHost,
+    User carHost,
   ) {
     return Column(
       children: [
@@ -75,7 +76,7 @@ class CarDetailScreen extends StatelessWidget {
               Row(
                 children: [
                   SizedBox(width: 6),
-                  Text('De: ${(carHost).toString()}'),
+                  Text('De: ${(carHost.fullName).toString()}'),
                 ],
               ),
             ],
@@ -223,7 +224,7 @@ class CarDetailScreen extends StatelessWidget {
                 Column(
                   children: [
                     Text(
-                      'R\$ ${carPrice.toString()}',
+                      'R\$ ${carPrice.toStringAsFixed(2)}',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -313,7 +314,7 @@ class CarDetailScreen extends StatelessWidget {
               car.shortDescription,
               car.review,
               car.year,
-              car.userId,
+              car.user,
             ),
             _optionalCarSection(
               context,
