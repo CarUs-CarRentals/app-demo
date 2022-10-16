@@ -13,7 +13,7 @@ List<User> dummyUsers = [
       "6063687",
       "47992766776",
       UserGender.male,
-      "Eu sou o Igor, um cara muito legal",
+      "Eu sou Igor Ponchielli, e quero ajudar atornar essa comunidade forte e a crescer.\n\nAdoro ver negócios que são construídos em torno da ideia de comunidade e sei que não é fácil começar um novo segmento, especialmente quando você está apenas começando. Mas estou aqui para ajudar!",
       Address(
           "89107-000", "SC", "Pomerode", "Testo Rega", "Rua Horst Rauh", 403)),
   User(
@@ -41,7 +41,7 @@ List<User> dummyUsers = [
       "509581912",
       "21982784009",
       UserGender.female,
-      "Eu sou o Eduarda, uma pessoa muito legal",
+      "Meu nome é Eduarda. Sou Analista de Negocios na WEG e moro em Jaraguá do Sul.\n\nAdoro estar na natureza, especialmente quando está ensoralado e florido. Quando não estou na cidade, geralmente estou em viagens a trabalho.",
       Address(
           "89259-480", "SC", "Jaraguá do Sul", "Vila Nova", "Rua Pomerode", 50))
 ];

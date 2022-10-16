@@ -12,7 +12,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   void _selectProfileEdit(BuildContext context) {
-    Navigator.of(context).pushNamed(AppRoutes.PROFILE_EDIT);
+    Navigator.of(context).pushNamed(AppRoutes.PROFILE_USER);
   }
 
   void _selectMyReviews(BuildContext context) {
@@ -91,7 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const Divider(),
                   _createItem(
                     Icons.person,
-                    'Editar dados pessoais',
+                    'Meu Perfil',
                     () => _selectProfileEdit(context),
                   ),
                   const Divider(),
