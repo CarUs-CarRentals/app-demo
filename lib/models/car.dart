@@ -45,7 +45,6 @@ class CarImages {
 class Car {
   final String id;
   final String brand;
-  final String color;
   final int doors;
   final CarFuel fuel;
   final CarGearShift gearShift;
@@ -65,7 +64,6 @@ class Car {
 
   Car(
       {required this.brand,
-      required this.color,
       required this.doors,
       required this.fuel,
       required this.gearShift,

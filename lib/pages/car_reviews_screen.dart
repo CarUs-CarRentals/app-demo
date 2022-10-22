@@ -41,7 +41,7 @@ class CarReviewsScreen extends StatelessWidget {
     final carInfo = ModalRoute.of(context)?.settings.arguments as Car;
 
     final provider = Provider.of<ReviewList>(context);
-    final List<Review> carReviews =
+    final List<CarReview> carReviews =
         provider.reviews.where((review) => review.carId == carInfo.id).toList();
 
     print("carINFO: ${carInfo.id}");
@@ -68,7 +68,7 @@ class CarReviewsScreen extends StatelessWidget {
                         ),
                       ),
                       title: Text(
-                        review.userName,
+                        review.userId,
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                       subtitle: Row(
@@ -87,7 +87,7 @@ class CarReviewsScreen extends StatelessWidget {
                           )
                         ],
                       )),
-                  _descriptionSection(context, review.title),
+                  _descriptionSection(context, review.description),
                 ],
               ),
             );

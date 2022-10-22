@@ -1,61 +1,61 @@
-import 'package:carshare/models/review.dart';
+import '../models/review.dart';
 
-List<Review> dummyReviewsCars = [
-  Review(
+List<CarReview> dummyCarsReviews = [
+  CarReview(
     id: '1',
-    userName: 'Pablo',
+    userId: 'Pablo',
     carId: '1',
-    title: 'Muito bom',
+    description: 'Muito bom',
     value: 1.0,
     date: DateTime.now().add(Duration(days: -5)),
   ),
-  Review(
+  CarReview(
     id: '2',
-    userName: 'Vanessa',
+    userId: 'Vanessa',
     carId: '1',
-    title:
+    description:
         'bom, mas o cinto de segurança é traseiro curto, incompatível com cadeirinha infantil e o porta-malas é pequeno',
     value: 4,
     date: DateTime.now().add(Duration(days: -1)),
   ),
-  Review(
+  CarReview(
     id: '3',
-    userName: 'Ricardo',
+    userId: 'Ricardo',
     carId: '1',
-    title: 'Já vi melhores',
+    description: 'Já vi melhores',
     value: 3.5,
     date: DateTime.now(),
   ),
-  Review(
+  CarReview(
     id: '4',
-    userName: 'Igor',
+    userId: 'Igor',
     carId: '2',
-    title: 'Tava bom, aí melhorou, agora parece que está pior',
+    description: 'Tava bom, aí melhorou, agora parece que está pior',
     value: 3,
     date: DateTime.now(),
   ),
-  Review(
+  CarReview(
     id: '5',
-    userName: 'Juliana',
+    userId: 'Juliana',
     carId: '2',
-    title: 'Maravilindo!!! ❤❤❤ Adorei.',
+    description: 'Maravilindo!!! ❤❤❤ Adorei.',
     value: 5,
     date: DateTime.now(),
   ),
-  Review(
+  CarReview(
     id: '6',
-    userName: 'Henrique',
+    userId: 'Henrique',
     carId: '2',
-    title:
+    description:
         'O Fiat Argo é um carro bastante econômico. Ainda mais as versões equipadas com o motor 1.0 Firefly Flex, que pode gerar 77 cv de potência e 10,9 kgfm de torque. Estes modelos podem fazer 13,5 km/l (gasolina) e 9,4 km/l (etanol) na cidade.',
     value: 4,
     date: DateTime.now(),
   ),
-  Review(
+  CarReview(
     id: '7',
-    userName: 'Rodolfo',
+    userId: 'Rodolfo',
     carId: '3',
-    title: 'Gostei! 🔝🔝🔝',
+    description: 'Gostei! 🔝🔝🔝',
     value: 5,
     date: DateTime.now().add(Duration(days: -8)),
   ),
