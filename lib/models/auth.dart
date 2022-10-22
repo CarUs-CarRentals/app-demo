@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 
 class Auth with ChangeNotifier {
   String? _token;
+  String? _refreshToken;
   String? _email;
   String? _userId;
   DateTime? _expiryDate;
@@ -55,6 +56,7 @@ class Auth with ChangeNotifier {
       _token = body['idToken'];
       _email = body['email'];
       _userId = body['localId'];
+      _refreshToken = body['refreshToken'];
 
       _expiryDate = DateTime.now().add(
         Duration(
@@ -66,6 +68,7 @@ class Auth with ChangeNotifier {
         'token': _token,
         'email': _email,
         'userId': _userId,
+        'refreshToken': _refreshToken,
         'expireDate': _expiryDate?.toIso8601String(),
       });
 
@@ -94,9 +97,10 @@ class Auth with ChangeNotifier {
     _token = userData['token'];
     _email = userData['email'];
     _userId = userData['userId'];
+    _refreshToken = userData['refreshToken'];
     _expiryDate = expiryDate;
-
-    //_autoLogout();
+    print("uID: $_userId refreshToken: $_refreshToken");
+    _autoLogout();
     notifyListeners();
   }
 

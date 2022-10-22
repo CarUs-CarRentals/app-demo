@@ -1,9 +1,7 @@
 import 'package:carshare/models/auth.dart';
 import 'package:carshare/pages/auth_screen.dart';
 import 'package:carshare/pages/tabs_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 
 class IsAuthScreen extends StatelessWidget {
@@ -19,7 +17,6 @@ class IsAuthScreen extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.error != null) {
-          print(auth.tryAutoLogin());
           return const Center(
             child: Text('Ocorreu um erro!'),
           );

@@ -140,26 +140,25 @@ class _AuthFormState extends State<AuthForm> {
                     ),
                   ],
                 ),
-              if (_isSignup())
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Login'),
-                  keyboardType: TextInputType.text,
-                  validator: (_login) {
-                    final login = _login ?? '';
-                    if (login.trim().isEmpty) {
-                      return 'Informe um login';
-                    }
-                    return null;
-                  },
-                ),
+              // TextFormField(
+              //   decoration: const InputDecoration(labelText: 'E-mail'),
+              //   keyboardType: TextInputType.text,
+              //   validator: (_login) {
+              //     final login = _login ?? '';
+              //     if (login.trim().isEmpty) {
+              //       return 'Informe seu e-mail';
+              //     }
+              //     return null;
+              //   },
+              // ),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Login'),
+                decoration: const InputDecoration(labelText: 'E-mail'),
                 keyboardType: TextInputType.emailAddress,
                 onSaved: (email) => _authData['email'] = email ?? '',
                 validator: (_email) {
                   final email = _email ?? '';
                   if (email.trim().isEmpty || !email.contains('@')) {
-                    return 'Informe um login válido.';
+                    return 'Informe um e-mail válido.';
                   }
                   return null;
                 },
