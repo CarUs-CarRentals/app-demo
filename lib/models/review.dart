@@ -1,17 +1,36 @@
-class Review {
+class CarReview {
   final String id;
-  final String userName;
+  final String userId;
   final String carId;
-  final String title;
+  final String description;
   final double value;
   final DateTime date;
 
-  Review({
+  CarReview({
     required this.id,
-    required this.userName,
+    required this.userId,
     required this.carId,
-    required this.title,
+    required this.description,
     required this.value,
     required this.date,
   });
 }
+
+class UserReview {
+  final String id;
+  final String userIdRated;
+  final String userIdEvaluator;
+  final String description;
+  final double rate;
+  final DateTime date;
+
+  UserReview({
+    required this.id,
+    required this.userIdRated,
+    required this.userIdEvaluator,
+    required this.description,
+    required this.rate,
+    required this.date,
+  });
+}
+

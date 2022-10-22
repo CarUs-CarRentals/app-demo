@@ -3,11 +3,11 @@ import 'package:carshare/models/review.dart';
 import 'package:flutter/cupertino.dart';
 
 class ReviewList with ChangeNotifier {
-  List<Review> _reviews = dummyReviewsCars;
+  List<CarReview> _reviews = dummyCarsReviews;
 
-  List<Review> get reviews => [..._reviews];
+  List<CarReview> get reviews => [..._reviews];
 
-  void addCarReview(Review review) {
+  void addCarReview(CarReview review) {
     _reviews.add(review);
     notifyListeners();
   }
