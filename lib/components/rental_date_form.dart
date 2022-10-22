@@ -117,7 +117,7 @@ class _RentalDateFormState extends State<RentalDateForm> {
           _DataTile(
               Icons.calendar_today,
               'Data Final: ${DateFormat('EEE, dd/MM/y - HH:mm', 'pt_BR').format(_selectedReturnDate)}',
-              pickPickupDateTime),
+              pickReturnDateTime),
           Divider(),
 
           /*Row(
