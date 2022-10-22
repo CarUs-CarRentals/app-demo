@@ -54,7 +54,7 @@ class Car {
   final int seats;
   final int trunk;
   final int year;
-  final User user;
+  final String userId;
   final CarImages imagesUrl;
   final double price;
   final double review;
@@ -71,7 +71,7 @@ class Car {
       required this.seats,
       required this.trunk,
       required this.year,
-      required this.user,
+      required this.userId,
       required this.category,
       required this.id,
       required this.model,

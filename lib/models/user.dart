@@ -7,9 +7,7 @@ enum UserGender {
 }
 
 class User {
-  late final int id;
-  final String login;
-  final String password;
+  final String id;
   final String email;
   final String firstName;
   final String lastName;
@@ -21,18 +19,17 @@ class User {
   final Address address;
 
   User(
-    this.id,
-    this.login,
-    this.password,
-    this.email,
-    this.firstName,
-    this.lastName,
     this.cpf,
     this.rg,
     this.phone,
+    this.about,
     this.gender,
-    this.about, this.address,
-  );
+    this.address, {
+    required this.id,
+    required this.email,
+    required this.firstName,
+    required this.lastName,
+  });
 
   String get fullName {
     return '$firstName $lastName';

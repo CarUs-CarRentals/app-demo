@@ -4,9 +4,11 @@ import 'package:carshare/components/place_detail_item.dart';
 import 'package:carshare/components/rental_date_form.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/user.dart';
+import 'package:carshare/models/user_list.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 
 class CarDetailScreen extends StatelessWidget {
   void _selectCarReview(BuildContext context, Car car) {
@@ -32,8 +34,11 @@ class CarDetailScreen extends StatelessWidget {
     String title,
     double review,
     int year,
-    User carHost,
+    String carHostId,
   ) {
+    final provider = Provider.of<UserList>(context);
+    final carHost = provider.userByID(carHostId);
+
     return Column(
       children: [
         Container(
@@ -314,7 +319,7 @@ class CarDetailScreen extends StatelessWidget {
               car.shortDescription,
               car.review,
               car.year,
-              car.user,
+              car.userId,
             ),
             _optionalCarSection(
               context,

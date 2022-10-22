@@ -13,6 +13,7 @@ import 'package:carshare/pages/my_trips_screen.dart';
 import 'package:carshare/pages/profile_edit_screen.dart';
 import 'package:carshare/pages/profile_screen.dart';
 import 'package:carshare/pages/profile_user_screen.dart';
+import 'package:carshare/pages/user_reviews_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
@@ -35,7 +36,10 @@ class MyApp extends StatelessWidget {
           create: (_) => Auth(),
         ),
         ChangeNotifierProvider(
-          create: (_) => ReviewList(),
+          create: (_) => CarReviewList(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => UserReviewList(),
         ),
         ChangeNotifierProvider(
           create: (_) => CarList(),
@@ -74,6 +78,7 @@ class MyApp extends StatelessWidget {
           AppRoutes.MY_CARS: (context) => const MyCarsScreen(),
           AppRoutes.CAR_DETAIL: (context) => CarDetailScreen(),
           AppRoutes.CAR_REVIEW: (context) => CarReviewsScreen(),
+          AppRoutes.USER_REVIEW: (context) => UserReviewsScreen(),
         },
       ),
     );

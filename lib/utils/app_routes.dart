@@ -4,6 +4,7 @@ class AppRoutes {
   static const CARS_SEARCH = '/cars-search';
   static const CAR_DETAIL = '/car-detail';
   static const CAR_REVIEW = '/car-review';
+  static const USER_REVIEW = '/user-review';
   static const MY_RENTALS = '/my-rentals';
   static const PROFILE = '/profile';
   static const PROFILE_USER = '/profile-user';

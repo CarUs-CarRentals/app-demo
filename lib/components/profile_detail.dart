@@ -1,3 +1,5 @@
+import 'package:carshare/models/user.dart';
+import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -5,16 +7,18 @@ import 'package:flutter/src/widgets/framework.dart';
 
 class ProfileDetail extends StatelessWidget {
   final bool isMyProfile;
-  final String userFullname;
-  final String aboutMe;
-  final String fullAddress;
-  const ProfileDetail(
-      {Key? key,
-      required this.isMyProfile,
-      required this.userFullname,
-      required this.aboutMe,
-      required this.fullAddress})
-      : super(key: key);
+  final User user;
+  // final String userFullname;
+  // final String aboutMe;
+  // final String fullAddress;
+  const ProfileDetail({
+    Key? key,
+    required this.isMyProfile,
+    // required this.userFullname,
+    // required this.aboutMe,
+    // required this.fullAddress,
+    required this.user,
+  }) : super(key: key);
 
   _descriptionSection(BuildContext context, String description) {
     return Container(
@@ -51,6 +55,13 @@ class ProfileDetail extends StatelessWidget {
     );
   }
 
+  void _selectReviewsReceived(BuildContext context, User user) {
+    Navigator.of(context).pushNamed(
+      AppRoutes.USER_REVIEW,
+      arguments: user,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -68,7 +79,7 @@ class ProfileDetail extends StatelessWidget {
             ),
             title: Container(
               padding: const EdgeInsets.only(top: 10.0),
-              child: Text(userFullname,
+              child: Text(user.fullName,
                   style: TextStyle(
                     fontSize: 23,
                     fontWeight: FontWeight.bold,
@@ -99,13 +110,13 @@ class ProfileDetail extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    onTap: () {},
+                    onTap: () => _selectReviewsReceived(context, user),
                     dense: false,
                   )
                 : null,
           ),
           Divider(),
-          _descriptionSection(context, aboutMe),
+          _descriptionSection(context, user.about),
           ListTile(
             leading: Container(
               width: 24,
@@ -115,7 +126,7 @@ class ProfileDetail extends StatelessWidget {
               ),
             ),
             title: Text(
-              fullAddress,
+              user.address.fullAddress,
               style: const TextStyle(
                 fontFamily: 'RobotCondensed',
                 fontSize: 14,

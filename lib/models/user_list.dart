@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:carshare/data/dummy_users_data.dart';
+import 'package:carshare/models/address.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +20,24 @@ class UserList with ChangeNotifier {
     return _users.length;
   }
 
-  User userByID(int id) {
+  User userByID(String id) {
     Iterable<User> selectedUser = _users.where((user) => user.id == id);
-    return selectedUser.elementAt(0);
+    try {
+      return selectedUser.elementAt(0);
+    } catch (e) {
+      return User(
+        "88527046040",
+        "509581912",
+        "47999999999",
+        "Some mim",
+        UserGender.female,
+        Address("CEP", "UF", "Cidade", "Bairro", "Rua", 999),
+        id: id,
+        email: "meu_email@gmail.com",
+        firstName: "Nome",
+        lastName: "Sobrenome",
+      );
+    }
   }
 
   Future<void> loadCars() async {
@@ -41,8 +57,6 @@ class UserList with ChangeNotifier {
         Uri.parse('$_baseUrl/${user.id}'),
         body: jsonEncode(
           {
-            "login": user.login,
-            "password": user.password,
             "email": user.email,
             "firstName": user.firstName,
             "lastName": user.lastName,

@@ -2,6 +2,8 @@ import 'package:carshare/data/dummy_cars_review_data.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/review.dart';
 import 'package:carshare/models/review_list.dart';
+import 'package:carshare/models/user.dart';
+import 'package:carshare/models/user_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -9,8 +11,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class CarReviewsScreen extends StatelessWidget {
-  const CarReviewsScreen({Key? key}) : super(key: key);
+class UserReviewsScreen extends StatelessWidget {
+  const UserReviewsScreen({Key? key}) : super(key: key);
 
   _descriptionSection(BuildContext context, String description) {
     return Container(
@@ -38,22 +40,25 @@ class CarReviewsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final carInfo = ModalRoute.of(context)?.settings.arguments as Car;
+    final userInfo = ModalRoute.of(context)?.settings.arguments as User;
 
-    final provider = Provider.of<CarReviewList>(context);
-    final List<CarReview> carReviews =
-        provider.reviews.where((review) => review.carId == carInfo.id).toList();
+    final provider = Provider.of<UserReviewList>(context);
+    final List<UserReview> userReviews = provider.reviews
+        .where((review) => review.userIdRated == userInfo.id)
+        .toList();
 
-    print("carINFO: ${carInfo.id}");
+    final userProvider = Provider.of<UserList>(context);
+    //final userInfo = userProvider.userByID(review.userIdRated);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Avaliações do Veículo'),
+        title: Text('Avaliações Recebidas'),
       ),
       body: ListView.builder(
-          itemCount: carReviews.length,
+          itemCount: userReviews.length,
           itemBuilder: (ctx, index) {
-            final review = carReviews[index];
+            final review = userReviews[index];
+            final userInfo = userProvider.userByID(review.userIdEvaluator);
             return Card(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -68,7 +73,7 @@ class CarReviewsScreen extends StatelessWidget {
                         ),
                       ),
                       title: Text(
-                        review.userId,
+                        userInfo.fullName,
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                       subtitle: Row(
@@ -77,7 +82,7 @@ class CarReviewsScreen extends StatelessWidget {
                             '${DateFormat('d MMM y').format(review.date)}  ',
                           ),
                           RatingBarIndicator(
-                            rating: review.value,
+                            rating: review.rate,
                             itemBuilder: (context, _) => Icon(
                               Icons.star,
                               color: Theme.of(context).colorScheme.primary,

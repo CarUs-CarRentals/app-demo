@@ -1,5 +1,6 @@
 import 'package:carshare/components/profile_detail.dart';
 import 'package:carshare/models/address.dart';
+import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/models/user_list.dart';
@@ -14,28 +15,23 @@ class ProfileUserScreen extends StatelessWidget {
     final User thisUser;
     final bool argumentIsNull =
         (ModalRoute.of(context)?.settings.arguments == null);
+    Auth auth = Provider.of(context, listen: false);
+
+    //Get user ID and email
+    String? myID = auth.userId;
+    String? myEmail = auth.email;
+    final provider = Provider.of<UserList>(context);
 
     if (!argumentIsNull) {
       final carInfo = ModalRoute.of(context)?.settings.arguments as Car;
-      final provider = Provider.of<UserList>(context);
       final List<User> carUsers =
-          provider.users.where((user) => user.id == carInfo.user.id).toList();
+          provider.users.where((user) => user.id == carInfo.userId).toList();
 
       thisUser = carUsers.elementAt(0);
     } else {
-      thisUser = User(
-          5,
-          "login",
-          "password",
-          "email",
-          "firstName",
-          "lastName",
-          "cpf",
-          "rg",
-          "phone",
-          UserGender.male,
-          "about",
-          Address("cep", "state", "city", "neighborhood", "street", 999));
+      final userLogged = provider.userByID(myID!);
+
+      thisUser = userLogged;
     }
 
     return Scaffold(
@@ -46,9 +42,10 @@ class ProfileUserScreen extends StatelessWidget {
       ),
       body: ProfileDetail(
         isMyProfile: argumentIsNull ? true : false,
-        userFullname: thisUser.fullName,
-        aboutMe: thisUser.about,
-        fullAddress: thisUser.address.fullAddress,
+        user: thisUser,
+        // userFullname: thisUser.fullName,
+        // aboutMe: thisUser.about,
+        // fullAddress: thisUser.address.fullAddress,
       ),
     );
   }
