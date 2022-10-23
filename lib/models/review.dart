@@ -1,17 +1,17 @@
 class CarReview {
   final String id;
-  final String userId;
+  final String userIdEvaluator;
   final String carId;
   final String description;
-  final double value;
+  final double rate;
   final DateTime date;
 
   CarReview({
     required this.id,
-    required this.userId,
+    required this.userIdEvaluator,
     required this.carId,
     required this.description,
-    required this.value,
+    required this.rate,
     required this.date,
   });
 }

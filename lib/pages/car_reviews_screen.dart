@@ -2,6 +2,7 @@ import 'package:carshare/components/review_item.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/review.dart';
 import 'package:carshare/models/review_list.dart';
+import 'package:carshare/models/user_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +16,7 @@ class CarReviewsScreen extends StatelessWidget {
     final provider = Provider.of<CarReviewList>(context);
     final List<CarReview> carReviews =
         provider.reviews.where((review) => review.carId == carInfo.id).toList();
+    final userProvider = Provider.of<UserList>(context);
 
     print("carINFO: ${carInfo.id}");
 
@@ -26,9 +28,10 @@ class CarReviewsScreen extends StatelessWidget {
           itemCount: carReviews.length,
           itemBuilder: (ctx, index) {
             final review = carReviews[index];
+            final userInfo = userProvider.userByID(review.userIdEvaluator);
             return ReviewItem(
-              userName: review.userId,
-              rating: review.value,
+              userName: userInfo.fullName,
+              rating: review.rate,
               description: review.description,
               date: review.date,
             );
