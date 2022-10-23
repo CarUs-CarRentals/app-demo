@@ -16,11 +16,11 @@ class AuthScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Color.fromARGB(155, 60, 1, 99),
+                    Color.fromARGB(242, 50, 1, 83),
                     Color.fromARGB(227, 230, 230, 230),
                   ],
-                  begin: Alignment.bottomRight,
-                  end: Alignment.topLeft,
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomCenter,
                 ),
               ),
             ),
@@ -37,11 +37,12 @@ class AuthScreen extends StatelessWidget {
                   children: [
                     Container(
                       child: Text(
-                        'CarUs',
+                        "CarUs",
                         style: TextStyle(
-                            fontSize: 45,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary),
+                          fontSize: 40,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     AuthForm(),
