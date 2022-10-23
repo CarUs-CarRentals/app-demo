@@ -1,9 +1,13 @@
+import 'package:carshare/models/auth.dart';
+import 'package:carshare/models/review.dart';
+import 'package:carshare/models/review_list.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:provider/provider.dart';
 
 class ProfileDetail extends StatelessWidget {
   final bool isMyProfile;
@@ -66,6 +70,15 @@ class ProfileDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
 
+    Auth auth = Provider.of(context, listen: false);
+    String? myID = auth.userId;
+
+    final provider = Provider.of<UserReviewList>(context);
+    final qtdReviews = provider.reviews
+        .where((review) => review.userIdRated == myID)
+        .toList()
+        .length;
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Column(
@@ -103,7 +116,7 @@ class ProfileDetail extends StatelessWidget {
                       ),
                     ),
                     title: Text(
-                      "*qtd* Avaliações",
+                      "$qtdReviews Avaliações",
                       style: const TextStyle(
                         fontFamily: 'RobotCondensed',
                         fontSize: 14,

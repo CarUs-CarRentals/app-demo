@@ -73,6 +73,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: ListView(
                 children: [
                   ListTile(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                     leading: CircleAvatar(
                       radius: 30,
                       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -81,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     title: Text(
-                      'Olá, $myEmail',
+                      'Olá $myEmail',
                       style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
