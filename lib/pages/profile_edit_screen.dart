@@ -9,7 +9,7 @@ class ProfileEditScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(''),
+        title: Text('Editar Perfil'),
       ),
       body: Center(
         child: Column(

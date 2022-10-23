@@ -59,6 +59,10 @@ class ProfileDetail extends StatelessWidget {
     );
   }
 
+  void _selectEditProfile(BuildContext context) {
+    Navigator.of(context).pushNamed(AppRoutes.PROFILE_EDIT);
+  }
+
   void _selectReviewsReceived(BuildContext context, User user) {
     Navigator.of(context).pushNamed(
       AppRoutes.USER_REVIEW,
@@ -150,7 +154,7 @@ class ProfileDetail extends StatelessWidget {
           Divider(),
           if (isMyProfile)
             ElevatedButton(
-                onPressed: () {},
+                onPressed: () => _selectEditProfile(context),
                 style: ElevatedButton.styleFrom(
                   primary: Theme.of(context).colorScheme.primary,
                 ),
