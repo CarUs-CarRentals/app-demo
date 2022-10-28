@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../pages/home_screen.dart';
-import '../pages/my_trips_screen.dart';
+import 'my_rentals_screen.dart';
 import '../pages/profile_screen.dart';
 
 class TabsScreen extends StatefulWidget {
