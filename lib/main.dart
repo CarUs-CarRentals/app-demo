@@ -1,6 +1,7 @@
 import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/car_list.dart';
+import 'package:carshare/models/rental_list.dart';
 import 'package:carshare/models/review_list.dart';
 import 'package:carshare/models/user_list.dart';
 import 'package:carshare/pages/auth_screen.dart';
@@ -9,10 +10,11 @@ import 'package:carshare/pages/car_reviews_screen.dart';
 import 'package:carshare/pages/isAuth_screen.dart';
 import 'package:carshare/pages/my_cars_screen.dart';
 import 'package:carshare/pages/my_reviews_screen.dart';
-import 'package:carshare/pages/my_trips_screen.dart';
+import 'package:carshare/pages/my_rentals_screen.dart';
 import 'package:carshare/pages/profile_edit_screen.dart';
 import 'package:carshare/pages/profile_screen.dart';
 import 'package:carshare/pages/profile_user_screen.dart';
+import 'package:carshare/pages/rental_detail_screen.dart';
 import 'package:carshare/pages/user_reviews_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -46,6 +48,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => UserList(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => RentalList(),
         )
       ],
       child: MaterialApp(
@@ -79,6 +84,7 @@ class MyApp extends StatelessWidget {
           AppRoutes.CAR_DETAIL: (context) => CarDetailScreen(),
           AppRoutes.CAR_REVIEW: (context) => CarReviewsScreen(),
           AppRoutes.USER_REVIEW: (context) => UserReviewsScreen(),
+          AppRoutes.RENTAL_DETAIL: (context) => RentalDetailScreen(),
         },
       ),
     );

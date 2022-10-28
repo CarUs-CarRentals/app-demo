@@ -11,4 +11,5 @@ class AppRoutes {
   static const PROFILE_EDIT = '/profile-edit';
   static const MY_REVIEWS = '/my-reviews';
   static const MY_CARS = '/my-cars';
+  static const RENTAL_DETAIL = '/rental-detail';
 }
