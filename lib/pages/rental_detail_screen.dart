@@ -4,6 +4,7 @@ import 'package:carshare/models/rental.dart';
 import 'package:carshare/models/rental_list.dart';
 import 'package:carshare/models/review.dart';
 import 'package:carshare/models/review_list.dart';
+import 'package:carshare/utils/app_routes.dart';
 import 'package:carshare/utils/location_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -174,7 +175,10 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                       itemCount: 5,
                       itemSize: 16.0,
                     ),
-                    onTap: () {},
+                    onTap: () => Navigator.of(context).pushNamed(
+                      AppRoutes.REVIEW_FORM,
+                      arguments: rentalDetail,
+                    ),
                   ),
             Divider(),
           ],

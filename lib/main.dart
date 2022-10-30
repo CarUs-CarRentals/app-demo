@@ -15,6 +15,7 @@ import 'package:carshare/pages/profile_edit_screen.dart';
 import 'package:carshare/pages/profile_screen.dart';
 import 'package:carshare/pages/profile_user_screen.dart';
 import 'package:carshare/pages/rental_detail_screen.dart';
+import 'package:carshare/pages/review_form_screen.dart';
 import 'package:carshare/pages/user_reviews_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -85,6 +86,7 @@ class MyApp extends StatelessWidget {
           AppRoutes.CAR_REVIEW: (context) => CarReviewsScreen(),
           AppRoutes.USER_REVIEW: (context) => UserReviewsScreen(),
           AppRoutes.RENTAL_DETAIL: (context) => RentalDetailScreen(),
+          AppRoutes.REVIEW_FORM: (context) => ReviewFormScreen(),
         },
       ),
     );
