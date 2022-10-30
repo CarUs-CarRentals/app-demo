@@ -91,6 +91,19 @@ class _CarItemState extends State<CarItemEdit> {
                           onPressed: () {},
                           child: const Text('Editar'),
                         ),
+                        VerticalDivider(
+                          width: 10,
+                        ),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            textStyle: const TextStyle(fontSize: 16),
+                            padding: EdgeInsets.symmetric(horizontal: 3),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            minimumSize: Size(50, 30),
+                          ),
+                          onPressed: () {},
+                          child: const Text('Histórico'),
+                        ),
                       ],
                     )
                   ],

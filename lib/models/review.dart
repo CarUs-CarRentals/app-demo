@@ -1,5 +1,6 @@
 class CarReview {
   final String id;
+  final String rentalId;
   final String userIdEvaluator;
   final String carId;
   final String description;
@@ -8,6 +9,7 @@ class CarReview {
 
   CarReview({
     required this.id,
+    required this.rentalId,
     required this.userIdEvaluator,
     required this.carId,
     required this.description,

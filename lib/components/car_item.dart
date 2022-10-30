@@ -30,6 +30,7 @@ class _CarItemState extends State<CarItem> {
             latitude: widget.car.location.latitude,
             longitude: widget.car.location.longitude)
         .toLatLng();
+        
     await LocationUtil.getDistance(myLocation, carLocation)
         .then((Map<String, dynamic> jsonString) {
       setState(() {

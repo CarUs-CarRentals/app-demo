@@ -1,13 +1,62 @@
+import 'package:carshare/models/car.dart';
+import 'package:carshare/models/car_list.dart';
+import 'package:carshare/models/rental.dart';
+import 'package:carshare/models/rental_list.dart';
+import 'package:carshare/models/review.dart';
+import 'package:carshare/models/review_list.dart';
+import 'package:carshare/utils/location_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class RentalDetailScreen extends StatelessWidget {
+class RentalDetailScreen extends StatefulWidget {
   const RentalDetailScreen({Key? key}) : super(key: key);
 
   @override
+  State<RentalDetailScreen> createState() => _RentalDetailScreenState();
+}
+
+class _RentalDetailScreenState extends State<RentalDetailScreen> {
+  String _rentalAdress = '';
+
+  String _getImageRentalLocation(Rental rental) {
+    final staticMapImageUrl = LocationUtil.generateLocationPreviewImage(
+      latitude: rental.location.latitude,
+      longitude: rental.location.longitude,
+    );
+
+    return staticMapImageUrl;
+  }
+
+  // Future<void> _getRentalAddress(Rental rental) async {
+  //   await LocationUtil.getAddressFrom(
+  //           LatLng(rental.location.latitude, rental.location.longitude))
+  //       .then((String addressString) {
+  //     setState(() {
+  //       _rentalAdress = addressString;
+  //     });
+  //   });
+  // }
+
+  @override
   Widget build(BuildContext context) {
+    final rentalDetail = ModalRoute.of(context)?.settings.arguments as Rental;
+
+    final carProvider = Provider.of<CarList>(context);
+    final reviewCarProvider = Provider.of<CarReviewList>(context);
+
+    final Car car = carProvider.cars
+        .where((car) => car.id == rentalDetail.carId)
+        .elementAt(0);
+
+    final CarReview carReview = reviewCarProvider.reviews
+        .where((review) => review.rentalId == rentalDetail.id)
+        .elementAt(0);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Detalhe da locação'),
@@ -23,10 +72,21 @@ class RentalDetailScreen extends StatelessWidget {
             SizedBox(
               height: 200,
               width: MediaQuery.of(context).size.width,
-              child: Image.network(
-                "https://images.indianexpress.com/2017/05/google-maps-759.jpg",
-                fit: BoxFit.cover,
-              ),
+              child: Image.network("${_getImageRentalLocation(rentalDetail)}",
+                  fit: BoxFit.cover, loadingBuilder: (BuildContext context,
+                      Widget child, ImageChunkEvent? loadingProgress) {
+                if (loadingProgress == null) {
+                  return child;
+                }
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                );
+              }),
             ),
             Container(
               padding: EdgeInsets.all(15),
@@ -35,11 +95,12 @@ class RentalDetailScreen extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text("03/04/2022, 07:30 - 04/04/2022 13:00"),
+                      Text(
+                          '${DateFormat('dd/MM/yyyy • H:m', 'pt_BR').format(rentalDetail.rentalDate)} ${rentalDetail.returnDate != null ? DateFormat('- dd/MM/yyyy • H:m', 'pt_BR').format(rentalDetail.returnDate!) : ''}'),
                     ],
                   ),
                   Row(children: [
-                    Text('R\$ 999,99'),
+                    Text('R\$ ${rentalDetail.price.toStringAsFixed(2)}'),
                   ])
                 ],
               ),
@@ -50,7 +111,7 @@ class RentalDetailScreen extends StatelessWidget {
                 size: 24,
               ),
               title: Text(
-                "Rua Hermann Weege, 151 - Centro, Pomerode - SC, 89107-000, Brasil",
+                "${rentalDetail.location.address}",
                 style: const TextStyle(
                   fontFamily: 'RobotCondensed',
                   fontSize: 14,
@@ -75,7 +136,9 @@ class RentalDetailScreen extends StatelessWidget {
                 size: 24,
               ),
               title: Text(
-                "Avalie o veículo",
+                rentalDetail.isReview == false
+                    ? "Avalie o veículo"
+                    : "Veículo avaliado",
                 style: const TextStyle(
                     fontFamily: 'RobotCondensed',
                     fontSize: 18,
@@ -83,7 +146,7 @@ class RentalDetailScreen extends StatelessWidget {
               ),
               dense: true,
               trailing: RatingBarIndicator(
-                rating: 0,
+                rating: rentalDetail.isReview == false ? 0 : carReview.rate,
                 itemBuilder: (context, _) => Icon(
                   Icons.star,
                   color: Theme.of(context).colorScheme.primary,

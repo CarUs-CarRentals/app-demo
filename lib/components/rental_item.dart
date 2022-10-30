@@ -44,6 +44,9 @@ class RentalItem extends StatelessWidget {
           Icons.keyboard_arrow_right_outlined,
           size: 32,
         ),
-        onTap: () => Navigator.of(context).pushNamed(AppRoutes.RENTAL_DETAIL));
+        onTap: () => Navigator.of(context).pushNamed(
+              AppRoutes.RENTAL_DETAIL,
+              arguments: rentalDetail,
+            ));
   }
 }
