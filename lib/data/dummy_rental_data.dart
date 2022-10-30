@@ -28,7 +28,7 @@ List<Rental> dummyRentals = [
       longitude: -49.2484,
       address: "R. Timbó, 337 - Rio Morto, Indaial - SC, 89130-000, Brazil",
     ),
-    isReview: true,
+    isReview: false,
   ),
   Rental(
     price: 39.99,

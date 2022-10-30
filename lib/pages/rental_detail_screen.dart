@@ -57,6 +57,8 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
         .where((review) => review.rentalId == rentalDetail.id)
         .elementAt(0);
 
+    print("data de retorno: ${rentalDetail.returnDate}");
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Detalhe da locação'),
@@ -118,44 +120,62 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                 ),
               ),
               dense: true,
-              trailing: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                    primary: Theme.of(context).colorScheme.primary,
-                    padding: EdgeInsets.all(0)),
-                child: const Text(
-                  'Recibo',
-                  style: TextStyle(fontSize: 14),
-                ),
-              ),
+              trailing: rentalDetail.returnDate == null
+                  ? null
+                  : ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                          primary: Theme.of(context).colorScheme.primary,
+                          padding: EdgeInsets.all(0)),
+                      child: const Text(
+                        'Recibo',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
             ),
             Divider(),
-            ListTile(
-              leading: Icon(
-                Icons.directions_car,
-                size: 24,
-              ),
-              title: Text(
-                rentalDetail.isReview == false
-                    ? "Avalie o veículo"
-                    : "Veículo avaliado",
-                style: const TextStyle(
-                    fontFamily: 'RobotCondensed',
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
-              ),
-              dense: true,
-              trailing: RatingBarIndicator(
-                rating: rentalDetail.isReview == false ? 0 : carReview.rate,
-                itemBuilder: (context, _) => Icon(
-                  Icons.star,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                itemCount: 5,
-                itemSize: 16.0,
-              ),
-              onTap: () {},
-            ),
+            rentalDetail.returnDate == null
+                ? ListTile(
+                    leading: Icon(
+                      Icons.directions_car,
+                      size: 24,
+                    ),
+                    title: Text(
+                      "Locação em andamento",
+                      style: const TextStyle(
+                          fontFamily: 'RobotCondensed',
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    dense: true,
+                  )
+                : ListTile(
+                    leading: Icon(
+                      Icons.directions_car,
+                      size: 24,
+                    ),
+                    title: Text(
+                      rentalDetail.isReview == false
+                          ? "Avalie o veículo"
+                          : "Veículo avaliado",
+                      style: const TextStyle(
+                          fontFamily: 'RobotCondensed',
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    dense: true,
+                    trailing: RatingBarIndicator(
+                      rating:
+                          rentalDetail.isReview == false ? 0 : carReview!.rate,
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      itemCount: 5,
+                      itemSize: 16.0,
+                    ),
+                    onTap: () {},
+                  ),
             Divider(),
           ],
         ),
