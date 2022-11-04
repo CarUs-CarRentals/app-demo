@@ -4,6 +4,7 @@ import 'package:carshare/components/cars_list_view.dart';
 import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/car_list.dart';
+import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -28,6 +29,13 @@ class MyCarsScreen extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text('Meus Carros'),
+          actions: [
+            IconButton(
+                onPressed: () => Navigator.of(context).pushNamed(
+                      AppRoutes.CAR_FORM,
+                    ),
+                icon: Icon(Icons.add))
+          ],
         ),
         body: SingleChildScrollView(
           child: SizedBox(

@@ -6,6 +6,8 @@ import 'package:carshare/models/review_list.dart';
 import 'package:carshare/models/user_list.dart';
 import 'package:carshare/pages/auth_screen.dart';
 import 'package:carshare/pages/car_detail_screen.dart';
+import 'package:carshare/pages/car_form_screen.dart';
+import 'package:carshare/pages/car_history_screen.dart';
 import 'package:carshare/pages/car_reviews_screen.dart';
 import 'package:carshare/pages/isAuth_screen.dart';
 import 'package:carshare/pages/my_cars_screen.dart';
@@ -87,6 +89,8 @@ class MyApp extends StatelessWidget {
           AppRoutes.USER_REVIEW: (context) => UserReviewsScreen(),
           AppRoutes.RENTAL_DETAIL: (context) => RentalDetailScreen(),
           AppRoutes.REVIEW_FORM: (context) => ReviewFormScreen(),
+          AppRoutes.CAR_HISTORY: (context) => CarRentalsHistoryScreen(),
+          AppRoutes.CAR_FORM: (context) => CarFormScreen(),
         },
       ),
     );

@@ -101,7 +101,10 @@ class _CarItemState extends State<CarItemEdit> {
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             minimumSize: Size(50, 30),
                           ),
-                          onPressed: () {},
+                          onPressed: () => Navigator.of(context).pushNamed(
+                            AppRoutes.CAR_HISTORY,
+                            arguments: widget.car,
+                          ),
                           child: const Text('Histórico'),
                         ),
                       ],

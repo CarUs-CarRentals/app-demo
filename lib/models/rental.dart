@@ -1,5 +1,13 @@
 import 'package:carshare/models/car.dart';
 
+enum RentalStatus {
+  inProgress,
+  rented,
+  pending,
+  late,
+  reserved,
+}
+
 class Rental {
   final String id;
   final String carId;
@@ -9,6 +17,7 @@ class Rental {
   final double price;
   final CarLocation location;
   final bool isReview;
+  final RentalStatus status;
 
   Rental({
     this.price = 0,
@@ -19,5 +28,6 @@ class Rental {
     this.returnDate,
     required this.location,
     required this.isReview,
+    required this.status,
   });
 }

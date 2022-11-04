@@ -47,6 +47,8 @@ dependencies:
   custom_marker: ^1.0.0
   carousel_slider: ^4.1.1
   outline_search_bar: ^2.3.0
+  flutter_spinbox: ^0.10.0
+  numberpicker: ^2.1.1
 
 dev_dependencies:
   flutter_test:

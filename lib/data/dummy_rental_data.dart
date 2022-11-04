@@ -15,6 +15,7 @@ List<Rental> dummyRentals = [
           "R. São Paulo, 1147 - Victor Konder, Blumenau - SC, 89012-001, Brazil",
     ),
     isReview: false,
+    status: RentalStatus.inProgress,
   ),
   Rental(
     price: 159.99,
@@ -29,6 +30,7 @@ List<Rental> dummyRentals = [
       address: "R. Timbó, 337 - Rio Morto, Indaial - SC, 89130-000, Brazil",
     ),
     isReview: false,
+    status: RentalStatus.rented,
   ),
   Rental(
     price: 39.99,
@@ -44,6 +46,7 @@ List<Rental> dummyRentals = [
           "Parque Malwee - Rua Wolfgang Weege, 770, Jaraguá do Sul - SC, 89262-000, Brazil",
     ),
     isReview: true,
+    status: RentalStatus.rented,
   ),
   Rental(
     price: 39.99,
@@ -59,5 +62,6 @@ List<Rental> dummyRentals = [
           "Rua Hermann Weege, 151 - Centro, Pomerode - SC, 89107-000, Brasil",
     ),
     isReview: true,
+    status: RentalStatus.rented,
   )
 ];

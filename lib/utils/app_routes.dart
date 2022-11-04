@@ -13,4 +13,6 @@ class AppRoutes {
   static const MY_CARS = '/my-cars';
   static const RENTAL_DETAIL = '/rental-detail';
   static const REVIEW_FORM = '/review-form';
+  static const CAR_HISTORY = '/car-history';
+  static const CAR_FORM = '/car-form';
 }

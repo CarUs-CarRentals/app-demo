@@ -33,16 +33,6 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
     return staticMapImageUrl;
   }
 
-  // Future<void> _getRentalAddress(Rental rental) async {
-  //   await LocationUtil.getAddressFrom(
-  //           LatLng(rental.location.latitude, rental.location.longitude))
-  //       .then((String addressString) {
-  //     setState(() {
-  //       _rentalAdress = addressString;
-  //     });
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     final rentalDetail = ModalRoute.of(context)?.settings.arguments as Rental;
