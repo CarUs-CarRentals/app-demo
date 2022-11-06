@@ -2,6 +2,7 @@
 
 import 'package:carshare/exceptions/auth_exception.dart';
 import 'package:carshare/models/auth.dart';
+import 'package:carshare/models/auth_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,8 +21,11 @@ class _AuthFormState extends State<AuthForm> {
   bool _isLoading = false;
   AuthMode _authMode = AuthMode.login;
   final Map<String, String> _authData = {
-    'email': '',
+    'login': '',
     'password': '',
+    'email': '',
+    'firstName': '',
+    'lastName': '',
   };
 
   bool _isLogin() => _authMode == AuthMode.login;
@@ -69,19 +73,24 @@ class _AuthFormState extends State<AuthForm> {
 
     try {
       if (_isLogin()) {
+        print(_authData);
         await auth.login(
           _authData['email']!,
           _authData['password']!,
         );
       } else {
+        print(_authData);
         await auth.signup(
           _authData['email']!,
           _authData['password']!,
+          _authData['firstName']!,
+          _authData['lastName']!,
         );
       }
     } on AuthException catch (error) {
       _showErrorDialog(error.toString());
     } catch (error) {
+      print(error.toString());
       _showErrorDialog('Ocorreu um erro inesperado!');
     }
 
@@ -114,6 +123,7 @@ class _AuthFormState extends State<AuthForm> {
                       child: TextFormField(
                         decoration: const InputDecoration(labelText: 'Nome'),
                         keyboardType: TextInputType.name,
+                        onSaved: (name) => _authData['firstName'] = name ?? '',
                         validator: (_name) {
                           final name = _name ?? '';
                           if (name.trim().isEmpty) {
@@ -129,6 +139,8 @@ class _AuthFormState extends State<AuthForm> {
                         decoration:
                             const InputDecoration(labelText: 'Sobrenome'),
                         keyboardType: TextInputType.name,
+                        onSaved: (lastname) =>
+                            _authData['lastName'] = lastname ?? '',
                         validator: (_lastname) {
                           final lastname = _lastname ?? '';
                           if (lastname.trim().isEmpty) {
@@ -141,16 +153,18 @@ class _AuthFormState extends State<AuthForm> {
                   ],
                 ),
               // TextFormField(
-              //   decoration: const InputDecoration(labelText: 'E-mail'),
+              //   decoration: const InputDecoration(labelText: 'Login'),
               //   keyboardType: TextInputType.text,
+              //   onSaved: (login) => _authData['login'] = login ?? '',
               //   validator: (_login) {
               //     final login = _login ?? '';
               //     if (login.trim().isEmpty) {
-              //       return 'Informe seu e-mail';
+              //       return 'Informe seu login';
               //     }
               //     return null;
               //   },
               // ),
+
               TextFormField(
                 decoration: const InputDecoration(labelText: 'E-mail'),
                 keyboardType: TextInputType.emailAddress,

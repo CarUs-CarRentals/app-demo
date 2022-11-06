@@ -2,6 +2,7 @@ import 'package:carshare/components/car_item.dart';
 import 'package:carshare/components/car_item_edit.dart';
 import 'package:carshare/components/cars_list_view.dart';
 import 'package:carshare/models/auth.dart';
+import 'package:carshare/models/auth_firebase.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/car_list.dart';
 import 'package:carshare/utils/app_routes.dart';

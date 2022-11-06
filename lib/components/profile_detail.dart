@@ -1,4 +1,5 @@
 import 'package:carshare/models/auth.dart';
+import 'package:carshare/models/auth_firebase.dart';
 import 'package:carshare/models/review.dart';
 import 'package:carshare/models/review_list.dart';
 import 'package:carshare/models/user.dart';
@@ -104,7 +105,7 @@ class ProfileDetail extends StatelessWidget {
             ),
             subtitle: Container(
               padding: const EdgeInsets.only(top: 20.0),
-              child: Text("membro desde *ano*"),
+              child: Text("membro desde ${user.memberSince?.substring(0, 4)}"),
             ),
             dense: false,
           ),
@@ -133,7 +134,7 @@ class ProfileDetail extends StatelessWidget {
                 : null,
           ),
           Divider(),
-          _descriptionSection(context, user.about),
+          _descriptionSection(context, "${user.about}"),
           ListTile(
             leading: Container(
               width: 24,
@@ -143,7 +144,7 @@ class ProfileDetail extends StatelessWidget {
               ),
             ),
             title: Text(
-              user.address.fullAddress,
+              "user.address.fullAddress",
               style: const TextStyle(
                 fontFamily: 'RobotCondensed',
                 fontSize: 14,

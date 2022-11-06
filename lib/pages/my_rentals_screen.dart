@@ -1,5 +1,6 @@
 import 'package:carshare/components/rental_item.dart';
 import 'package:carshare/models/auth.dart';
+import 'package:carshare/models/auth_firebase.dart';
 import 'package:carshare/models/rental.dart';
 import 'package:carshare/models/rental_list.dart';
 import 'package:carshare/utils/app_routes.dart';

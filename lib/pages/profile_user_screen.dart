@@ -1,6 +1,7 @@
 import 'package:carshare/components/profile_detail.dart';
 import 'package:carshare/models/address.dart';
 import 'package:carshare/models/auth.dart';
+import 'package:carshare/models/auth_firebase.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/models/user_list.dart';
@@ -12,14 +13,12 @@ class ProfileUserScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final User thisUser;
+    final User? thisUser;
     final bool argumentIsNull =
         (ModalRoute.of(context)?.settings.arguments == null);
     Auth auth = Provider.of(context, listen: false);
+    final User? currentUser = auth.currentUser;
 
-    //Get user ID and email
-    String? myID = auth.userId;
-    String? myEmail = auth.email;
     final provider = Provider.of<UserList>(context);
 
     if (!argumentIsNull) {
@@ -29,9 +28,7 @@ class ProfileUserScreen extends StatelessWidget {
 
       thisUser = carUsers.elementAt(0);
     } else {
-      final userLogged = provider.userByID(myID!);
-
-      thisUser = userLogged;
+      thisUser = currentUser;
     }
 
     return Scaffold(
@@ -42,7 +39,7 @@ class ProfileUserScreen extends StatelessWidget {
       ),
       body: ProfileDetail(
         isMyProfile: argumentIsNull ? true : false,
-        user: thisUser,
+        user: thisUser!,
         // userFullname: thisUser.fullName,
         // aboutMe: thisUser.about,
         // fullAddress: thisUser.address.fullAddress,

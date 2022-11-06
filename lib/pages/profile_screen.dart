@@ -1,4 +1,7 @@
 import 'package:carshare/models/auth.dart';
+import 'package:carshare/models/auth_firebase.dart';
+import 'package:carshare/models/user.dart';
+import 'package:carshare/models/user_list.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +14,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  bool _isLoading = true;
+
   void _selectProfileEdit(BuildContext context) {
     Navigator.of(context).pushNamed(AppRoutes.PROFILE_USER);
   }
@@ -52,13 +57,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    Auth auth = Provider.of(context, listen: false);
+    Auth auth = Provider.of(context);
 
-    //Get user name from email
-    String? myEmail = auth.email;
-    myEmail = myEmail?.split("@")[0];
+    final provider = Provider.of<Auth>(context);
+    final User? currentUser = auth.currentUser;
 
     final availableHeight = mediaQuery.size.height - mediaQuery.padding.top;
 
@@ -83,7 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     title: Text(
-                      'Olá $myEmail',
+                      'Olá ${currentUser?.fullName}',
                       style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -115,57 +125,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     () => _selectLogOut(context),
                   ),
                   const Divider(),
-                  // Row(
-                  //   children: [
-                  //     Icon(
-                  //       // <-- Icon
-                  //       Icons.person,
-                  //       size: 24.0,
-                  //     ),
-                  //     TextButton(
-                  //       onPressed: () => _selectProfileEdit(context),
-                  //       child: Align(
-                  //         alignment: Alignment.centerLeft,
-                  //         child: Text(
-                  //           'Editar dados pessoais',
-                  //           style: TextStyle(
-                  //             color: Theme.of(context).colorScheme.secondary,
-                  //             fontWeight: FontWeight.bold,
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  // Divider(
-                  //   color: Colors.black,
-                  // ),
-                  // TextButton(
-                  //   onPressed: () => _selectMyReviews(context),
-                  //   child: Text(
-                  //     'Minhas avaliações',
-                  //     style: TextStyle(
-                  //       color: Theme.of(context).colorScheme.primary,
-                  //       fontWeight: FontWeight.bold,
-                  //     ),
-                  //   ),
-                  // ),
-                  // Divider(
-                  //   color: Colors.black,
-                  // ),
-                  // TextButton(
-                  //   onPressed: () => _selectMyCars(context),
-                  //   child: Text(
-                  //     'Meus carros',
-                  //     style: TextStyle(
-                  //       color: Theme.of(context).colorScheme.primary,
-                  //       fontWeight: FontWeight.bold,
-                  //     ),
-                  //   ),
-                  // ),
-                  // Divider(
-                  //   color: Colors.black,
-                  // ),
                 ],
               ),
             ),

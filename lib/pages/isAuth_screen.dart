@@ -1,4 +1,5 @@
 import 'package:carshare/models/auth.dart';
+import 'package:carshare/models/auth_firebase.dart';
 import 'package:carshare/pages/auth_screen.dart';
 import 'package:carshare/pages/tabs_screen.dart';
 import 'package:flutter/material.dart';

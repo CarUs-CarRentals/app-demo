@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:carshare/data/dummy_users_data.dart';
 import 'package:carshare/models/address.dart';
+import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class UserList with ChangeNotifier {
   final _baseUrl = Constants.USER_BASE_URL;
@@ -32,13 +34,19 @@ class UserList with ChangeNotifier {
         "Some mim",
         UserGender.female,
         Address("CEP", "UF", "Cidade", "Bairro", "Rua", 999),
-        id: id,
+        "",
+        id: 1,
         email: "meu_email@gmail.com",
         firstName: "Nome",
         lastName: "Sobrenome",
       );
     }
   }
+
+  // User loadCurrentUser() {
+  //   Auth().getLoggedUser();
+
+  // }
 
   Future<void> loadCars() async {
     _users.clear();

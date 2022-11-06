@@ -72,6 +72,44 @@ class _CarFormScreenState extends State<CarFormScreen> {
     }
   }
 
+  _spinBoxSection(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          // Column(
+          //   children: [
+          //     Text('Portas', style: Theme.of(context).textTheme.subtitle1),
+          //     SpinBox(
+          //       min: 1,
+          //       max: 10,
+          //       value: 1,
+          //       decoration: InputDecoration(border: InputBorder.none),
+          //       onChanged: (value) => print(value),
+          //     ),
+          //   ],
+          // ),
+          Column(
+            children: [
+              Text('Portas', style: Theme.of(context).textTheme.subtitle1),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: SpinBox(
+                  min: 1,
+                  max: 10,
+                  value: 1,
+                  decoration: InputDecoration(border: InputBorder.none),
+                  onChanged: (value) => print(value),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -209,23 +247,65 @@ class _CarFormScreenState extends State<CarFormScreen> {
                   ],
                   textInputAction: TextInputAction.next,
                 ),
-                SizedBox(height: 16),
-                Column(
-                  children: [
-                    Text('Quantidade de Portas',
-                        style: Theme.of(context).textTheme.subtitle1),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      child: SpinBox(
-                        min: 1,
-                        max: 10,
-                        value: 1,
-                        decoration: InputDecoration(border: InputBorder.none),
-                        onChanged: (value) => print(value),
+                //SizedBox(height: 16),
+                // Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                //   Expanded(
+                //     child: Text('Portas',
+                //         style: Theme.of(context).textTheme.titleMedium),
+                //   ),
+                //   Expanded(
+                //     child: Text('Assentos',
+                //         style: Theme.of(context).textTheme.titleMedium),
+                //   )
+                // ]),
+                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                  Expanded(
+                    child: SpinBoxTheme(
+                      data: SpinBoxThemeData(
+                          decoration: InputDecoration(
+                              border: UnderlineInputBorder(),
+                              //labelText: "teste",
+                              label: Text(
+                                "Portas",
+                                style: TextStyle(
+                                  fontSize: 22,
+                                ),
+                              ))),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 4.0),
+                        child: SpinBox(
+                          textStyle: TextStyle(height: 3.5),
+                          min: 1,
+                          max: 99,
+                          value: 1,
+                          onChanged: (value) => print(value),
+                        ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  Expanded(
+                    child: SpinBoxTheme(
+                        data: SpinBoxThemeData(
+                            decoration: InputDecoration(
+                                border: UnderlineInputBorder(),
+                                label: Text(
+                                  "Assentos",
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                  ),
+                                ))),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 4.0),
+                          child: SpinBox(
+                            textStyle: TextStyle(height: 3.5),
+                            min: 1,
+                            max: 99,
+                            value: 1,
+                            onChanged: (value) => print(value),
+                          ),
+                        )),
+                  )
+                ]),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Preço'),
                   textInputAction: TextInputAction.next,

@@ -1,4 +1,5 @@
 import 'package:carshare/models/auth.dart';
+import 'package:carshare/models/auth_firebase.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/car_list.dart';
 import 'package:carshare/models/rental_list.dart';
@@ -37,6 +38,9 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (_) => AuthFirebase(),
+        ),
         ChangeNotifierProvider(
           create: (_) => Auth(),
         ),
