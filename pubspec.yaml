@@ -49,6 +49,7 @@ dependencies:
   outline_search_bar: ^2.3.0
   flutter_spinbox: ^0.10.0
   numberpicker: ^2.1.1
+  shimmer: ^2.0.0
 
 dev_dependencies:
   flutter_test:

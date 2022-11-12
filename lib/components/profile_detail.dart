@@ -1,5 +1,4 @@
 import 'package:carshare/models/auth.dart';
-import 'package:carshare/models/auth_firebase.dart';
 import 'package:carshare/models/review.dart';
 import 'package:carshare/models/review_list.dart';
 import 'package:carshare/models/user.dart';

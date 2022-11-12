@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:carshare/data/dummy_users_data.dart';
 import 'package:carshare/models/address.dart';
-import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +34,7 @@ class UserList with ChangeNotifier {
         UserGender.female,
         Address("CEP", "UF", "Cidade", "Bairro", "Rua", 999),
         "",
-        id: 1,
+        id: '1',
         email: "meu_email@gmail.com",
         firstName: "Nome",
         lastName: "Sobrenome",

@@ -1,10 +1,11 @@
+//import 'package:carshare/models/auth_old.dart';
 import 'package:carshare/models/auth.dart';
-import 'package:carshare/models/auth_firebase.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/models/user_list.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = true;
+  User? _currentUser;
 
   void _selectProfileEdit(BuildContext context) {
     Navigator.of(context).pushNamed(AppRoutes.PROFILE_USER);
@@ -60,16 +62,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    Auth().getLoggedUser().then((value) {
+      setState(() {
+        _currentUser = value;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    Auth auth = Provider.of(context);
-
-    final provider = Provider.of<Auth>(context);
-    final User? currentUser = auth.currentUser;
-
     final availableHeight = mediaQuery.size.height - mediaQuery.padding.top;
 
     return Scaffold(
@@ -82,24 +84,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
               height: availableHeight,
               child: ListView(
                 children: [
-                  ListTile(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                    leading: CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      child: Padding(
-                        padding: const EdgeInsets.all(6.0),
-                      ),
-                    ),
-                    title: Text(
-                      'Olá ${currentUser?.fullName}',
-                      style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
-                    ),
-                  ),
+                  _currentUser == null
+                      ? ListTile(
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                          leading: Shimmer.fromColors(
+                            baseColor: Colors.grey,
+                            highlightColor: Colors.white,
+                            child: CircleAvatar(
+                              radius: 30,
+                            ),
+                          ),
+                        )
+                      : ListTile(
+                          contentPadding:
+                              EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                          leading: CircleAvatar(
+                            radius: 30,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            child: Padding(
+                              padding: const EdgeInsets.all(6.0),
+                            ),
+                          ),
+                          title: Text(
+                            'Olá ${_currentUser?.fullName}',
+                            style: TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
+                        ),
                   const Divider(),
                   _createItem(
                     Icons.person,

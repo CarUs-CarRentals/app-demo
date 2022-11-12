@@ -7,7 +7,7 @@ enum UserGender {
 }
 
 class User {
-  final int id;
+  final String id;
   final String email;
   final String firstName;
   final String lastName;
