@@ -1,5 +1,4 @@
 import 'package:carshare/models/auth.dart';
-import 'package:carshare/models/auth_firebase.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/car_list.dart';
 import 'package:carshare/models/rental_list.dart';
@@ -38,9 +37,6 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => AuthFirebase(),
-        ),
         ChangeNotifierProvider(
           create: (_) => Auth(),
         ),
@@ -100,54 +96,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// class MainMenu extends StatefulWidget {
-//   const MainMenu({Key? key}) : super(key: key);
-
-//   @override
-//   State<MainMenu> createState() => _MainMenuState();
-// }
-
-// class _MainMenuState extends State<MainMenu> {
-//   int _selectedIndex = 0;
-//   // static const TextStyle optionStyle =
-//   //     TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-//   static const List<Widget> _screenOptions = <Widget>[
-//     HomeScreen(),
-//     MyTripsScreen(),
-//     ProfileScreen(),
-//   ];
-
-//   void _onItemTapped(int index) {
-//     setState(() {
-//       _selectedIndex = index;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: _screenOptions.elementAt(_selectedIndex),
-//       bottomNavigationBar: BottomNavigationBar(
-//         items: const <BottomNavigationBarItem>[
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.home),
-//             label: 'Home',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.speed),
-//             label: 'Minhas Viagens',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.person),
-//             label: 'Conta',
-//           ),
-//         ],
-//         currentIndex: _selectedIndex,
-//         selectedItemColor: Theme.of(context).colorScheme.primary,
-//         unselectedItemColor: Theme.of(context).colorScheme.secondary,
-//         onTap: _onItemTapped,
-//       ),
-//     );
-//   }
-//}

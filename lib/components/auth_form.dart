@@ -2,7 +2,6 @@
 
 import 'package:carshare/exceptions/auth_exception.dart';
 import 'package:carshare/models/auth.dart';
-import 'package:carshare/models/auth_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
