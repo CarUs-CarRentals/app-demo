@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "988200599162",
+    "project_id": "carus-app-363822",
+    "storage_bucket": "carus-app-363822.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:988200599162:android:2d8a651a3d5f16485245c3",
+        "android_client_info": {
+          "package_name": "com.example.carshare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "988200599162-9vfes73qb680ricsgk1mb8juksusecbl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSuOXPBP32sMNRciqNakqQ2ARXg_TNQ20"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "988200599162-9vfes73qb680ricsgk1mb8juksusecbl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

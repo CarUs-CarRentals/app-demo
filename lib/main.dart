@@ -1,3 +1,4 @@
+import 'package:carshare/firebase_options.dart';
 import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/car_list.dart';
@@ -19,13 +20,20 @@ import 'package:carshare/pages/profile_user_screen.dart';
 import 'package:carshare/pages/rental_detail_screen.dart';
 import 'package:carshare/pages/review_form_screen.dart';
 import 'package:carshare/pages/user_reviews_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'utils/app_routes.dart';
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   static const String _title = '';
