@@ -1,3 +1,4 @@
+import 'package:carshare/models/place.dart';
 import 'package:carshare/pages/map_screen.dart';
 import 'package:carshare/utils/location_util.dart';
 import 'package:flutter/material.dart';
@@ -27,15 +28,28 @@ class _LocationInputState extends State<LocationInput> {
   }
 
   Future<void> _selectOnMap() async {
+    final locData = await Location().getLocation();
     final LatLng selectedPosition =
         await Navigator.of(context).push(MaterialPageRoute(
       fullscreenDialog: true,
-      builder: (ctx) => MapScreen(),
+      builder: (ctx) => MapScreen(
+        initialLocation: PlaceLocation(
+          latitude: locData.latitude!,
+          longitude: locData.longitude!,
+        ),
+      ),
     ));
 
     if (selectedPosition == null) return;
 
-    print(selectedPosition.latitude);
+    final staticMapImageUrl = LocationUtil.generateLocationPreviewImage(
+      latitude: selectedPosition.latitude,
+      longitude: selectedPosition.longitude,
+    );
+
+    setState(() {
+      _previewImageUrl = staticMapImageUrl;
+    });
   }
 
   @override
