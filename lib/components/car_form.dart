@@ -22,7 +22,6 @@ class _CarFormState extends State<CarForm> {
   final _formKey = GlobalKey<FormState>();
   final _formData = Map<String, Object>();
 
-  bool isVisible = true;
   String dropdownValue = '2022';
   int _currentTrunkValue = 1;
   File _pickedImage = File('');
@@ -125,148 +124,180 @@ class _CarFormState extends State<CarForm> {
     return Form(
       child: ListView(
         children: [
-          if (isVisible)
-            Column(
-              children: [
-                SizedBox(
-                  height: 10,
-                ),
-                ImageInput(this._selectImage),
-                Divider(
-                  height: 50,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Marca'),
-                  textInputAction: TextInputAction.next,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Modelo'),
-                  textInputAction: TextInputAction.next,
-                ),
-                DropdownButtonFormField(
-                  decoration: InputDecoration(labelText: 'Ano'),
-                  // onTap: () {
-                  //   FocusScope.of(context).requestFocus(_priceFocus);
-                  // },
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownValue = newValue!;
-                    });
-                  },
-                  items:
-                      yearsList.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Center(
-                        child: Text(
-                          value,
-                          textAlign: TextAlign.center,
-                        ),
+          Column(
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              GridView.builder(
+                  shrinkWrap: true,
+                  itemCount: 6,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    childAspectRatio: 1,
+                    mainAxisExtent: 120,
+                  ),
+                  itemBuilder: (context, index) {
+                    return ImageInput(this._selectImage);
+                  }),
+              Divider(
+                height: 50,
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Marca'),
+                textInputAction: TextInputAction.next,
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Modelo'),
+                textInputAction: TextInputAction.next,
+              ),
+              DropdownButtonFormField(
+                decoration: InputDecoration(labelText: 'Ano'),
+                // onTap: () {
+                //   FocusScope.of(context).requestFocus(_priceFocus);
+                // },
+                onChanged: (String? newValue) {
+                  setState(() {
+                    dropdownValue = newValue!;
+                  });
+                },
+                items: yearsList.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Center(
+                      child: Text(
+                        value,
+                        textAlign: TextAlign.center,
                       ),
-                    );
-                  }).toList(),
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Placa'),
-                  textInputAction: TextInputAction.next,
-                ),
-                DropdownButtonFormField(
-                  decoration: InputDecoration(labelText: 'Combustivel'),
-                  //value: dropdownValue,
-                  // onTap: () {
-                  //   FocusScope.of(context).requestFocus(_priceFocus);
-                  // },
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownValue = newValue!;
-                    });
-                  },
-                  items: CarFuel.values
-                      .map<DropdownMenuItem<String>>((CarFuel value) {
-                    return DropdownMenuItem<String>(
-                      value: getFuelText(value),
-                      child: Center(
-                        child: Text(
-                          getFuelText(value),
-                          textAlign: TextAlign.center,
-                        ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Placa'),
+                textInputAction: TextInputAction.next,
+              ),
+              DropdownButtonFormField(
+                decoration: InputDecoration(labelText: 'Combustivel'),
+                //value: dropdownValue,
+                // onTap: () {
+                //   FocusScope.of(context).requestFocus(_priceFocus);
+                // },
+                onChanged: (String? newValue) {
+                  setState(() {
+                    dropdownValue = newValue!;
+                  });
+                },
+                items: CarFuel.values
+                    .map<DropdownMenuItem<String>>((CarFuel value) {
+                  return DropdownMenuItem<String>(
+                    value: getFuelText(value),
+                    child: Center(
+                      child: Text(
+                        getFuelText(value),
+                        textAlign: TextAlign.center,
                       ),
-                    );
-                  }).toList(),
-                ),
-                DropdownButtonFormField(
-                  decoration: InputDecoration(labelText: 'Câmbio'),
-                  //value: dropdownValue,
-                  // onTap: () {
-                  //   FocusScope.of(context).requestFocus(_priceFocus);
-                  // },
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownValue = newValue!;
-                    });
-                  },
-                  items: CarGearShift.values
-                      .map<DropdownMenuItem<String>>((CarGearShift value) {
-                    return DropdownMenuItem<String>(
-                      value: getGearShiftText(value),
-                      child: Center(
-                        child: Text(
-                          getGearShiftText(value),
-                          textAlign: TextAlign.center,
-                        ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              DropdownButtonFormField(
+                decoration: InputDecoration(labelText: 'Câmbio'),
+                //value: dropdownValue,
+                // onTap: () {
+                //   FocusScope.of(context).requestFocus(_priceFocus);
+                // },
+                onChanged: (String? newValue) {
+                  setState(() {
+                    dropdownValue = newValue!;
+                  });
+                },
+                items: CarGearShift.values
+                    .map<DropdownMenuItem<String>>((CarGearShift value) {
+                  return DropdownMenuItem<String>(
+                    value: getGearShiftText(value),
+                    child: Center(
+                      child: Text(
+                        getGearShiftText(value),
+                        textAlign: TextAlign.center,
                       ),
-                    );
-                  }).toList(),
-                ),
-                DropdownButtonFormField(
-                  decoration: InputDecoration(labelText: 'Categoria'),
-                  //value: dropdownValue,
-                  // onTap: () {
-                  //   FocusScope.of(context).requestFocus(_priceFocus);
-                  // },
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownValue = newValue!;
-                    });
-                  },
-                  items: CarCategory.values
-                      .map<DropdownMenuItem<String>>((CarCategory value) {
-                    return DropdownMenuItem<String>(
-                      value: getCategoryText(value),
-                      child: Center(
-                        child: Text(
-                          getCategoryText(value),
-                          textAlign: TextAlign.center,
-                        ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              DropdownButtonFormField(
+                decoration: InputDecoration(labelText: 'Categoria'),
+                //value: dropdownValue,
+                // onTap: () {
+                //   FocusScope.of(context).requestFocus(_priceFocus);
+                // },
+                onChanged: (String? newValue) {
+                  setState(() {
+                    dropdownValue = newValue!;
+                  });
+                },
+                items: CarCategory.values
+                    .map<DropdownMenuItem<String>>((CarCategory value) {
+                  return DropdownMenuItem<String>(
+                    value: getCategoryText(value),
+                    child: Center(
+                      child: Text(
+                        getCategoryText(value),
+                        textAlign: TextAlign.center,
                       ),
-                    );
-                  }).toList(),
+                    ),
+                  );
+                }).toList(),
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Porta-malas (Litros)'),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  //FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                textInputAction: TextInputAction.next,
+              ),
+              Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Expanded(
+                  child: SpinBoxTheme(
+                    data: SpinBoxThemeData(
+                        decoration: InputDecoration(
+                            border: UnderlineInputBorder(),
+                            //labelText: "teste",
+                            label: Text(
+                              "Portas",
+                              style: TextStyle(
+                                fontSize: 22,
+                              ),
+                            ))),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 4.0),
+                      child: SpinBox(
+                        textStyle: TextStyle(height: 3.5),
+                        min: 1,
+                        max: 99,
+                        value: 1,
+                        onChanged: (value) => print(value),
+                      ),
+                    ),
+                  ),
                 ),
-                TextFormField(
-                  decoration:
-                      InputDecoration(labelText: 'Porta-malas (Litros)'),
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    //FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                  textInputAction: TextInputAction.next,
-                ),
-                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                  Expanded(
-                    child: SpinBoxTheme(
+                Expanded(
+                  child: SpinBoxTheme(
                       data: SpinBoxThemeData(
                           decoration: InputDecoration(
                               border: UnderlineInputBorder(),
-                              //labelText: "teste",
                               label: Text(
-                                "Portas",
+                                "Assentos",
                                 style: TextStyle(
                                   fontSize: 22,
                                 ),
                               ))),
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 4.0),
+                        padding: const EdgeInsets.only(left: 4.0),
                         child: SpinBox(
                           textStyle: TextStyle(height: 3.5),
                           min: 1,
@@ -274,80 +305,55 @@ class _CarFormState extends State<CarForm> {
                           value: 1,
                           onChanged: (value) => print(value),
                         ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: SpinBoxTheme(
-                        data: SpinBoxThemeData(
-                            decoration: InputDecoration(
-                                border: UnderlineInputBorder(),
-                                label: Text(
-                                  "Assentos",
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                  ),
-                                ))),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 4.0),
-                          child: SpinBox(
-                            textStyle: TextStyle(height: 3.5),
-                            min: 1,
-                            max: 99,
-                            value: 1,
-                            onChanged: (value) => print(value),
-                          ),
-                        )),
-                  )
-                ]),
-                Divider(
-                  height: 50,
+                      )),
+                )
+              ]),
+              Divider(
+                height: 50,
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Descrição do veículo',
+                  alignLabelWithHint: true,
                 ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Descrição do veículo',
-                    alignLabelWithHint: true,
-                  ),
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 5,
-                  onSaved: (description) {
-                    _formData['description'] = description ?? '';
-                  },
-                  validator: (_description) {
-                    final description = _description ?? '';
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.multiline,
+                maxLines: 5,
+                onSaved: (description) {
+                  _formData['description'] = description ?? '';
+                },
+                validator: (_description) {
+                  final description = _description ?? '';
 
-                    if (description.trim().isEmpty) {
-                      return 'Descrição é obrigatório';
-                    }
+                  if (description.trim().isEmpty) {
+                    return 'Descrição é obrigatório';
+                  }
 
-                    if (description.trim().length < 9) {
-                      return 'Descrição precisa ser mais longa';
-                    }
+                  if (description.trim().length < 9) {
+                    return 'Descrição precisa ser mais longa';
+                  }
 
-                    return null;
-                  },
-                ),
-                Divider(
-                  height: 50,
-                ),
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'Preço'),
-                  textInputAction: TextInputAction.next,
-                  focusNode: _priceFocus,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                ),
-                Divider(
-                  height: 50,
-                ),
-                LocationInput(),
-              ],
-            ),
+                  return null;
+                },
+              ),
+              Divider(
+                height: 50,
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Preço'),
+                textInputAction: TextInputAction.next,
+                focusNode: _priceFocus,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+              ),
+              Divider(
+                height: 50,
+              ),
+              LocationInput(),
+            ],
+          ),
           ElevatedButton(
             onPressed: () {
-              setState(() {
-                isVisible = !isVisible;
-              });
+              setState(() {});
             },
             style: ElevatedButton.styleFrom(
               primary: Theme.of(context).colorScheme.primary,

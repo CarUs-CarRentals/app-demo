@@ -60,61 +60,94 @@ class _ImageInputState extends State<ImageInput> {
     });
   }
 
+  _removePicture() {
+    setState(() {
+      _storedImage = File('');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
+    return InkWell(
+      onTap: () {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Selecione uma opção"),
+                content: Text("Como deseja enviar a foto do seu carro?"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      _getFromGallery();
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('GALERIA'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      _takePicture();
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('CÂMERA'),
+                  ),
+                ],
+              );
+            });
+      },
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Stack(
           children: [
-            Container(
-              width: 180,
-              height: 100,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 1,
-                  color: Colors.grey,
-                ),
-              ),
-              alignment: Alignment.center,
-              child: _storedImage.path != ''
-                  ? Image.file(
+            _storedImage.path != ''
+                ? ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    child: Image.file(
                       _storedImage,
                       width: double.infinity,
+                      height: double.infinity,
                       fit: BoxFit.cover,
-                    )
-                  : Text("Nenhuma Imagem"),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: TextButton.icon(
-                onPressed: _takePicture,
-                icon: Icon(Icons.camera),
-                label: Text("Tirar foto"),
+                    ),
+                  )
+                : Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(5.0)),
+                      color: Colors.grey[200],
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          child: Icon(Icons.add_a_photo,
+                              size: 24, color: Colors.black),
+                          padding: const EdgeInsets.symmetric(vertical: 35),
+                        ),
+                        Container(
+                          child: Text("Adicionar"),
+                        )
+                      ],
+                    ),
+                  ),
+            if (_storedImage.path != '')
+              Align(
+                alignment: Alignment.bottomRight,
+                child: InkWell(
+                  onTap: _removePicture,
+                  child: CircleAvatar(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    radius: 10,
+                    child: Icon(
+                      Icons.close,
+                      size: 15,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
-            ),
-            Expanded(
-              child: TextButton.icon(
-                onPressed: _getFromGallery,
-                icon: Icon(Icons.photo),
-                label: Text("Galeria"),
-              ),
-            ),
           ],
         ),
-        Row(
-          children: [
-            Expanded(
-              child: TextButton.icon(
-                onPressed: _uploadImage,
-                icon: Icon(Icons.upload),
-                label: Text("Upload"),
-              ),
-            ),
-          ],
-        )
-      ],
+      ),
     );
   }
 }
