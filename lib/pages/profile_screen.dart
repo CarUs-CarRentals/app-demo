@@ -90,7 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                           leading: Shimmer.fromColors(
                             baseColor: Colors.grey,
-                            highlightColor: Colors.white,
+                            highlightColor: Color.fromARGB(255, 190, 190, 190),
                             child: CircleAvatar(
                               radius: 30,
                             ),

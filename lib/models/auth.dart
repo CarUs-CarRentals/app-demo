@@ -24,9 +24,9 @@ class Auth with ChangeNotifier {
 
   bool get isAuth {
     final isValid = _expiryDate?.isAfter(DateTime.now()) ?? false;
-    final isValidBackend = _expiryDateBackend?.isAfter(DateTime.now()) ?? false;
+    // final isValidBackend = _expiryDateBackend?.isAfter(DateTime.now()) ?? false;
 
-    return _token != null && isValid && isValidBackend;
+    return _token != null && isValid; //&& isValidBackend;
   }
 
   String? get token {
@@ -227,21 +227,23 @@ class Auth with ChangeNotifier {
     if (isAuth) return;
 
     final userData = await Store.getMap('userDataFb');
-    final userDataBackend = await Store.getMap('userData');
-    if (userData.isEmpty || userDataBackend.isEmpty) return;
+    //final userDataBackend = await Store.getMap('userData');
+    if (userData.isEmpty) return;
+    //|| userDataBackend.isEmpty
 
     final expiryDate = DateTime.parse(userData['expireDate']);
-    final expiryDateBackend = DateTime.parse(userDataBackend['expireDate']);
-    if (expiryDate.isBefore(DateTime.now()) ||
-        expiryDateBackend.isBefore(DateTime.now())) return;
+    // final expiryDateBackend = DateTime.parse(userDataBackend['expireDate']);
+    if (expiryDate.isBefore(DateTime.now())) return;
+    //||expiryDateBackend.isBefore(DateTime.now())
 
     _token = userData['token'];
-    _tokenBackend = userData['token'];
+    //_tokenBackend = userData['token'];
     _email = userData['email'];
     _userId = userData['localId'];
     _refreshToken = userData['refreshToken'];
-    _refreshTokenBackend = userData['refreshToken'];
+    //_refreshTokenBackend = userData['refreshToken'];
     _expiryDate = expiryDate;
+    print("uID: $_userId");
     _autoLogout();
     notifyListeners();
   }
@@ -255,7 +257,7 @@ class Auth with ChangeNotifier {
     _expiryDateBackend = null;
     _clearLogoutTimer();
     Store.remove('userDataFb').then((_) => notifyListeners());
-    Store.remove('userData').then((_) => notifyListeners());
+    //Store.remove('userData').then((_) => notifyListeners());
   }
 
   void _clearLogoutTimer() {
@@ -266,7 +268,7 @@ class Auth with ChangeNotifier {
   void _autoLogout() {
     _clearLogoutTimer();
     final timeToLogout = _expiryDate?.difference(DateTime.now()).inSeconds;
-    print(timeToLogout);
+    print("time to Logout: $timeToLogout");
     _logoutTimer = Timer(
       Duration(seconds: timeToLogout ?? 0),
       logout,
