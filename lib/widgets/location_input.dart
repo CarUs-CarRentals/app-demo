@@ -6,7 +6,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class LocationInput extends StatefulWidget {
-  const LocationInput({Key? key}) : super(key: key);
+  final Function onSelectLocation;
+  //final LatLng latLngInitial;
+  const LocationInput(this.onSelectLocation, {Key? key}) : super(key: key);
 
   @override
   State<LocationInput> createState() => _LocationInputState();
@@ -14,6 +16,7 @@ class LocationInput extends StatefulWidget {
 
 class _LocationInputState extends State<LocationInput> {
   String? _previewImageUrl;
+  LatLng? _latLngSelected;
 
   Future<void> _getCurrentUserLocation() async {
     final locData = await Location().getLocation();
@@ -24,7 +27,24 @@ class _LocationInputState extends State<LocationInput> {
 
     setState(() {
       _previewImageUrl = staticMapImageUrl;
+      _latLngSelected = LatLng(locData.latitude!, locData.longitude!);
     });
+
+    _getStoredLocation();
+  }
+
+  Future<void> _setInitialLocation(LatLng latLngInitial) async {
+    final staticMapImageUrl = LocationUtil.generateLocationPreviewImage(
+      latitude: latLngInitial.latitude,
+      longitude: latLngInitial.longitude,
+    );
+
+    setState(() {
+      _previewImageUrl = staticMapImageUrl;
+      _latLngSelected = LatLng(latLngInitial.latitude, latLngInitial.longitude);
+    });
+
+    _getStoredLocation();
   }
 
   Future<void> _selectOnMap() async {
@@ -49,8 +69,27 @@ class _LocationInputState extends State<LocationInput> {
 
     setState(() {
       _previewImageUrl = staticMapImageUrl;
+      _latLngSelected =
+          LatLng(selectedPosition.latitude, selectedPosition.longitude);
     });
+
+    _getStoredLocation();
   }
+
+  _getStoredLocation() {
+    print("_latLngSelected: {$_latLngSelected}");
+    widget.onSelectLocation(_latLngSelected);
+  }
+
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   if (widget.latLngInitial.latitude != 0 &&
+  //       widget.latLngInitial.longitude != 0) {
+  //     _setInitialLocation(widget.latLngInitial);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

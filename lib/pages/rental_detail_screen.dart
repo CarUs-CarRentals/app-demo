@@ -157,7 +157,7 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                     dense: true,
                     trailing: RatingBarIndicator(
                       rating:
-                          rentalDetail.isReview == false ? 0 : carReview!.rate,
+                          rentalDetail.isReview == false ? 0 : carReview.rate,
                       itemBuilder: (context, _) => Icon(
                         Icons.star,
                         color: Theme.of(context).colorScheme.primary,

@@ -24,7 +24,7 @@ class RentalItem extends StatelessWidget {
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(4.0)),
             child: Image.network(
-              car.imagesUrl.imageUrl[0],
+              car.imagesUrl[0].url,
               fit: BoxFit.cover,
             ),
           ),

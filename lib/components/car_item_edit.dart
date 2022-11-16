@@ -48,7 +48,7 @@ class _CarItemState extends State<CarItemEdit> {
                           Icons.star,
                           size: 16,
                         ),
-                        Text((widget.car.review).toString()),
+                        Text(('widget.car.review').toString()),
                         const VerticalDivider(
                           width: 10,
                         ),
@@ -88,7 +88,10 @@ class _CarItemState extends State<CarItemEdit> {
                             minimumSize: Size(50, 30),
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
-                          onPressed: () {},
+                          onPressed: () => Navigator.of(context).pushNamed(
+                            AppRoutes.CAR_FORM,
+                            arguments: widget.car
+                          ),
                           child: const Text('Editar'),
                         ),
                         VerticalDivider(
@@ -140,7 +143,7 @@ class _CarItemState extends State<CarItemEdit> {
                       topRight: Radius.circular(15),
                     ),
                     child: Image.network(
-                      widget.car.imagesUrl.imageUrl[0],
+                      widget.car.imagesUrl[0].url,
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,

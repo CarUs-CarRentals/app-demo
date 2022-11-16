@@ -2,26 +2,27 @@ import 'package:carshare/models/user.dart';
 import 'package:location/location.dart';
 
 enum CarFuel {
-  petrol,
-  diesel,
-  cng,
-  ethanol,
-  electric,
+  GASOLINE,
+  DIESEL,
+  CNG,
+  ETHANOL,
+  ELECTRIC,
+  HYBRID,
 }
 
 enum CarGearShift {
-  manual,
-  automatic,
+  MANUAL,
+  AUTOMATIC,
 }
 
 enum CarCategory {
-  suv,
-  sedan,
-  hatchback,
-  sport,
-  convertible,
-  wagon,
-  truck,
+  SUV,
+  SEDAN,
+  HATCHBACK,
+  SPORT,
+  CONVERTIBLE,
+  WAGON,
+  TRUCK,
 }
 
 class CarLocation {
@@ -37,13 +38,18 @@ class CarLocation {
 }
 
 class CarImages {
-  final List<String> imageUrl;
+  String url;
 
-  const CarImages({required this.imageUrl});
+  CarImages({required this.url});
+  CarImages.fromJson(Map<String, dynamic> json) : url = json['url'];
+
+  static Map<String, dynamic> toJson(CarImages value) => {
+        'url': value.url,
+      };
 }
 
 class Car {
-  final String id;
+  final int id;
   final String brand;
   final int doors;
   final CarFuel fuel;
@@ -55,15 +61,16 @@ class Car {
   final int trunk;
   final int year;
   final String userId;
-  final CarImages imagesUrl;
+  final List<CarImages> imagesUrl;
   final double price;
-  final double review;
+  //final double review;
   final String description;
   int distance;
   final CarLocation location;
 
   Car(
-      {required this.brand,
+      {this.id = 0,
+      required this.brand,
       required this.doors,
       required this.fuel,
       required this.gearShift,
@@ -73,11 +80,9 @@ class Car {
       required this.year,
       required this.userId,
       required this.category,
-      required this.id,
       required this.model,
       required this.imagesUrl,
       required this.price,
-      required this.review,
       this.description = '',
       this.distance = 0,
       required this.location});
@@ -92,19 +97,19 @@ class Car {
 
   String get categoryText {
     switch (category) {
-      case CarCategory.suv:
+      case CarCategory.SUV:
         return 'SUV';
-      case CarCategory.sedan:
+      case CarCategory.SEDAN:
         return 'Sedã';
-      case CarCategory.hatchback:
+      case CarCategory.HATCHBACK:
         return 'Hatch';
-      case CarCategory.sport:
+      case CarCategory.SPORT:
         return 'Esportivo';
-      case CarCategory.convertible:
+      case CarCategory.CONVERTIBLE:
         return 'Conversível';
-      case CarCategory.wagon:
+      case CarCategory.WAGON:
         return 'Perua';
-      case CarCategory.truck:
+      case CarCategory.TRUCK:
         return 'Picape';
       default:
         return 'Desconhecido';
@@ -113,16 +118,18 @@ class Car {
 
   String get fuelText {
     switch (fuel) {
-      case CarFuel.petrol:
+      case CarFuel.GASOLINE:
         return 'Gasolina';
-      case CarFuel.diesel:
+      case CarFuel.DIESEL:
         return 'Diesel';
-      case CarFuel.cng:
+      case CarFuel.CNG:
         return 'GNV';
-      case CarFuel.electric:
+      case CarFuel.ELECTRIC:
         return 'Elétrico';
-      case CarFuel.ethanol:
+      case CarFuel.ETHANOL:
         return 'Etanol';
+      case CarFuel.HYBRID:
+        return 'Híbrido';
       default:
         return 'Desconhecido';
     }
@@ -130,12 +137,63 @@ class Car {
 
   String get gearShiftText {
     switch (gearShift) {
-      case CarGearShift.automatic:
+      case CarGearShift.AUTOMATIC:
         return 'Automático';
-      case CarGearShift.manual:
+      case CarGearShift.MANUAL:
         return 'Manual';
       default:
         return 'Desconhecido';
     }
+  }
+}
+
+String getFuelText(CarFuel fuel) {
+  switch (fuel) {
+    case CarFuel.GASOLINE:
+      return 'Gasolina';
+    case CarFuel.DIESEL:
+      return 'Diesel';
+    case CarFuel.CNG:
+      return 'GNV';
+    case CarFuel.ELECTRIC:
+      return 'Elétrico';
+    case CarFuel.ETHANOL:
+      return 'Etanol';
+    case CarFuel.HYBRID:
+      return 'Híbrido';
+    default:
+      return 'Desconhecido';
+  }
+}
+
+String getGearShiftText(CarGearShift gearShift) {
+  switch (gearShift) {
+    case CarGearShift.AUTOMATIC:
+      return 'Automático';
+    case CarGearShift.MANUAL:
+      return 'Manual';
+    default:
+      return 'Desconhecido';
+  }
+}
+
+String getCategoryText(CarCategory category) {
+  switch (category) {
+    case CarCategory.SUV:
+      return 'SUV';
+    case CarCategory.SEDAN:
+      return 'Sedã';
+    case CarCategory.HATCHBACK:
+      return 'Hatch';
+    case CarCategory.SPORT:
+      return 'Esportivo';
+    case CarCategory.CONVERTIBLE:
+      return 'Conversível';
+    case CarCategory.WAGON:
+      return 'Perua';
+    case CarCategory.TRUCK:
+      return 'Picape';
+    default:
+      return 'Desconhecido';
   }
 }

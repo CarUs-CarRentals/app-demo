@@ -30,7 +30,7 @@ class _CarItemState extends State<CarItem> {
             latitude: widget.car.location.latitude,
             longitude: widget.car.location.longitude)
         .toLatLng();
-        
+
     await LocationUtil.getDistance(myLocation, carLocation)
         .then((Map<String, dynamic> jsonString) {
       setState(() {
@@ -74,7 +74,7 @@ class _CarItemState extends State<CarItem> {
                           Icons.star,
                           size: 16,
                         ),
-                        Text((widget.car.review).toString()),
+                        Text(('widget.car.review').toString()),
                         const VerticalDivider(
                           width: 10,
                         ),
@@ -139,7 +139,7 @@ class _CarItemState extends State<CarItem> {
                       topRight: Radius.circular(15),
                     ),
                     child: Image.network(
-                      widget.car.imagesUrl.imageUrl[0],
+                      widget.car.imagesUrl[0].url,
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,

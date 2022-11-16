@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:carshare/data/dummy_cars_data.dart';
+import 'package:carshare/data/store.dart';
 import 'package:carshare/exceptions/http_exceptions.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/utils/constants.dart';
@@ -12,6 +14,7 @@ class CarList with ChangeNotifier {
 
   // final String _token;
   // final String _userId;
+  String? _refreshToken;
   final List<Car> _cars = dummyCars; //[];
 
   List<Car> get cars => [..._cars];
@@ -60,41 +63,77 @@ class CarList with ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<void> saveCar(Map<String, Object> data) {
-  //   bool hasId = data['id'] != null;
+  void saveCar(Map<String, Object> data) {
+    bool hasId = data['id'] != null;
 
-  // final car = Car(
-  //   id: hasId ? data['id'] as String : Random().nextDouble().toString(),
-  // );
+    final car = Car(
+      id: hasId ? data['id'] as int : 0,
+      brand: data['brand'] as String,
+      doors: data['doors'] as int,
+      fuel: data['fuel'] as CarFuel,
+      gearShift: data['gearShift'] as CarGearShift,
+      plate: data['plate'] as String,
+      seats: data['seats'] as int,
+      trunk: data['trunk'] as int,
+      year: data['year'] as int,
+      userId: data['userId'] as String,
+      category: data['category'] as CarCategory,
+      model: data['model'] as String,
+      imagesUrl: data['imagesUrl'] as List<CarImages>,
+      price: data['price'] as double,
+      location: data['location'] as CarLocation,
+      description: data['description'] as String,
+    );
 
-  // if (hasId) {
-  //   return updateCar(car);
-  // } else {
-  //  return addCar(car);
-  //}
-  //}
+    if (hasId) {
+      updateCar(car);
+    } else {
+      addCar(car);
+    }
+  }
 
   Future<void> addCar(Car car) async {
+    final userData = await Store.getMap('userData');
+    _refreshToken = userData['refreshToken'];
+
+    final imageUrlJsonText = jsonEncode(car.imagesUrl,
+        toEncodable: (Object? value) => value is CarImages
+            ? CarImages.toJson(value)
+            : throw UnsupportedError('Cannot convert to JSON: $value'));
+
+    print(imageUrlJsonText);
+
     final response = await http.post(
       Uri.parse('$_baseUrl/create'),
-      body: jsonEncode(
-        {
-          "brand": car.brand,
-          "model": car.model,
-          "year": car.year,
-          "plate": car.plate,
-        },
-      ),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+      },
+      body: jsonEncode({
+        "user": car.userId,
+        "brand": car.brand,
+        "model": car.model,
+        "year": car.year,
+        "plate": car.plate,
+        "fuel": car.fuel.name,
+        "gearShift": car.gearShift.name,
+        "category": car.category.name,
+        "doors": car.doors,
+        "seats": car.seats,
+        "trunk": car.trunk,
+        "latitude": car.location.latitude,
+        "longitude": car.location.longitude,
+        "imageUrl": "fahsufhklajshfklahslkfh",
+        "description": car.description,
+        "address": car.location.address,
+        "price": car.price,
+        "carImages": imageUrlJsonText,
+      }),
     );
-    // final id = jsonDecode(response.body)['name'];
-    // print(jsonDecode(response.body));
-    // _cars.add(Product(
-    //   id: id,
-    //   name: product.name,
-    //   description: product.description,
-    //   price: product.price,
-    //   imageUrl: product.imageUrl,
-    // ));
+    print(response.body);
+    _cars.add(car);
+
     notifyListeners();
   }
 
@@ -102,17 +141,17 @@ class CarList with ChangeNotifier {
     int index = _cars.indexWhere((p) => p.id == car.id);
 
     if (index >= 0) {
-      await http.patch(
-        Uri.parse('$_baseUrl/${car.id}'),
-        body: jsonEncode(
-          {
-            "brand": car.brand,
-            "model": car.model,
-            "year": car.year,
-            "plate": car.plate,
-          },
-        ),
-      );
+      // await http.patch(
+      //   Uri.parse('$_baseUrl/${car.id}'),
+      //   body: jsonEncode(
+      //     {
+      //       "brand": car.brand,
+      //       "model": car.model,
+      //       "year": car.year,
+      //       "plate": car.plate,
+      //     },
+      //   ),
+      // );
       _cars[index] = car;
       notifyListeners();
     }

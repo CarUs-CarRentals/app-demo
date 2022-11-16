@@ -300,24 +300,24 @@ class CarDetailScreen extends StatelessWidget {
               }).toList(),
             ),*/
             CarouselCar(
-                carsImages: [...car.imagesUrl.imageUrl].map((imageUrl) {
+                carsImages: [...car.imagesUrl].map((imageUrl) {
                   return Builder(
                     builder: (BuildContext context) {
                       return SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: Image.network(
-                          imageUrl,
+                          imageUrl.url,
                           fit: BoxFit.cover,
                         ),
                       );
                     },
                   );
                 }).toList(),
-                imagesList: car.imagesUrl.imageUrl.toList()),
+                imagesList: car.imagesUrl.map((image) => image.url).toList()),
             _titleSection(
               context,
               car.shortDescription,
-              car.review,
+              99,
               car.year,
               car.userId,
             ),
@@ -333,7 +333,7 @@ class CarDetailScreen extends StatelessWidget {
             RentalDateForm(),
             //LocationInput(),
             PlaceDetailItem(car.location.latitude, car.location.longitude,
-                car.location.address, car.imagesUrl.imageUrl[0]),
+                car.location.address, car.imagesUrl[0].url),
             Divider(),
             _descriptionSection(context, car.description),
             Divider(),
