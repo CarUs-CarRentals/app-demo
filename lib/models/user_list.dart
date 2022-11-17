@@ -43,10 +43,37 @@ class UserList with ChangeNotifier {
     }
   }
 
-  // User loadCurrentUser() {
-  //   Auth().getLoggedUser();
+  Future<void> loadProfile() async {
+    // final response = await http.post(
+    //   Uri.parse('$_baseUrl/create'),
+    //   headers: {
+    //     "content-type": "application/json",
+    //     "accept": "application/json",
+    //     HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+    //   },
+    //   body: jsonEncode({
+    //     "user": car.userId,
+    //     "brand": car.brand,
+    //     "model": car.model,
+    //     "year": car.year,
+    //     "plate": car.plate,
+    //     "fuel": car.fuel.name,
+    //     "gearShift": car.gearShift.name,
+    //     "category": car.category.name,
+    //     "doors": car.doors,
+    //     "seats": car.seats,
+    //     "trunk": car.trunk,
+    //     "latitude": car.location.latitude,
+    //     "longitude": car.location.longitude,
+    //     "description": car.description,
+    //     "address": car.location.address,
+    //     "price": car.price,
+    //     "carImages": imageUrlJsonText,
+    //   }),
+    // );
 
-  // }
+    notifyListeners();
+  }
 
   Future<void> loadCars() async {
     _users.clear();

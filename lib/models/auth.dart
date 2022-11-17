@@ -20,6 +20,7 @@ class Auth with ChangeNotifier {
   DateTime? _expiryDate;
   DateTime? _expiryDateBackend;
   Timer? _logoutTimer;
+  Timer? _tokenExpirationTimer;
   User? _currentUser;
 
   bool get isAuth {
@@ -49,48 +50,48 @@ class Auth with ChangeNotifier {
     return isAuth ? _currentUser : null;
   }
 
-  Future<void> _authenticate(
-      String email, String password, String urlFragment) async {
-    final url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:$urlFragment?key=${Constants.GOOGLE_API_KEY}';
-    final response = await http.post(
-      Uri.parse(url),
-      body: jsonEncode({
-        'email': email,
-        'password': password,
-        'returnSecureToken': true,
-      }),
-    );
+  // Future<void> _authenticate(
+  //     String email, String password, String urlFragment) async {
+  //   final url =
+  //       'https://identitytoolkit.googleapis.com/v1/accounts:$urlFragment?key=${Constants.GOOGLE_API_KEY}';
+  //   final response = await http.post(
+  //     Uri.parse(url),
+  //     body: jsonEncode({
+  //       'email': email,
+  //       'password': password,
+  //       'returnSecureToken': true,
+  //     }),
+  //   );
 
-    final body = jsonDecode(response.body);
-    print(jsonDecode(response.body));
+  //   final body = jsonDecode(response.body);
+  //   print(jsonDecode(response.body));
 
-    if (body['error'] != null) {
-      throw AuthException(body['error']['message']);
-    } else {
-      _token = body['idToken'];
-      _email = body['email'];
-      _userId = body['localId'];
-      _refreshToken = body['refreshToken'];
+  //   if (body['error'] != null) {
+  //     throw AuthException(body['error']['message']);
+  //   } else {
+  //     _token = body['idToken'];
+  //     _email = body['email'];
+  //     _userId = body['localId'];
+  //     _refreshToken = body['refreshToken'];
 
-      _expiryDate = DateTime.now().add(
-        Duration(
-          seconds: int.parse(body['expiresIn']),
-        ),
-      );
+  //     _expiryDate = DateTime.now().add(
+  //       Duration(
+  //         seconds: int.parse(body['expiresIn']),
+  //       ),
+  //     );
 
-      Store.saveMap('userDataFb', {
-        'token': _token,
-        'email': _email,
-        'localId': _userId,
-        'refreshToken': _refreshToken,
-        'expireDate': _expiryDate?.toIso8601String(),
-      });
+  //     Store.saveMap('userDataFb', {
+  //       'token': _token,
+  //       'email': _email,
+  //       'localId': _userId,
+  //       'refreshToken': _refreshToken,
+  //       'expireDate': _expiryDate?.toIso8601String(),
+  //     });
 
-      //_autoLogout();
-      notifyListeners();
-    }
-  }
+  //     //_autoLogout();
+  //     notifyListeners();
+  //   }
+  // }
 
   Future<void> signup(
       String email, String password, String firstName, String lastName) async {
@@ -224,6 +225,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> tryAutoLogin() async {
+    _tryRefreshTokenBakend();
     if (isAuth) return;
 
     final userData = await Store.getMap('userDataFb');
@@ -244,7 +246,7 @@ class Auth with ChangeNotifier {
     //_refreshTokenBackend = userData['refreshToken'];
     _expiryDate = expiryDate;
     print("uID: $_userId");
-    _autoLogout();
+    //_autoLogout();
     notifyListeners();
   }
 
@@ -256,17 +258,21 @@ class Auth with ChangeNotifier {
     _expiryDate = null;
     _expiryDateBackend = null;
     _clearLogoutTimer();
+
     Store.remove('userDataFb').then((_) => notifyListeners());
-    //Store.remove('userData').then((_) => notifyListeners());
+    Store.remove('userData').then((_) => notifyListeners());
   }
 
   void _clearLogoutTimer() {
     _logoutTimer?.cancel();
+    _tokenExpirationTimer?.cancel();
     _logoutTimer = null;
+    _tokenExpirationTimer = null;
   }
 
   void _autoLogout() {
     _clearLogoutTimer();
+
     final timeToLogout = _expiryDate?.difference(DateTime.now()).inSeconds;
     print("time to Logout: $timeToLogout");
     _logoutTimer = Timer(
@@ -274,6 +280,61 @@ class Auth with ChangeNotifier {
       logout,
     );
   }
+
+  void _tryRefreshTokenBakend() {
+    final timeToRefreshToken =
+        _expiryDateBackend?.difference(DateTime.now()).inSeconds;
+
+    if (timeToRefreshToken == null) {
+      return;
+    }
+
+    print("time to refresh backend: $timeToRefreshToken");
+
+    _tokenExpirationTimer = Timer(
+      Duration(seconds: timeToRefreshToken),
+      refreshToken,
+    );
+  }
+
+  Future<void> refreshToken() async {
+    const url = '${Constants.AUTH_BASE_URL}/refresh-token';
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $_refreshTokenBackend",
+      },
+    );
+
+    print(jsonDecode(response.body));
+    int status = response.statusCode;
+    if (status == 200) {
+      _refreshTokenBackend = jsonDecode(response.body)['token'];
+      _expiryDateBackend = DateTime.fromMillisecondsSinceEpoch(
+          jsonDecode(response.body)['tokenExpiration'] * 1000);
+
+      Store.saveMap('userData', {
+        'token': _tokenBackend,
+        'refreshToken': _refreshTokenBackend,
+        'expireDate': _expiryDateBackend?.toIso8601String(),
+      });
+
+      notifyListeners();
+    } else {
+      logout;
+    }
+  }
+
+  // String? getRefreshTokenBackend() {
+  //   final userData = Store.getMap('userData').then((data) {
+  //     _refreshToken = data['refreshToken'];
+  //   });
+
+  //   return _refreshToken;
+  // }
 
   Future<User> getLoggedUser() async {
     final userData = await Store.getMap('userData');
