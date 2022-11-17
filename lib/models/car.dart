@@ -43,9 +43,12 @@ class CarImages {
   CarImages({required this.url});
   CarImages.fromJson(Map<String, dynamic> json) : url = json['url'];
 
-  static Map<String, dynamic> toJson(CarImages value) => {
-        'url': value.url,
-      };
+  // method
+  Map<String, dynamic> toJson() {
+    return {
+      'url': url,
+    };
+  }
 }
 
 class Car {

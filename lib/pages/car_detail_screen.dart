@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carshare/components/carousel_car.dart';
 import 'package:carshare/components/place_detail_item.dart';
 import 'package:carshare/components/rental_date_form.dart';
+import 'package:carshare/data/store.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/models/user_list.dart';
@@ -10,7 +11,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
-class CarDetailScreen extends StatelessWidget {
+class CarDetailScreen extends StatefulWidget {
+  @override
+  State<CarDetailScreen> createState() => _CarDetailScreenState();
+}
+
+class _CarDetailScreenState extends State<CarDetailScreen> {
+  String? _userId;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   print("usuario do carro $_getCurrentUserId()");
+  // }
+
   void _selectCarReview(BuildContext context, Car car) {
     Navigator.of(context).pushNamed(
       AppRoutes.CAR_REVIEW,
@@ -23,6 +37,11 @@ class CarDetailScreen extends StatelessWidget {
       AppRoutes.PROFILE_USER,
       arguments: car,
     );
+  }
+
+  Future<String> _getCurrentUserId() async {
+    final userData = await Store.getMap('userDataFb');
+    return userData['localId'];
   }
 
   _submitRental() {
@@ -217,50 +236,74 @@ class CarDetailScreen extends StatelessWidget {
     );
   }
 
-  _rentalSection(BuildContext context, double carPrice) {
+  _rentalSection(BuildContext context, double carPrice, String userId) {
+    _getCurrentUserId().then((value) {
+      _userId = value;
+      print("id usuario atual $value vs id do usuario do carro $userId");
+    });
+
     return SizedBox(
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      'R\$ ${carPrice.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+            child: _userId != userId
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            'R\$ ${carPrice.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'por dia',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Text(
-                      'por dia',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Theme.of(context).colorScheme.secondary,
+                      VerticalDivider(),
+                      Row(
+                        children: [
+                          ElevatedButton(
+                            onPressed: _submitRental,
+                            style: ElevatedButton.styleFrom(
+                              primary: Theme.of(context).colorScheme.primary,
+                            ),
+                            child: const Text(
+                              'Continuar',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  )
+                : Column(
+                    children: [
+                      Text(
+                        'R\$ ${carPrice.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                VerticalDivider(),
-                Row(
-                  children: [
-                    ElevatedButton(
-                      onPressed: _submitRental,
-                      style: ElevatedButton.styleFrom(
-                        primary: Theme.of(context).colorScheme.primary,
+                      Text(
+                        'por dia',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
                       ),
-                      child: const Text(
-                        'Continuar',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
+                    ],
+                  ),
           ),
         ],
       ),
@@ -349,7 +392,7 @@ class CarDetailScreen extends StatelessWidget {
               () => _selectOwnerProfile(context, car),
             ),
             Divider(),
-            _rentalSection(context, car.price),
+            _rentalSection(context, car.price, car.userId),
             // TextButton(
             //   onPressed: () => _selectCarReview(context),
             //   child: Text(
