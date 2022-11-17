@@ -32,7 +32,8 @@ class UserList with ChangeNotifier {
         "47999999999",
         "Some mim",
         UserGender.female,
-        Address("CEP", "UF", "Cidade", "Bairro", "Rua", 999),
+        Address(
+            "CEP", BrazilStates.SANTA_CATARINA, "Cidade", "Bairro", "Rua", 999),
         "",
         id: '1',
         email: "meu_email@gmail.com",
