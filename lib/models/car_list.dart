@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:carshare/data/dummy_cars_data.dart';
 import 'package:carshare/data/store.dart';
 import 'package:carshare/exceptions/http_exceptions.dart';
 import 'package:carshare/models/car.dart';
@@ -15,7 +14,7 @@ class CarList with ChangeNotifier {
   // final String _token;
   // final String _userId;
   String? _refreshToken;
-  final List<Car> _cars = dummyCars; //[];
+  final List<Car> _cars = [];
 
   List<Car> get cars => [..._cars];
   // List<Car> get favoriteItems =>
@@ -32,38 +31,71 @@ class CarList with ChangeNotifier {
   }
 
   Future<void> loadCars() async {
+    final userData = await Store.getMap('userData');
+    _refreshToken = userData['refreshToken'];
+
     _cars.clear();
 
-    final response = await http.get(Uri.parse('$_baseUrl/all'));
-    if (response.body == 'null') return;
+    final response = await http.get(
+      Uri.parse('$_baseUrl/all'),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+      },
+    );
 
-    // final favResponse = await http.get(
-    //   Uri.parse(
-    //     '${Constants.USER_FAVORITES_URL}/$_userId.json?auth=$_token',
-    //   ),
-    // );
+    List<Map<String, dynamic>> map = [];
 
-    // Map<String, dynamic> favData =
-    //     favResponse.body == 'null' ? {} : jsonDecode(favResponse.body);
+    //Map<String, dynamic> data = jsonDecode(response.body);
+    map = List<Map<String, dynamic>>.from(jsonDecode(response.body));
+    List<Map<String, dynamic>> data = map;
+    data.forEach((carData) {
+      CarFuel fuel = CarFuel.values
+          .firstWhere((element) => element.name.toString() == carData['fuel']);
 
-    // Map<String, dynamic> data = jsonDecode(response.body);
-    // data.forEach((productId, productData) {
-    //   //final isFavorite = favData[carId] ?? false;
-    //   _cars.add(
-    //     Product(
-    //       id: productId,
-    //       name: productData['name'],
-    //       description: productData['description'],
-    //       price: productData['price'],
-    //       imageUrl: productData['imageUrl'],
-    //       isFavorite: isFavorite,
-    //     ),
-    //   );
-    // });
+      CarGearShift gearShift = CarGearShift.values.firstWhere(
+          (element) => element.name.toString() == carData['gearShift']);
+
+      CarCategory category = CarCategory.values.firstWhere(
+          (element) => element.name.toString() == carData['category']);
+
+      //Adiciona as imagens do carro no objeto CarImages
+      List<CarImages> carImages = [];
+      final List<dynamic> imagesData = carData['carImages'];
+      for (var i = 0; i < imagesData.length; i++) {
+        carImages.add(CarImages(url: carData['carImages'][i]['url']));
+      }
+
+      _cars.add(
+        Car(
+          id: carData['id'],
+          brand: carData['brand'],
+          userId: carData['user'],
+          model: carData['model'],
+          year: carData['year'],
+          plate: carData['plate'],
+          fuel: fuel,
+          gearShift: gearShift,
+          category: category,
+          doors: carData['doors'],
+          seats: carData['seats'],
+          trunk: carData['trunk'],
+          price: carData['price'],
+          location: CarLocation(
+              latitude: double.parse(carData['latitude'].toString()),
+              longitude: double.parse(carData['longitude'].toString()),
+              address: carData['address']),
+          description: carData['description'],
+          imagesUrl: carImages,
+        ),
+      );
+    });
+
     notifyListeners();
   }
 
-  void saveCar(Map<String, Object> data) {
+  Future<void> saveCar(Map<String, Object> data) {
     bool hasId = data['id'] != null;
 
     final car = Car(
@@ -86,22 +118,15 @@ class CarList with ChangeNotifier {
     );
 
     if (hasId) {
-      updateCar(car);
+      return updateCar(car);
     } else {
-      addCar(car);
+      return addCar(car);
     }
   }
 
   Future<void> addCar(Car car) async {
     final userData = await Store.getMap('userData');
     _refreshToken = userData['refreshToken'];
-
-    final imageUrlJsonText = jsonEncode(car.imagesUrl,
-        toEncodable: (Object? value) => value is CarImages
-            ? CarImages.toJson(value)
-            : throw UnsupportedError('Cannot convert to JSON: $value'));
-
-    print(imageUrlJsonText);
 
     final response = await http.post(
       Uri.parse('$_baseUrl/create'),
@@ -124,36 +149,65 @@ class CarList with ChangeNotifier {
         "trunk": car.trunk,
         "latitude": car.location.latitude,
         "longitude": car.location.longitude,
-        "imageUrl": "fahsufhklajshfklahslkfh",
         "description": car.description,
         "address": car.location.address,
         "price": car.price,
-        "carImages": imageUrlJsonText,
+        "carImages": car.imagesUrl
       }),
     );
-    print(response.body);
-    _cars.add(car);
 
-    notifyListeners();
+    print(jsonDecode(response.body));
+
+    if (response.statusCode < 400) {
+      _cars.add(car);
+      notifyListeners();
+    } else {
+      print("CARRO NÃO CADASTRADO");
+    }
   }
 
   Future<void> updateCar(Car car) async {
     int index = _cars.indexWhere((p) => p.id == car.id);
 
     if (index >= 0) {
-      // await http.patch(
-      //   Uri.parse('$_baseUrl/${car.id}'),
-      //   body: jsonEncode(
-      //     {
-      //       "brand": car.brand,
-      //       "model": car.model,
-      //       "year": car.year,
-      //       "plate": car.plate,
-      //     },
-      //   ),
-      // );
-      _cars[index] = car;
-      notifyListeners();
+      final userData = await Store.getMap('userData');
+      _refreshToken = userData['refreshToken'];
+
+      final response = await http.put(
+        Uri.parse('$_baseUrl/${car.id}'),
+        headers: {
+          "content-type": "application/json",
+          "accept": "application/json",
+          HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+        },
+        body: jsonEncode({
+          "user": car.userId,
+          "brand": car.brand,
+          "model": car.model,
+          "year": car.year,
+          "plate": car.plate,
+          "fuel": car.fuel.name,
+          "gearShift": car.gearShift.name,
+          "category": car.category.name,
+          "doors": car.doors,
+          "seats": car.seats,
+          "trunk": car.trunk,
+          "latitude": car.location.latitude,
+          "longitude": car.location.longitude,
+          "description": car.description,
+          "address": car.location.address,
+          "price": car.price,
+          "carImages": car.imagesUrl
+        }),
+      );
+
+      int status = response.statusCode;
+      if (status == 200) {
+        _cars[index] = car;
+        notifyListeners();
+      } else {
+        print("CARRO NÃO FOI ATUALIZADO");
+      }
     }
   }
 
@@ -162,22 +216,38 @@ class CarList with ChangeNotifier {
 
     if (index >= 0) {
       final car = _cars[index];
-
       _cars.remove(car);
       notifyListeners();
 
+      final userData = await Store.getMap('userData');
+      _refreshToken = userData['refreshToken'];
+
       final response = await http.delete(
         Uri.parse('$_baseUrl/${car.id}'),
+        headers: {
+          "content-type": "application/json",
+          "accept": "application/json",
+          HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+        },
       );
 
       if (response.statusCode >= 400) {
         _cars.insert(index, car);
         notifyListeners();
-        throw HttpException(
-          msg: "Não foi possivel excluir o carro.",
-          statusCode: response.statusCode,
-        );
       }
+
+      // final response = await http.delete(
+      //   Uri.parse('$_baseUrl/${car.id}'),
+      // );
+
+      // if (response.statusCode >= 400) {
+      //   _cars.insert(index, car);
+      //   notifyListeners();
+      //   throw HttpException(
+      //     msg: "Não foi possivel excluir o carro.",
+      //     statusCode: response.statusCode,
+      //   );
+      // }
     }
   }
 }

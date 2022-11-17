@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 
 class CarForm extends StatefulWidget {
@@ -25,6 +26,7 @@ class _CarFormState extends State<CarForm> {
   final _formKey = GlobalKey<FormState>();
   final _formData = <String, Object>{};
   bool _editMode = false;
+  bool _isLoading = false;
 
   //String dropdownValue = '2022';
   CarFuel? _dropdownFuelValue;
@@ -85,7 +87,7 @@ class _CarFormState extends State<CarForm> {
     _formData['location'] = _carLocation;
   }
 
-  void _submitForm() async {
+  Future<void> _submitForm() async {
     _getCurrentUserId();
 
     final isValid = _formKey.currentState?.validate() ?? false;
@@ -93,6 +95,11 @@ class _CarFormState extends State<CarForm> {
     if (!isValid) {
       return;
     }
+
+    context.loaderOverlay.show();
+    setState(() {
+      _isLoading = context.loaderOverlay.visible;
+    });
 
     _pickedImagesList.removeWhere((element) => element.path == "");
 
@@ -109,11 +116,33 @@ class _CarFormState extends State<CarForm> {
     }
     _formKey.currentState?.save();
 
-    Provider.of<CarList>(
-      context,
-      listen: false,
-    ).saveCar(_formData);
-    Navigator.of(context).pop();
+    try {
+      await Provider.of<CarList>(
+        context,
+        listen: false,
+      ).saveCar(_formData);
+      Navigator.of(context).pop();
+    } catch (error) {
+      await showDialog<void>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('Ocorreu um erro!'),
+                content: Text(error.toString()),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'OK'),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ));
+    } finally {
+      if (_isLoading) {
+        context.loaderOverlay.hide();
+      }
+      setState(() {
+        _isLoading = context.loaderOverlay.visible;
+      });
+    }
   }
 
   void _getCurrentUserId() async {
@@ -193,6 +222,22 @@ class _CarFormState extends State<CarForm> {
       key: _formKey,
       child: ListView(
         children: [
+          // ElevatedButton(
+          //   onPressed: () async {
+          //     context.loaderOverlay.show();
+          //     setState(() {
+          //       _isLoading = context.loaderOverlay.visible;
+          //     });
+          //     await Future.delayed(Duration(seconds: 2));
+          //     if (_isLoading) {
+          //       context.loaderOverlay.hide();
+          //     }
+          //     setState(() {
+          //       _isLoading = context.loaderOverlay.visible;
+          //     });
+          //   },
+          //   child: Text('Show loader overlay for 2 seconds'),
+          // ),
           Column(
             children: [
               const SizedBox(

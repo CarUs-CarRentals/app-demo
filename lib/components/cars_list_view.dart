@@ -5,6 +5,7 @@ import 'package:carshare/models/car.dart';
 import 'package:carshare/models/car_list.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +34,27 @@ class _CarsListViewState extends State<CarsListView> {
         c((lat2 - lat1) * p) / 2 +
         c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
     return (1000 * 12742 * asin(sqrt(a))).round();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    
+    context.loaderOverlay.show();
+    setState(() {
+      _isLoading = context.loaderOverlay.visible;
+    });
+
+    Provider.of<CarList>(context, listen: false).loadCars().then((value) {
+      setState(() {
+        if (_isLoading) {
+          context.loaderOverlay.hide();
+        }
+        setState(() {
+          _isLoading = context.loaderOverlay.visible;
+        });
+      });
+    });
   }
 
   @override

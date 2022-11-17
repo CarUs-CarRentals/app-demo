@@ -42,6 +42,11 @@ class _CarItemState extends State<CarItem> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _getCarDistance();
   }
 
@@ -100,7 +105,7 @@ class _CarItemState extends State<CarItem> {
                       color: Colors.grey[500],
                     ),
                     Text(
-                      carDistance!.isEmpty ? '' : '${carDistance} de distância',
+                      carDistance!.isEmpty ? '' : '$carDistance de distância',
                       textScaleFactor: 0.9,
                       style: TextStyle(color: Colors.grey[500]),
                     ),
@@ -140,6 +145,7 @@ class _CarItemState extends State<CarItem> {
                     ),
                     child: Image.network(
                       widget.car.imagesUrl[0].url,
+                      //"https://cdn.motor1.com/images/mgl/AkB8vL/s3/fiat-mobi-2023.jpg",
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,
