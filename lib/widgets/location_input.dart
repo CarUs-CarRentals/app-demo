@@ -7,8 +7,9 @@ import 'package:location/location.dart';
 
 class LocationInput extends StatefulWidget {
   final Function onSelectLocation;
-  //final LatLng latLngInitial;
-  const LocationInput(this.onSelectLocation, {Key? key}) : super(key: key);
+  final LatLng latLngInitial;
+  const LocationInput(this.onSelectLocation, this.latLngInitial, {Key? key})
+      : super(key: key);
 
   @override
   State<LocationInput> createState() => _LocationInputState();
@@ -81,15 +82,15 @@ class _LocationInputState extends State<LocationInput> {
     widget.onSelectLocation(_latLngSelected);
   }
 
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   if (widget.latLngInitial.latitude != 0 &&
-  //       widget.latLngInitial.longitude != 0) {
-  //     _setInitialLocation(widget.latLngInitial);
-  //   }
-  // }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.latLngInitial.latitude != 0 &&
+        widget.latLngInitial.longitude != 0) {
+      _setInitialLocation(widget.latLngInitial);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

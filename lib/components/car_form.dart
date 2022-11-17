@@ -102,13 +102,13 @@ class _CarFormState extends State<CarForm> {
   void _selectLocation(LatLng selectedLocation) async {
     _latLngSelected = selectedLocation;
 
-    print(_carLocation.address);
-
-    await LocationUtil.getAddressFrom(selectedLocation).then((value) {
+    await LocationUtil.getAddressFrom(selectedLocation).then((String result) {
       setState(() {
-        _carAddress = value;
+        _carAddress = result;
       });
     });
+    ;
+    print(_carAddress.toString());
 
     _carLocation = CarLocation(
       latitude: _latLngSelected!.latitude,
@@ -559,10 +559,11 @@ class _CarFormState extends State<CarForm> {
               Divider(
                 height: 50,
               ),
-              _carLocation.address == ''
-                  ? LocationInput(() => _selectLocation(
-                      LatLng(_carLocation.latitude, _carLocation.longitude)))
-                  : LocationInput(this._selectLocation),
+              // _carLocation.address == ''
+              //     ? LocationInput(() => _selectLocation(
+              //         LatLng(_carLocation.latitude, _carLocation.longitude)))
+              LocationInput(this._selectLocation,
+                  LatLng(_carLocation.latitude, _carLocation.longitude)),
             ],
           ),
           ElevatedButton(
