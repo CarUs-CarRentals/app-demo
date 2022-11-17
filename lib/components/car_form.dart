@@ -23,7 +23,7 @@ class CarForm extends StatefulWidget {
 class _CarFormState extends State<CarForm> {
   final _priceFocus = FocusNode();
   final _formKey = GlobalKey<FormState>();
-  final _formData = Map<String, Object>();
+  final _formData = <String, Object>{};
   bool _editMode = false;
 
   //String dropdownValue = '2022';
@@ -39,7 +39,7 @@ class _CarFormState extends State<CarForm> {
   LatLng? _latLngSelected;
   String _carAddress = '';
   String? _userId;
-  List<File> _pickedImagesList = [];
+  final List<File> _pickedImagesList = [];
   List<CarImages> _carImagesUrl = [];
   CarLocation _carLocation =
       const CarLocation(latitude: 0, longitude: 0, address: '');
@@ -48,35 +48,8 @@ class _CarFormState extends State<CarForm> {
 
   final List<int> yearsList = List.generate(100, (int index) => (2022 - index));
 
-  _spinBoxSection(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Column(
-            children: [
-              Text('Portas', style: Theme.of(context).textTheme.subtitle1),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: SpinBox(
-                  min: 1,
-                  max: 10,
-                  value: 1,
-                  decoration: InputDecoration(border: InputBorder.none),
-                  onChanged: (value) => print(value),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   void _selectImage(File pickedImage) {
     _pickedImage = pickedImage;
-    print("img recebida: ${_pickedImage.path}");
     if (_pickedImage.path == "") {
       return;
     }
@@ -90,11 +63,6 @@ class _CarFormState extends State<CarForm> {
         _carImagesUrl.removeAt(indexImg);
       }
     } else {
-      // if (_carImagesUrl.map((item) => item.url).contains(_pickedImage.path)) {
-      //   int index = _carImagesUrl
-      //       .indexWhere((element) => element.url == _pickedImage.path);
-      //   _carImagesUrl.remove(_carImagesUrl[index]);
-
       _pickedImagesList.add(_pickedImage);
     }
   }
@@ -107,8 +75,6 @@ class _CarFormState extends State<CarForm> {
         _carAddress = result;
       });
     });
-    ;
-    print(_carAddress.toString());
 
     _carLocation = CarLocation(
       latitude: _latLngSelected!.latitude,
@@ -159,7 +125,7 @@ class _CarFormState extends State<CarForm> {
   _uploadImage(File pickedImage) async {
     final fileName =
         pickedImage.path.substring(pickedImage.path.lastIndexOf('/'));
-    final path = 'images/${_userId}/${fileName}';
+    final path = 'images/$_userId/$fileName';
 
     final ref = _firebaseStorage.ref().child(path);
     uploadTask = ref.putFile(pickedImage);
@@ -245,18 +211,18 @@ class _CarFormState extends State<CarForm> {
                   itemBuilder: (context, index) {
                     //print(_carImagesUrl[index].url);
                     return ImageInput(
-                        this._selectImage,
+                        _selectImage,
                         _carImagesUrl.isEmpty
                             ? ""
                             : index >= _carImagesUrl.length
                                 ? ""
                                 : _carImagesUrl[index].url);
                   }),
-              Divider(
+              const Divider(
                 height: 50,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Marca'),
+                decoration: const InputDecoration(labelText: 'Marca'),
                 textInputAction: TextInputAction.next,
                 initialValue: _formData['brand']?.toString(),
                 onSaved: (brand) => _formData['brand'] = brand ?? '',
@@ -271,7 +237,7 @@ class _CarFormState extends State<CarForm> {
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Modelo'),
+                decoration: const InputDecoration(labelText: 'Modelo'),
                 textInputAction: TextInputAction.next,
                 initialValue: _formData['model']?.toString(),
                 onSaved: (model) => _formData['model'] = model ?? '',
@@ -315,7 +281,7 @@ class _CarFormState extends State<CarForm> {
                 onSaved: (year) => _formData['year'] = year as int,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Placa'),
+                decoration: const InputDecoration(labelText: 'Placa'),
                 textInputAction: TextInputAction.next,
                 initialValue: _formData['plate']?.toString(),
                 onSaved: (plate) => _formData['plate'] = plate ?? '',
@@ -419,7 +385,8 @@ class _CarFormState extends State<CarForm> {
                     _formData['category'] = category as CarCategory,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Porta-malas (Litros)'),
+                decoration:
+                    const InputDecoration(labelText: 'Porta-malas (Litros)'),
                 initialValue: _formData['trunk']?.toString(),
                 validator: (_trunk) {
                   final trunk = _trunk;
@@ -438,10 +405,9 @@ class _CarFormState extends State<CarForm> {
               Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                 Expanded(
                   child: SpinBoxTheme(
-                    data: SpinBoxThemeData(
+                    data: const SpinBoxThemeData(
                         decoration: InputDecoration(
                             border: UnderlineInputBorder(),
-                            //labelText: "teste",
                             label: Text(
                               "Portas",
                               style: TextStyle(
@@ -451,7 +417,7 @@ class _CarFormState extends State<CarForm> {
                     child: Padding(
                       padding: const EdgeInsets.only(right: 4.0),
                       child: SpinBox(
-                        textStyle: TextStyle(height: 3.5),
+                        textStyle: const TextStyle(height: 3.5),
                         min: 1,
                         max: 99,
                         value: _doorsValue.toDouble(),
@@ -472,7 +438,7 @@ class _CarFormState extends State<CarForm> {
                 ),
                 Expanded(
                   child: SpinBoxTheme(
-                      data: SpinBoxThemeData(
+                      data: const SpinBoxThemeData(
                           decoration: InputDecoration(
                               border: UnderlineInputBorder(),
                               label: Text(
@@ -484,7 +450,7 @@ class _CarFormState extends State<CarForm> {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 4.0),
                         child: SpinBox(
-                          textStyle: TextStyle(height: 3.5),
+                          textStyle: const TextStyle(height: 3.5),
                           min: 1,
                           max: 99,
                           value: _seatsValue.toDouble(),
@@ -503,11 +469,11 @@ class _CarFormState extends State<CarForm> {
                       )),
                 )
               ]),
-              Divider(
+              const Divider(
                 height: 50,
               ),
               TextFormField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Descrição do veículo',
                   alignLabelWithHint: true,
                 ),
@@ -532,16 +498,17 @@ class _CarFormState extends State<CarForm> {
                   return null;
                 },
               ),
-              Divider(
+              const Divider(
                 height: 50,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Preço'),
+                decoration: const InputDecoration(labelText: 'Preço'),
                 initialValue: _formData['price']?.toString(),
                 textInputAction: TextInputAction.next,
                 onSaved: (price) => _formData['price'] = double.parse(price!),
                 focusNode: _priceFocus,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 validator: (_price) {
                   final price = _price ?? '';
 
@@ -556,13 +523,13 @@ class _CarFormState extends State<CarForm> {
                   return null;
                 },
               ),
-              Divider(
+              const Divider(
                 height: 50,
               ),
               // _carLocation.address == ''
               //     ? LocationInput(() => _selectLocation(
               //         LatLng(_carLocation.latitude, _carLocation.longitude)))
-              LocationInput(this._selectLocation,
+              LocationInput(_selectLocation,
                   LatLng(_carLocation.latitude, _carLocation.longitude)),
             ],
           ),
@@ -575,8 +542,8 @@ class _CarFormState extends State<CarForm> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: _latLngSelected == null
-                            ? Text("Selecione a localização do carro")
-                            : Text("Adicione ao menos uma imagem"),
+                            ? const Text("Selecione a localização do carro")
+                            : const Text("Adicione ao menos uma imagem"),
                         actions: <Widget>[
                           TextButton(
                             onPressed: () {
@@ -595,11 +562,11 @@ class _CarFormState extends State<CarForm> {
               primary: Theme.of(context).colorScheme.primary,
             ),
             child: _editMode
-                ? Text(
+                ? const Text(
                     'Salvar Alterações',
                     style: TextStyle(fontSize: 20),
                   )
-                : Text(
+                : const Text(
                     'Cadastrar',
                     style: TextStyle(fontSize: 20),
                   ),
