@@ -150,6 +150,8 @@ class Auth with ChangeNotifier {
         'expireDate': _expiryDate?.toIso8601String(),
       });
 
+      login(email, password);
+
       //_autoLogout();
       notifyListeners();
     }
@@ -225,7 +227,6 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> tryAutoLogin() async {
-    _tryRefreshTokenBakend();
     if (isAuth) return;
 
     final userData = await Store.getMap('userDataFb');
@@ -246,6 +247,7 @@ class Auth with ChangeNotifier {
     //_refreshTokenBackend = userData['refreshToken'];
     _expiryDate = expiryDate;
     print("uID: $_userId");
+    _tryRefreshTokenBakend();
     //_autoLogout();
     notifyListeners();
   }
