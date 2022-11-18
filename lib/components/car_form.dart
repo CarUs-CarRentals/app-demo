@@ -218,6 +218,8 @@ class _CarFormState extends State<CarForm> {
 
   @override
   Widget build(BuildContext context) {
+    final snackMsg = ScaffoldMessenger.of(context);
+
     return Form(
       key: _formKey,
       child: ListView(
@@ -600,7 +602,15 @@ class _CarFormState extends State<CarForm> {
                       );
                     });
               } else {
-                _submitForm();
+                try {
+                  _submitForm();
+                } on HttpException catch (error) {
+                  snackMsg.showSnackBar(SnackBar(
+                    content: Text(
+                      error.toString(),
+                    ),
+                  ));
+                }
               }
             },
             style: ElevatedButton.styleFrom(

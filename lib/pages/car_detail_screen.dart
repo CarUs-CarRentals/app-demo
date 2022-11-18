@@ -318,94 +318,78 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
       appBar: AppBar(
         title: Text(car.shortDescription),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            /*CarouselSlider(
-              options: CarouselOptions(
-                height: 200,
-                viewportFraction: 1.0,
-                enlargeCenterPage: false,
-                enableInfiniteScroll: false,
+      body: FutureBuilder(
+          future: _getCurrentUserId(),
+          builder: (ctx, snapshot) {
+            return SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  CarouselCar(
+                      carsImages: [...car.imagesUrl].map((imageUrl) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              child: Image.network(
+                                imageUrl.url,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                      imagesList:
+                          car.imagesUrl.map((image) => image.url).toList()),
+                  _titleSection(
+                    context,
+                    car.shortDescription,
+                    99,
+                    car.year,
+                    car.userId,
+                  ),
+                  _optionalCarSection(
+                    context,
+                    car.gearShiftText,
+                    car.categoryText,
+                    car.fuelText,
+                    car.doors,
+                    car.seats,
+                  ),
+                  Divider(),
+                  RentalDateForm(),
+                  //LocationInput(),
+                  PlaceDetailItem(car.location.latitude, car.location.longitude,
+                      car.location.address, car.imagesUrl[0].url),
+                  Divider(),
+                  _descriptionSection(context, car.description),
+                  Divider(),
+                  _InfoItem(
+                    Icons.reviews,
+                    'Avaliações',
+                    () => _selectCarReview(context, car),
+                  ),
+                  Divider(),
+                  _InfoItem(
+                    Icons.person,
+                    'Visualizar proprietario do veículo',
+                    () => _selectOwnerProfile(context, car),
+                  ),
+                  Divider(),
+                  _rentalSection(context, car.price, car.userId),
+                  // TextButton(
+                  //   onPressed: () => _selectCarReview(context),
+                  //   child: Text(
+                  //     'Avaliações do Carro',
+                  //     style: TextStyle(
+                  //       color: Theme.of(context).colorScheme.primary,
+                  //       fontWeight: FontWeight.bold,
+                  //     ),
+                  //   ),
+                  // ),
+                ],
               ),
-              items: [...car.imagesUrl.imageUrl].map((imageUrl) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Image.network(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
-            ),*/
-            CarouselCar(
-                carsImages: [...car.imagesUrl].map((imageUrl) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: Image.network(
-                          imageUrl.url,
-                          fit: BoxFit.cover,
-                        ),
-                      );
-                    },
-                  );
-                }).toList(),
-                imagesList: car.imagesUrl.map((image) => image.url).toList()),
-            _titleSection(
-              context,
-              car.shortDescription,
-              99,
-              car.year,
-              car.userId,
-            ),
-            _optionalCarSection(
-              context,
-              car.gearShiftText,
-              car.categoryText,
-              car.fuelText,
-              car.doors,
-              car.seats,
-            ),
-            Divider(),
-            RentalDateForm(),
-            //LocationInput(),
-            PlaceDetailItem(car.location.latitude, car.location.longitude,
-                car.location.address, car.imagesUrl[0].url),
-            Divider(),
-            _descriptionSection(context, car.description),
-            Divider(),
-            _InfoItem(
-              Icons.reviews,
-              'Avaliações',
-              () => _selectCarReview(context, car),
-            ),
-            Divider(),
-            _InfoItem(
-              Icons.person,
-              'Visualizar proprietario do veículo',
-              () => _selectOwnerProfile(context, car),
-            ),
-            Divider(),
-            _rentalSection(context, car.price, car.userId),
-            // TextButton(
-            //   onPressed: () => _selectCarReview(context),
-            //   child: Text(
-            //     'Avaliações do Carro',
-            //     style: TextStyle(
-            //       color: Theme.of(context).colorScheme.primary,
-            //       fontWeight: FontWeight.bold,
-            //     ),
-            //   ),
-            // ),
-          ],
-        ),
-      ),
+            );
+          }),
     );
   }
 }

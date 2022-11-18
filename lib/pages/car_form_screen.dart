@@ -1,4 +1,5 @@
 import 'package:carshare/components/car_form.dart';
+import 'package:carshare/exceptions/http_exceptions.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/car_list.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class _CarFormScreenState extends State<CarFormScreen> {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final arg = ModalRoute.of(context)?.settings.arguments;
+    final snackMsg = ScaffoldMessenger.of(context);
 
     return Scaffold(
         appBar: AppBar(
@@ -54,11 +56,19 @@ class _CarFormScreenState extends State<CarFormScreen> {
                         )
                       ],
                     ),
-                  ).then((value) {
+                  ).then((value) async {
                     if (value ?? false) {
-                      Provider.of<CarList>(context, listen: false)
-                          .removeCar(car);
-                      Navigator.of(context).pop();
+                      try {
+                        await Provider.of<CarList>(context, listen: false)
+                            .removeCar(car);
+                        Navigator.of(context).pop();
+                      } on HttpException catch (error) {
+                        snackMsg.showSnackBar(SnackBar(
+                          content: Text(
+                            error.toString(),
+                          ),
+                        ));
+                      }
                     }
                   });
                 },

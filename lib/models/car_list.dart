@@ -83,8 +83,8 @@ class CarList with ChangeNotifier {
           trunk: carData['trunk'],
           price: carData['price'],
           location: CarLocation(
-              latitude: double.parse(carData['latitude'].toString()),
-              longitude: double.parse(carData['longitude'].toString()),
+              latitude: carData['latitude'],
+              longitude: carData['longitude'],
               address: carData['address']),
           description: carData['description'],
           imagesUrl: carImages,
@@ -156,13 +156,14 @@ class CarList with ChangeNotifier {
       }),
     );
 
-    print(jsonDecode(response.body));
-
     if (response.statusCode < 400) {
       _cars.add(car);
       notifyListeners();
     } else {
-      print("CARRO NÃO CADASTRADO");
+      throw HttpException(
+        msg: "Não foi possível cadastrar o veículo",
+        statusCode: response.statusCode,
+      );
     }
   }
 
@@ -201,12 +202,14 @@ class CarList with ChangeNotifier {
         }),
       );
 
-      int status = response.statusCode;
-      if (status == 200) {
+      if (response.statusCode < 400) {
         _cars[index] = car;
         notifyListeners();
       } else {
-        print("CARRO NÃO FOI ATUALIZADO");
+        throw HttpException(
+          msg: "Não foi possível atualizar o veículo",
+          statusCode: response.statusCode,
+        );
       }
     }
   }
@@ -234,20 +237,10 @@ class CarList with ChangeNotifier {
       if (response.statusCode >= 400) {
         _cars.insert(index, car);
         notifyListeners();
+        throw HttpException(
+            msg: "Não foi possível deletar o veículo",
+            statusCode: response.statusCode);
       }
-
-      // final response = await http.delete(
-      //   Uri.parse('$_baseUrl/${car.id}'),
-      // );
-
-      // if (response.statusCode >= 400) {
-      //   _cars.insert(index, car);
-      //   notifyListeners();
-      //   throw HttpException(
-      //     msg: "Não foi possivel excluir o carro.",
-      //     statusCode: response.statusCode,
-      //   );
-      // }
     }
   }
 }
