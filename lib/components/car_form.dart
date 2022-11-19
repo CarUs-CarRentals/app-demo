@@ -263,7 +263,8 @@ class _CarFormState extends State<CarForm> {
                             ? ""
                             : index >= _carImagesUrl.length
                                 ? ""
-                                : _carImagesUrl[index].url);
+                                : _carImagesUrl[index].url,
+                        5);
                   }),
               const Divider(
                 height: 50,
@@ -524,10 +525,11 @@ class _CarFormState extends State<CarForm> {
                   labelText: 'Descrição do veículo',
                   alignLabelWithHint: true,
                 ),
-                textInputAction: TextInputAction.next,
+                textInputAction: TextInputAction.newline,
                 keyboardType: TextInputType.multiline,
                 initialValue: _formData['description']?.toString(),
-                maxLines: 5,
+                maxLines: null,
+                maxLength: 255,
                 onSaved: (description) {
                   _formData['description'] = description ?? '';
                 },
