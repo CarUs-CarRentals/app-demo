@@ -227,9 +227,11 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> tryAutoLogin() async {
-    _tryRefreshTokenBakend();
-
-    if (isAuth) return;
+    if (isAuth) {
+      return;
+    } else {
+      _tryRefreshTokenBakend();
+    }
 
     final userData = await Store.getMap('userDataFb');
     //final userDataBackend = await Store.getMap('userData');
@@ -249,7 +251,6 @@ class Auth with ChangeNotifier {
     //_refreshTokenBackend = userData['refreshToken'];
     _expiryDate = expiryDate;
     print("uID: $_userId");
-    //_autoLogout();
     notifyListeners();
   }
 
@@ -276,7 +277,6 @@ class Auth with ChangeNotifier {
 
   void _autoLogout() {
     _clearLogoutTimer();
-
     final timeToLogout = _expiryDate?.difference(DateTime.now()).inSeconds;
     print("time to Logout: $timeToLogout");
     _logoutTimer = Timer(
@@ -303,6 +303,8 @@ class Auth with ChangeNotifier {
 
   Future<void> refreshToken() async {
     const url = '${Constants.AUTH_BASE_URL}/refresh-token';
+    const urlFirebase =
+        'https://securetoken.googleapis.com/v1/token?key=${Constants.GOOGLE_API_KEY}';
 
     final response = await http.post(
       Uri.parse(url),
@@ -313,12 +315,33 @@ class Auth with ChangeNotifier {
       },
     );
 
+    final responseFirebase = await http.post(
+      Uri.parse(url),
+      body: {
+        "grant_type": "refresh_token",
+        "refresh_token": _refreshToken,
+      },
+    );
+
     print(jsonDecode(response.body));
+    print(jsonDecode(responseFirebase.body));
     int status = response.statusCode;
     if (status == 200) {
       _refreshTokenBackend = jsonDecode(response.body)['token'];
       _expiryDateBackend = DateTime.fromMillisecondsSinceEpoch(
           jsonDecode(response.body)['tokenExpiration'] * 1000);
+
+      _refreshToken = jsonDecode(responseFirebase.body)['refresh_token'];
+      _expiryDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(jsonDecode(responseFirebase.body)['expires_in']),
+        ),
+      );
+
+      Store.saveMap('userDataFb', {
+        'refreshToken': _refreshToken,
+        'expireDate': _expiryDate?.toIso8601String(),
+      });
 
       Store.saveMap('userData', {
         'token': _tokenBackend,
