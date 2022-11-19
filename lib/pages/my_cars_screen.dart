@@ -27,26 +27,25 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
   //   Provider.of<CarList>(context, listen: false).loadCarsByUser;
   // }
 
-  // @override
-  // void initState() {
-  //   super.initState();
+  @override
+  void initState() {
+    super.initState();
+    context.loaderOverlay.show();
+    setState(() {
+      _isLoading = context.loaderOverlay.visible;
+    });
 
-  //   context.loaderOverlay.show();
-  //   setState(() {
-  //     _isLoading = context.loaderOverlay.visible;
-  //   });
-
-  //   Provider.of<CarList>(context, listen: false).loadCarsByUser().then((value) {
-  //     setState(() {
-  //       if (_isLoading) {
-  //         context.loaderOverlay.hide();
-  //       }
-  //       setState(() {
-  //         _isLoading = context.loaderOverlay.visible;
-  //       });
-  //     });
-  //   });
-  // }
+    Provider.of<CarList>(context, listen: false).loadCarsByUser().then((value) {
+      setState(() {
+        if (_isLoading) {
+          context.loaderOverlay.hide();
+        }
+        setState(() {
+          _isLoading = context.loaderOverlay.visible;
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +77,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
               itemCount: carsUser.length,
               itemBuilder: (context, index) {
                 final car = carsUser[index];
+                print(car.id);
                 return CarItemEdit(car);
               },
             ),

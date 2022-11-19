@@ -172,7 +172,7 @@ class CarList with ChangeNotifier {
   }
 
   Future<void> updateCar(Car car) async {
-    int index = _cars.indexWhere((p) => p.id == car.id);
+    int index = _carsFromUser.indexWhere((p) => p.id == car.id);
 
     if (index >= 0) {
       final userData = await Store.getMap('userData');
@@ -207,7 +207,7 @@ class CarList with ChangeNotifier {
       );
 
       if (response.statusCode < 400) {
-        _cars[index] = car;
+        _carsFromUser[index] = car;
         notifyListeners();
       } else {
         throw HttpException(
@@ -222,12 +222,14 @@ class CarList with ChangeNotifier {
     int index = _carsFromUser.indexWhere((p) => p.id == car.id);
 
     if (index >= 0) {
-      final car = _carsFromUser[index];
-      _carsFromUser.remove(car);
+      final myCar = _carsFromUser[index];
+      _carsFromUser.remove(myCar);
       notifyListeners();
 
       final userData = await Store.getMap('userData');
       _refreshToken = userData['refreshToken'];
+
+      print(car.id);
 
       final response = await http.delete(
         Uri.parse('$_baseUrl/${car.id}'),
@@ -237,9 +239,10 @@ class CarList with ChangeNotifier {
           HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
         },
       );
+      print(response.statusCode);
 
       if (response.statusCode >= 400) {
-        _carsFromUser.insert(index, car);
+        _carsFromUser.insert(index, myCar);
         notifyListeners();
         throw HttpException(
             msg: "Não foi possível deletar o veículo",
@@ -267,9 +270,10 @@ class CarList with ChangeNotifier {
 
     //Map<String, dynamic> data = jsonDecode(response.body);
     String source = Utf8Decoder().convert(response.bodyBytes);
-    print(source);
     map = List<Map<String, dynamic>>.from(jsonDecode(source));
     List<Map<String, dynamic>> data = map;
+
+    print(jsonDecode(response.body));
 
     data.forEach((carData) {
       CarFuel fuel = CarFuel.values
@@ -287,6 +291,8 @@ class CarList with ChangeNotifier {
       for (var i = 0; i < imagesData.length; i++) {
         carImages.add(CarImages(url: carData['carImages'][i]['url']));
       }
+
+      //print(carData['id']);
 
       if (response.statusCode < 400) {
         _carsFromUser.add(

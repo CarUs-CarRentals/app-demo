@@ -170,16 +170,16 @@ class _CarItemState extends State<CarItemEdit> {
       });
     });
 
-    Provider.of<CarList>(context, listen: false).loadCarsByUser().then((value) {
-      setState(() {
-        if (_isLoading) {
-          context.loaderOverlay.hide();
-        }
-        setState(() {
-          _isLoading = context.loaderOverlay.visible;
-        });
-      });
-    });
+    // Provider.of<CarList>(context, listen: false).loadCarsByUser().then((value) {
+    //   setState(() {
+    //     if (_isLoading) {
+    //       context.loaderOverlay.hide();
+    //     }
+    //     setState(() {
+    //       _isLoading = context.loaderOverlay.visible;
+    //     });
+    //   });
+    // });
   }
 
   @override
