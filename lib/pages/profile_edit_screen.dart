@@ -1,6 +1,8 @@
+import 'package:carshare/components/user_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 class ProfileEditScreen extends StatelessWidget {
   const ProfileEditScreen({Key? key}) : super(key: key);
@@ -11,14 +13,10 @@ class ProfileEditScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Editar Perfil'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-            Text(
-              'EDITAR PERFIL',
-            ),
-          ],
+      body: const LoaderOverlay(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: UserForm(),
         ),
       ),
     );

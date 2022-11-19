@@ -10,7 +10,8 @@ import 'package:image_picker/image_picker.dart';
 class ImageInput extends StatefulWidget {
   final Function onSelectImage;
   final String urlImage;
-  const ImageInput(this.onSelectImage, this.urlImage, {Key? key})
+  final double radius;
+  const ImageInput(this.onSelectImage, this.urlImage, this.radius, {Key? key})
       : super(key: key);
 
   @override
@@ -41,7 +42,7 @@ class _ImageInputState extends State<ImageInput> {
     final ImagePicker _picker = ImagePicker();
     XFile imageFile = await _picker.pickImage(
       source: ImageSource.camera,
-      maxWidth: 600,
+      maxWidth: 800,
     ) as XFile;
 
     setState(() {
@@ -55,7 +56,7 @@ class _ImageInputState extends State<ImageInput> {
     final ImagePicker _picker = ImagePicker();
     XFile imageFile = await _picker.pickImage(
       source: ImageSource.gallery,
-      maxWidth: 600,
+      maxWidth: 800,
     ) as XFile;
 
     setState(() {
@@ -124,7 +125,8 @@ class _ImageInputState extends State<ImageInput> {
           children: [
             _storedImage.path != '' && !_storedImage.path.startsWith("https://")
                 ? ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(widget.radius)),
                     child: Image.file(
                       _storedImage,
                       width: double.infinity,
@@ -134,7 +136,8 @@ class _ImageInputState extends State<ImageInput> {
                   )
                 : _storedImage.path.startsWith("https://")
                     ? ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        borderRadius:
+                            BorderRadius.all(Radius.circular(widget.radius)),
                         child: Image.network(
                           _storedImage.path,
                           width: double.infinity,
@@ -146,7 +149,7 @@ class _ImageInputState extends State<ImageInput> {
                         width: double.infinity,
                         decoration: BoxDecoration(
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(5.0)),
+                              BorderRadius.all(Radius.circular(widget.radius)),
                           color: Colors.grey[200],
                         ),
                         child: Column(

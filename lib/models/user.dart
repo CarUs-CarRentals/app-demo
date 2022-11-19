@@ -1,9 +1,9 @@
 import 'package:carshare/models/address.dart';
 
 enum UserGender {
-  male,
-  female,
-  unknown,
+  MALE,
+  FEMALE,
+  UNKNOWN,
 }
 
 class User {
@@ -19,15 +19,17 @@ class User {
   final int rateNumber;
   final UserGender gender;
   final Address? address;
+  final String profileImageUrl;
 
   User({
+    this.profileImageUrl = '',
     this.id = '',
     this.cpf = '',
     this.rg = '',
     this.phone = '',
     this.about = '',
     this.rateNumber = 0,
-    this.gender = UserGender.unknown,
+    this.gender = UserGender.UNKNOWN,
     this.address,
     this.memberSince = '',
     required this.email,
@@ -37,5 +39,18 @@ class User {
 
   String get fullName {
     return '$firstName $lastName';
+  }
+
+  String get userGenderText {
+    switch (gender) {
+      case UserGender.MALE:
+        return 'Masculino';
+      case UserGender.FEMALE:
+        return 'Feminino';
+      case UserGender.UNKNOWN:
+        return 'Desconhecido';
+      default:
+        return 'Desconhecido';
+    }
   }
 }
