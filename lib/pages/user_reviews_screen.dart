@@ -29,9 +29,9 @@ class UserReviewsScreen extends StatelessWidget {
           itemCount: userReviews.length,
           itemBuilder: (ctx, index) {
             final review = userReviews[index];
-            final userInfo = userProvider.userByID(review.userIdEvaluator);
+            final userInfo = "userProvider.userByID(review.userIdEvaluator)";
             return ReviewItem(
-              userName: userInfo.fullName,
+              userName: "userInfo.fullName",
               rating: review.rate,
               description: review.description,
               date: review.date,

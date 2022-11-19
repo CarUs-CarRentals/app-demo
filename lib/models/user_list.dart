@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:ffi';
+import 'dart:io';
 
 import 'package:carshare/data/dummy_users_data.dart';
+import 'package:carshare/data/store.dart';
 import 'package:carshare/models/address.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/utils/constants.dart';
@@ -13,69 +16,88 @@ class UserList with ChangeNotifier {
 
   // final String _token;
   // final String _userId;
-  final List<User> _users = dummyUsers; //[];
+  String? _refreshToken;
+  User? _userProfile;
+  User? _userByID;
+  final List<User> _users = []; //= dummyUsers;
 
   List<User> get users => [..._users];
-
+  User? get userProfile => _userProfile;
+  User? get userByID => _userByID;
   int get usersCount {
     return _users.length;
   }
 
-  User userByID(String id) {
-    Iterable<User> selectedUser = _users.where((user) => user.id == id);
-    try {
-      return selectedUser.elementAt(0);
-    } catch (e) {
-      return User(
-        "88527046040",
-        "509581912",
-        "47999999999",
-        "Some mim",
-        UserGender.female,
-        Address(
-            "CEP", BrazilStates.SANTA_CATARINA, "Cidade", "Bairro", "Rua", 999),
-        "",
-        id: '1',
-        email: "meu_email@gmail.com",
-        firstName: "Nome",
-        lastName: "Sobrenome",
-      );
-    }
-  }
+  // User userByID(String id) {
+  //   Iterable<User> selectedUser = _users.where((user) => user.id == id);
+  //   try {
+  //     return selectedUser.elementAt(0);
+  //   } catch (e) {
+  //     return User(
+  //       "88527046040",
+  //       "509581912",
+  //       "47999999999",
+  //       "Some mim",
+  //       UserGender.female,
+  //       Address(
+  //           "CEP", BrazilStates.SANTA_CATARINA, "Cidade", "Bairro", "Rua", 999),
+  //       "",
+  //       id: '1',
+  //       email: "meu_email@gmail.com",
+  //       firstName: "Nome",
+  //       lastName: "Sobrenome",
+  //     );
+  //   }
+  // }
 
   Future<void> loadProfile() async {
-    // final response = await http.post(
-    //   Uri.parse('$_baseUrl/create'),
-    //   headers: {
-    //     "content-type": "application/json",
-    //     "accept": "application/json",
-    //     HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
-    //   },
-    //   body: jsonEncode({
-    //     "user": car.userId,
-    //     "brand": car.brand,
-    //     "model": car.model,
-    //     "year": car.year,
-    //     "plate": car.plate,
-    //     "fuel": car.fuel.name,
-    //     "gearShift": car.gearShift.name,
-    //     "category": car.category.name,
-    //     "doors": car.doors,
-    //     "seats": car.seats,
-    //     "trunk": car.trunk,
-    //     "latitude": car.location.latitude,
-    //     "longitude": car.location.longitude,
-    //     "description": car.description,
-    //     "address": car.location.address,
-    //     "price": car.price,
-    //     "carImages": imageUrlJsonText,
-    //   }),
-    // );
+    _userProfile = null;
+
+    final userData = await Store.getMap('userData');
+    _refreshToken = userData['refreshToken'];
+
+    final response = await http.get(
+      Uri.parse('$_baseUrl/profile'),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+      },
+    );
+    String source = Utf8Decoder().convert(response.bodyBytes);
+    Map<String, dynamic> profileData = jsonDecode(source);
+
+    BrazilStates? brazilStates;
+
+    if (profileData['address'] != null) {
+      brazilStates = BrazilStates.values.firstWhere((element) =>
+          element.name.toString() == profileData['address']['state']);
+    }
+
+    _userProfile = User(
+      id: "nulo",
+      firstName: profileData['firstName'],
+      lastName: profileData['lastName'],
+      email: "email@email.com",
+      memberSince: profileData['memberSince'],
+      about: profileData['about'],
+      rateNumber: profileData['rateNumber'],
+      address: profileData['address'] == null
+          ? null
+          : Address(
+              profileData['address']['cep'],
+              brazilStates!,
+              profileData['address']['city'],
+              profileData['address']['neighborhood'],
+              profileData['address']['street'],
+              profileData['address']['number'],
+            ),
+    );
 
     notifyListeners();
   }
 
-  Future<void> loadCars() async {
+  Future<void> loadUsers() async {
     _users.clear();
 
     final response = await http.get(Uri.parse('$_baseUrl/all'));
@@ -105,5 +127,45 @@ class UserList with ChangeNotifier {
       _users[index] = user;
       notifyListeners();
     }
+  }
+
+  Future<void> loadUserById(String userId) async {
+    _userByID = null;
+
+    final userData = await Store.getMap('userData');
+    _refreshToken = userData['refreshToken'];
+
+    final response = await http.get(
+      Uri.parse('$_baseUrl/$userId'),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+      },
+    );
+    String source = Utf8Decoder().convert(response.bodyBytes);
+    Map<String, dynamic> profileData = jsonDecode(source);
+
+    // BrazilStates brazilStates = BrazilStates.values.firstWhere((element) =>
+    //     element.name.toString() == profileData['address']['state']);
+
+    _userByID = User(
+        id: profileData['uuid'],
+        firstName: profileData['firstName'],
+        lastName: profileData['lastName'],
+        email: profileData['lastName'],
+        memberSince: profileData['memberSince'],
+        about: profileData['about'],
+        address: null //Address(
+        // profileData['address']['cep'],
+        // brazilStates,
+        // profileData['address']['city'],
+        // profileData['address']['neighborhood'],
+        // profileData['address']['street'],
+        // profileData['address']['number'],
+        //),
+        );
+
+    notifyListeners();
   }
 }

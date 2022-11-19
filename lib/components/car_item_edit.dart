@@ -1,9 +1,10 @@
 import 'package:carshare/models/car.dart';
-import 'package:carshare/models/place.dart';
-import 'package:carshare/utils/location_util.dart';
+import 'package:carshare/models/car_list.dart';
+import 'package:carshare/models/user.dart';
+import 'package:carshare/models/user_list.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:provider/provider.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import '../utils/app_routes.dart';
 
 class CarItemEdit extends StatefulWidget {
@@ -19,6 +20,22 @@ class CarItemEdit extends StatefulWidget {
 }
 
 class _CarItemState extends State<CarItemEdit> {
+  User? carUser;
+  bool _isLoading = true;
+
+  Future<void> _getCarHost(String userId) async {
+    await Provider.of<UserList>(context, listen: false).loadUserById(userId);
+    final provider = Provider.of<UserList>(context, listen: false);
+    carUser = provider.userByID;
+    print(carUser?.fullName);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _getCarHost(widget.car.userId);
+  }
+
   _bottomSection(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
@@ -74,7 +91,10 @@ class _CarItemState extends State<CarItemEdit> {
                           ),
                           onPressed: () => Navigator.of(context).pushNamed(
                             AppRoutes.CAR_DETAIL,
-                            arguments: widget.car,
+                            arguments: {
+                              'car': widget.car,
+                              'user': carUser,
+                            },
                           ),
                           child: const Text('Visualizar'),
                         ),
@@ -89,9 +109,8 @@ class _CarItemState extends State<CarItemEdit> {
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
                           onPressed: () => Navigator.of(context).pushNamed(
-                            AppRoutes.CAR_FORM,
-                            arguments: widget.car
-                          ),
+                              AppRoutes.CAR_FORM,
+                              arguments: widget.car),
                           child: const Text('Editar'),
                         ),
                         VerticalDivider(
@@ -120,6 +139,47 @@ class _CarItemState extends State<CarItemEdit> {
         ],
       ),
     );
+  }
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   _getCarHost(widget.car.userId);
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+
+    context.loaderOverlay.show();
+    setState(() {
+      _isLoading = context.loaderOverlay.visible;
+    });
+
+    Provider.of<UserList>(context, listen: false)
+        .loadUserById(widget.car.userId)
+        .then((value) {
+      setState(() {
+        if (_isLoading) {
+          context.loaderOverlay.hide();
+        }
+        setState(() {
+          _isLoading = context.loaderOverlay.visible;
+          _getCarHost(widget.car.userId);
+        });
+      });
+    });
+
+    Provider.of<CarList>(context, listen: false).loadCarsByUser().then((value) {
+      setState(() {
+        if (_isLoading) {
+          context.loaderOverlay.hide();
+        }
+        setState(() {
+          _isLoading = context.loaderOverlay.visible;
+        });
+      });
+    });
   }
 
   @override

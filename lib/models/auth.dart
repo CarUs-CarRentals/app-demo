@@ -227,6 +227,8 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> tryAutoLogin() async {
+    _tryRefreshTokenBakend();
+
     if (isAuth) return;
 
     final userData = await Store.getMap('userDataFb');
@@ -247,7 +249,6 @@ class Auth with ChangeNotifier {
     //_refreshTokenBackend = userData['refreshToken'];
     _expiryDate = expiryDate;
     print("uID: $_userId");
-    _tryRefreshTokenBakend();
     //_autoLogout();
     notifyListeners();
   }
@@ -258,6 +259,7 @@ class Auth with ChangeNotifier {
     _email = null;
     _userId = null;
     _expiryDate = null;
+    _refreshTokenBackend = null;
     _expiryDateBackend = null;
     _clearLogoutTimer();
 
@@ -330,13 +332,13 @@ class Auth with ChangeNotifier {
     }
   }
 
-  // String? getRefreshTokenBackend() {
-  //   final userData = Store.getMap('userData').then((data) {
-  //     _refreshToken = data['refreshToken'];
-  //   });
+  String? getRefreshTokenBackend() {
+    final userData = Store.getMap('userData').then((data) {
+      _refreshToken = data['refreshToken'];
+    });
 
-  //   return _refreshToken;
-  // }
+    return _refreshToken;
+  }
 
   Future<User> getLoggedUser() async {
     final userData = await Store.getMap('userData');
@@ -357,18 +359,26 @@ class Auth with ChangeNotifier {
 
     Map<String, dynamic> userJson = jsonDecode(response.body);
     return User(
-      userJson['cpf'],
-      userJson['rg'],
-      userJson['phone'],
-      userJson['about'],
-      userJson['gender'],
-      userJson['address'],
-      userJson['memberSince'],
       id: userJson['uuid'],
       email: userJson['email'],
       firstName: userJson['firstName'],
       lastName: userJson['lastName'],
+      memberSince: userJson['memberSince'],
+      about: userJson['about'],
     );
+    // return User(
+    //   userJson['cpf'],
+    //   userJson['rg'],
+    //   userJson['phone'],
+    //   userJson['about'],
+    //   userJson['gender'],
+    //   userJson['address'],
+    //   userJson['memberSince'],
+    //   id: userJson['uuid'],
+    //   email: userJson['email'],
+    //   firstName: userJson['firstName'],
+    //   lastName: userJson['lastName'],
+    // );
 
     //print(_currentUser!.fullName);
 

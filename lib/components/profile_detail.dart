@@ -78,10 +78,11 @@ class ProfileDetail extends StatelessWidget {
     String? myID = auth.userId;
 
     final provider = Provider.of<UserReviewList>(context);
-    final qtdReviews = provider.reviews
+    final qtdReviews =
+        0; /*provider.reviews
         .where((review) => review.userIdRated == myID)
         .toList()
-        .length;
+        .length;*/
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
@@ -104,7 +105,7 @@ class ProfileDetail extends StatelessWidget {
             ),
             subtitle: Container(
               padding: const EdgeInsets.only(top: 20.0),
-              child: Text("membro desde ${user.memberSince?.substring(0, 4)}"),
+              child: Text("membro desde ${user.memberSince.substring(0, 4)}"),
             ),
             dense: false,
           ),
@@ -143,7 +144,7 @@ class ProfileDetail extends StatelessWidget {
               ),
             ),
             title: Text(
-              "user.address.fullAddress",
+              user.address != null ? user.address!.fullAddress : '',
               style: const TextStyle(
                 fontFamily: 'RobotCondensed',
                 fontSize: 14,

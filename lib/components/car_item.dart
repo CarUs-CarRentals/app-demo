@@ -1,8 +1,11 @@
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/place.dart';
+import 'package:carshare/models/user.dart';
+import 'package:carshare/models/user_list.dart';
 import 'package:carshare/utils/location_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/app_routes.dart';
 
@@ -22,6 +25,7 @@ class CarItem extends StatefulWidget {
 
 class _CarItemState extends State<CarItem> {
   String? carDistance = '';
+  User? carUser;
 
   _getCarDistance() async {
     final myLocation = widget.currentLocation;
@@ -44,9 +48,16 @@ class _CarItemState extends State<CarItem> {
     super.initState();
   }
 
+  Future<void> _getCarHost(String userId) async {
+    await Provider.of<UserList>(context, listen: false).loadUserById(userId);
+    final provider = Provider.of<UserList>(context, listen: false);
+    carUser = provider.userByID;
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _getCarHost(widget.car.userId);
     _getCarDistance();
   }
 
@@ -124,7 +135,10 @@ class _CarItemState extends State<CarItem> {
     return InkWell(
       onTap: () => Navigator.of(context).pushNamed(
         AppRoutes.CAR_DETAIL,
-        arguments: widget.car,
+        arguments: {
+          'car': widget.car,
+          'user': carUser,
+        },
       ),
       child: Column(
         children: [
@@ -145,7 +159,6 @@ class _CarItemState extends State<CarItem> {
                     ),
                     child: Image.network(
                       widget.car.imagesUrl[0].url,
-                      //"https://cdn.motor1.com/images/mgl/AkB8vL/s3/fiat-mobi-2023.jpg",
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,

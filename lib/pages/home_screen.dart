@@ -45,6 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: availableHeight,
                     margin: const EdgeInsets.only(top: 150),
                     child: const LoaderOverlay(
+                      overlayOpacity: 1,
+                      overlayColor: Colors.white,
                       child: CarsListView(
                         titleList: 'Carros próximos de você',
                       ),

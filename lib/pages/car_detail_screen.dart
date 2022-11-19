@@ -10,6 +10,7 @@ import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CarDetailScreen extends StatefulWidget {
   @override
@@ -17,14 +18,6 @@ class CarDetailScreen extends StatefulWidget {
 }
 
 class _CarDetailScreenState extends State<CarDetailScreen> {
-  String? _userId;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   print("usuario do carro $_getCurrentUserId()");
-  // }
-
   void _selectCarReview(BuildContext context, Car car) {
     Navigator.of(context).pushNamed(
       AppRoutes.CAR_REVIEW,
@@ -32,16 +25,11 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     );
   }
 
-  void _selectOwnerProfile(BuildContext context, Car car) {
+  void _selectOwnerProfile(BuildContext context, User carUser) {
     Navigator.of(context).pushNamed(
       AppRoutes.PROFILE_USER,
-      arguments: car,
+      arguments: carUser,
     );
-  }
-
-  Future<String> _getCurrentUserId() async {
-    final userData = await Store.getMap('userDataFb');
-    return userData['localId'];
   }
 
   _submitRental() {
@@ -53,11 +41,8 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     String title,
     double review,
     int year,
-    String carHostId,
+    String carHost,
   ) {
-    final provider = Provider.of<UserList>(context);
-    final carHost = provider.userByID(carHostId);
-
     return Column(
       children: [
         Container(
@@ -69,42 +54,52 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
         ),
         Padding(
           padding: const EdgeInsets.only(right: 20, left: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Row(
-                children: [
-                  RatingBarIndicator(
-                    rating: review.toDouble(),
-                    itemBuilder: (context, _) => Icon(
-                      Icons.star,
-                      color: Theme.of(context).colorScheme.primary,
+          child: carHost == ""
+              ? Shimmer.fromColors(
+                  baseColor: Theme.of(context).colorScheme.onBackground,
+                  highlightColor: Colors.grey,
+                  child: Container(
+                    width: double.infinity,
+                    height: 16,
+                    color: Colors.white.withOpacity(0.8),
+                  ),
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Row(
+                      children: [
+                        RatingBarIndicator(
+                          rating: review.toDouble(),
+                          itemBuilder: (context, _) => Icon(
+                            Icons.star,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          itemCount: 5,
+                          itemSize: 16.0,
+                        )
+                      ],
                     ),
-                    itemCount: 5,
-                    itemSize: 16.0,
-                  )
-                ],
-              ),
-              VerticalDivider(
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-              Row(
-                children: [
-                  SizedBox(width: 6),
-                  Text((year).toString()),
-                ],
-              ),
-              VerticalDivider(
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-              Row(
-                children: [
-                  SizedBox(width: 6),
-                  Text('De: ${(carHost.fullName).toString()}'),
-                ],
-              ),
-            ],
-          ),
+                    VerticalDivider(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(width: 6),
+                        Text((year).toString()),
+                      ],
+                    ),
+                    VerticalDivider(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(width: 6),
+                        Text('De: $carHost'),
+                      ],
+                    ),
+                  ],
+                ),
         )
       ],
     );
@@ -237,17 +232,14 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   }
 
   _rentalSection(BuildContext context, double carPrice, String userId) {
-    _getCurrentUserId().then((value) {
-      _userId = value;
-      print("id usuario atual $value vs id do usuario do carro $userId");
-    });
+    //print("${_userConnected!.id} != ${userId}");
 
     return SizedBox(
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(5),
-            child: _userId != userId
+            child: "_userConnected!.id" != userId
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -311,85 +303,79 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<UserList>(context, listen: false).loadProfile();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final car = ModalRoute.of(context)?.settings.arguments as Car;
+    final arg = ModalRoute.of(context)?.settings.arguments as Map;
+    final car = arg['car'] as Car;
+    final carHost = arg['user'] as User;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(car.shortDescription),
-      ),
-      body: FutureBuilder(
-          future: _getCurrentUserId(),
-          builder: (ctx, snapshot) {
-            return SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  CarouselCar(
-                      carsImages: [...car.imagesUrl].map((imageUrl) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              child: Image.network(
-                                imageUrl.url,
-                                fit: BoxFit.cover,
-                              ),
-                            );
-                          },
+        appBar: AppBar(
+          title: Text(car.shortDescription),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              CarouselCar(
+                  carsImages: [...car.imagesUrl].map((imageUrl) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Image.network(
+                            imageUrl.url,
+                            fit: BoxFit.cover,
+                          ),
                         );
-                      }).toList(),
-                      imagesList:
-                          car.imagesUrl.map((image) => image.url).toList()),
-                  _titleSection(
-                    context,
-                    car.shortDescription,
-                    99,
-                    car.year,
-                    car.userId,
-                  ),
-                  _optionalCarSection(
-                    context,
-                    car.gearShiftText,
-                    car.categoryText,
-                    car.fuelText,
-                    car.doors,
-                    car.seats,
-                  ),
-                  Divider(),
-                  RentalDateForm(),
-                  //LocationInput(),
-                  PlaceDetailItem(car.location.latitude, car.location.longitude,
-                      car.location.address, car.imagesUrl[0].url),
-                  Divider(),
-                  _descriptionSection(context, car.description),
-                  Divider(),
-                  _InfoItem(
-                    Icons.reviews,
-                    'Avaliações',
-                    () => _selectCarReview(context, car),
-                  ),
-                  Divider(),
-                  _InfoItem(
-                    Icons.person,
-                    'Visualizar proprietario do veículo',
-                    () => _selectOwnerProfile(context, car),
-                  ),
-                  Divider(),
-                  _rentalSection(context, car.price, car.userId),
-                  // TextButton(
-                  //   onPressed: () => _selectCarReview(context),
-                  //   child: Text(
-                  //     'Avaliações do Carro',
-                  //     style: TextStyle(
-                  //       color: Theme.of(context).colorScheme.primary,
-                  //       fontWeight: FontWeight.bold,
-                  //     ),
-                  //   ),
-                  // ),
-                ],
+                      },
+                    );
+                  }).toList(),
+                  imagesList: car.imagesUrl.map((image) => image.url).toList()),
+
+              _titleSection(
+                context,
+                car.shortDescription,
+                99,
+                car.year,
+                carHost.fullName,
               ),
-            );
-          }),
-    );
+              _optionalCarSection(
+                context,
+                car.gearShiftText,
+                car.categoryText,
+                car.fuelText,
+                car.doors,
+                car.seats,
+              ),
+              Divider(),
+              RentalDateForm(),
+              //LocationInput(),
+              PlaceDetailItem(car.location.latitude, car.location.longitude,
+                  car.location.address, car.imagesUrl[0].url),
+              Divider(),
+              _descriptionSection(context, car.description),
+              Divider(),
+              _InfoItem(
+                Icons.reviews,
+                'Avaliações',
+                () => _selectCarReview(context, car),
+              ),
+              Divider(),
+              _InfoItem(
+                Icons.person,
+                'Visualizar proprietario do veículo',
+                () => _selectOwnerProfile(context, carHost),
+              ),
+              Divider(),
+              _rentalSection(context, car.price, car.userId),
+            ],
+          ),
+        ));
   }
 }

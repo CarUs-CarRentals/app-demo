@@ -14,9 +14,12 @@ class CarList with ChangeNotifier {
   // final String _token;
   // final String _userId;
   String? _refreshToken;
+  final List<Car> _carsFromUser = [];
   final List<Car> _cars = [];
 
   List<Car> get cars => [..._cars];
+  List<Car> get carsFromUser => [..._carsFromUser];
+
   // List<Car> get favoriteItems =>
   //     _cars.where((car) => car.isFavorite).toList();
 
@@ -48,7 +51,8 @@ class CarList with ChangeNotifier {
     List<Map<String, dynamic>> map = [];
 
     //Map<String, dynamic> data = jsonDecode(response.body);
-    map = List<Map<String, dynamic>>.from(jsonDecode(response.body));
+    String source = Utf8Decoder().convert(response.bodyBytes);
+    map = List<Map<String, dynamic>>.from(jsonDecode(source));
     List<Map<String, dynamic>> data = map;
     data.forEach((carData) {
       CarFuel fuel = CarFuel.values
@@ -157,7 +161,7 @@ class CarList with ChangeNotifier {
     );
 
     if (response.statusCode < 400) {
-      _cars.add(car);
+      _carsFromUser.add(car);
       notifyListeners();
     } else {
       throw HttpException(
@@ -215,11 +219,11 @@ class CarList with ChangeNotifier {
   }
 
   Future<void> removeCar(Car car) async {
-    int index = _cars.indexWhere((p) => p.id == car.id);
+    int index = _carsFromUser.indexWhere((p) => p.id == car.id);
 
     if (index >= 0) {
-      final car = _cars[index];
-      _cars.remove(car);
+      final car = _carsFromUser[index];
+      _carsFromUser.remove(car);
       notifyListeners();
 
       final userData = await Store.getMap('userData');
@@ -235,12 +239,86 @@ class CarList with ChangeNotifier {
       );
 
       if (response.statusCode >= 400) {
-        _cars.insert(index, car);
+        _carsFromUser.insert(index, car);
         notifyListeners();
         throw HttpException(
             msg: "Não foi possível deletar o veículo",
             statusCode: response.statusCode);
       }
     }
+  }
+
+  Future<void> loadCarsByUser() async {
+    _carsFromUser.clear();
+
+    final userData = await Store.getMap('userData');
+    _refreshToken = userData['refreshToken'];
+
+    final response = await http.get(
+      Uri.parse(_baseUrl),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+      },
+    );
+
+    List<Map<String, dynamic>> map = [];
+
+    //Map<String, dynamic> data = jsonDecode(response.body);
+    String source = Utf8Decoder().convert(response.bodyBytes);
+    print(source);
+    map = List<Map<String, dynamic>>.from(jsonDecode(source));
+    List<Map<String, dynamic>> data = map;
+
+    data.forEach((carData) {
+      CarFuel fuel = CarFuel.values
+          .firstWhere((element) => element.name.toString() == carData['fuel']);
+
+      CarGearShift gearShift = CarGearShift.values.firstWhere(
+          (element) => element.name.toString() == carData['gearShift']);
+
+      CarCategory category = CarCategory.values.firstWhere(
+          (element) => element.name.toString() == carData['category']);
+
+      //Adiciona as imagens do carro no objeto CarImages
+      List<CarImages> carImages = [];
+      final List<dynamic> imagesData = carData['carImages'];
+      for (var i = 0; i < imagesData.length; i++) {
+        carImages.add(CarImages(url: carData['carImages'][i]['url']));
+      }
+
+      if (response.statusCode < 400) {
+        _carsFromUser.add(
+          Car(
+            id: carData['id'],
+            brand: carData['brand'],
+            userId: carData['user'],
+            model: carData['model'],
+            year: carData['year'],
+            plate: carData['plate'],
+            fuel: fuel,
+            gearShift: gearShift,
+            category: category,
+            doors: carData['doors'],
+            seats: carData['seats'],
+            trunk: carData['trunk'],
+            price: carData['price'],
+            location: CarLocation(
+                latitude: carData['latitude'],
+                longitude: carData['longitude'],
+                address: carData['address']),
+            description: carData['description'],
+            imagesUrl: carImages,
+          ),
+        );
+        notifyListeners();
+      } else {
+        throw HttpException(
+          msg: "Não foi possível carrerar os seus veículos",
+          statusCode: response.statusCode,
+        );
+      }
+    });
   }
 }

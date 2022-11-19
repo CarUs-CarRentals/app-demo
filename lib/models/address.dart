@@ -48,6 +48,67 @@ class Address {
   );
 
   String get fullAddress {
-    return '$street, $neighborhood, $city, - $state, $cep';
+    return '$street, $neighborhood, $city, - $stateText, $cep';
+  }
+
+  String get stateText {
+    switch (state) {
+      case BrazilStates.ACRE:
+        return 'Acre';
+      case BrazilStates.ALAGOAS:
+        return 'Alagoas';
+      case BrazilStates.AMAPA:
+        return 'Amapá';
+      case BrazilStates.AMAZONAS:
+        return 'Amazonas';
+      case BrazilStates.BAHIA:
+        return 'Bahia';
+      case BrazilStates.CEARA:
+        return 'Ceara';
+      case BrazilStates.DISTRITO_FEDERAL:
+        return 'Distrito Federal';
+      case BrazilStates.ESPIRITO_SANTO:
+        return 'Espírito Santo';
+      case BrazilStates.GOIAS:
+        return 'Goiás';
+      case BrazilStates.MARANHAO:
+        return 'Maranhão';
+      case BrazilStates.MATO_GROSSO:
+        return 'Mato Grosso';
+      case BrazilStates.MATO_GROSSO_DO_SUL:
+        return 'Mato Grosso do Sul';
+      case BrazilStates.MINAS_GERAIS:
+        return 'Minas Gerais';
+      case BrazilStates.PARA:
+        return 'Pará';
+      case BrazilStates.PARAIBA:
+        return 'Paraíba';
+      case BrazilStates.PARANA:
+        return 'Paraná';
+      case BrazilStates.PERNAMBUCO:
+        return 'Pernambuco';
+      case BrazilStates.PIAUI:
+        return 'Piauí';
+      case BrazilStates.RIO_DE_JANEIRO:
+        return 'Rio de Janeiro';
+      case BrazilStates.RIO_GRANDE_DO_NORTE:
+        return 'Rio Grande do Norte';
+      case BrazilStates.RIO_GRANDE_DO_SUL:
+        return 'Rio Grande do Sul';
+      case BrazilStates.RONDONIA:
+        return 'Rondônia';
+      case BrazilStates.RORAIMA:
+        return 'Roraima';
+      case BrazilStates.SANTA_CATARINA:
+        return 'Santa Catarina';
+      case BrazilStates.SAO_PAULO:
+        return 'São Paulo';
+      case BrazilStates.SERGIPE:
+        return 'Sergipe';
+      case BrazilStates.TOCANTINS:
+        return 'Tocantins';
+      default:
+        return 'Desconhecido';
+    }
   }
 }

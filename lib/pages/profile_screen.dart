@@ -1,5 +1,6 @@
 //import 'package:carshare/models/auth_old.dart';
 import 'package:carshare/models/auth.dart';
+import 'package:carshare/models/car_list.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/models/user_list.dart';
 import 'package:carshare/utils/app_routes.dart';
@@ -60,19 +61,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Auth().getLoggedUser().then((value) {
-      setState(() {
-        _currentUser = value;
-      });
-    });
+    Provider.of<UserList>(context, listen: false).loadProfile();
   }
 
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final availableHeight = mediaQuery.size.height - mediaQuery.padding.top;
+    final userProvider = Provider.of<UserList>(context);
+
+    _currentUser = userProvider.userProfile;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -108,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           title: Text(
-                            'Olá ${_currentUser?.fullName}',
+                            'Olá ${_currentUser!.fullName}',
                             style: TextStyle(
                                 fontSize: 32,
                                 fontWeight: FontWeight.bold,

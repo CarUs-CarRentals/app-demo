@@ -16,48 +16,45 @@ class ProfileUserScreen extends StatefulWidget {
 
 class _ProfileUserScreenState extends State<ProfileUserScreen> {
   User? _currentUser;
+  User? _profileUser;
+  User? _profileCarUser;
+  String _userId = "";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    Auth().getLoggedUser().then((value) {
-      setState(() {
-        _currentUser = value;
-      });
-    });
+    Provider.of<UserList>(context, listen: false).loadProfile();
   }
 
   @override
   Widget build(BuildContext context) {
-    final User? thisUser;
+    final userProvider = Provider.of<UserList>(context);
+    _currentUser = userProvider.userProfile;
+    _userId = "";
     final bool argumentIsNull =
         (ModalRoute.of(context)?.settings.arguments == null);
 
-    final provider = Provider.of<UserList>(context);
-
     if (!argumentIsNull) {
-      final carInfo = ModalRoute.of(context)?.settings.arguments as Car;
-      final List<User> carUsers =
-          provider.users.where((user) => user.id == carInfo.userId).toList();
+      final userCar = ModalRoute.of(context)?.settings.arguments as User;
+      _currentUser = userCar;
 
-      thisUser = carUsers.elementAt(0);
     } else {
-      thisUser = _currentUser;
+      _currentUser = userProvider.userProfile;
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: !argumentIsNull
-            ? const Text("Perfil do Proprietario")
-            : const Text("Meu Perfil"),
-      ),
-      body: thisUser == null
-          ? const Center(child: CircularProgressIndicator())
-          : ProfileDetail(
-              isMyProfile: argumentIsNull ? true : false,
-              user: thisUser,
-            ),
-    );
+        appBar: AppBar(
+          title: !argumentIsNull
+              ? const Text("Perfil do Proprietario")
+              : const Text("Meu Perfil"),
+        ),
+        body: _currentUser == null
+            ? const Center(child: CircularProgressIndicator())
+            : ProfileDetail(
+                isMyProfile: argumentIsNull ? true : false,
+                user: _currentUser!,
+              )       
+        );
   }
 }
