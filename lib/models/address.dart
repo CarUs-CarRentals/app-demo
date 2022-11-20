@@ -48,10 +48,10 @@ class Address {
   );
 
   String get fullAddress {
-    return '$street, $neighborhood, $city, - $stateText, $cep';
+    return '$street, $neighborhood, $city, - ${getStateText(state)}, $cep';
   }
 
-  String get stateText {
+  static String getStateText(BrazilStates state) {
     switch (state) {
       case BrazilStates.ACRE:
         return 'Acre';

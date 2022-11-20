@@ -157,7 +157,8 @@ class _ImageInputState extends State<ImageInput> {
                             Container(
                               child: Icon(Icons.add_a_photo,
                                   size: 24, color: Colors.black),
-                              padding: const EdgeInsets.symmetric(vertical: 35),
+                              padding:
+                                  const EdgeInsets.only(top: 40, bottom: 10),
                             ),
                             Container(
                               child: Text("Adicionar"),
