@@ -1,11 +1,9 @@
 import 'package:carshare/firebase_options.dart';
 import 'package:carshare/models/auth.dart';
-import 'package:carshare/models/car.dart';
 import 'package:carshare/models/car_list.dart';
 import 'package:carshare/models/rental_list.dart';
 import 'package:carshare/models/review_list.dart';
 import 'package:carshare/models/user_list.dart';
-import 'package:carshare/pages/auth_screen.dart';
 import 'package:carshare/pages/car_detail_screen.dart';
 import 'package:carshare/pages/car_form_screen.dart';
 import 'package:carshare/pages/car_history_screen.dart';
@@ -23,7 +21,6 @@ import 'package:carshare/pages/user_reviews_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'utils/app_routes.dart';
 
