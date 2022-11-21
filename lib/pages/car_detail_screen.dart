@@ -1,3 +1,4 @@
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carshare/components/carousel_car.dart';
 import 'package:carshare/components/place_detail_item.dart';
@@ -246,7 +247,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                       Column(
                         children: [
                           Text(
-                            'R\$ ${carPrice.toStringAsFixed(2)}',
+                            UtilBrasilFields.obterReal(carPrice),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -347,9 +348,9 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
               ),
               _optionalCarSection(
                 context,
-                car.gearShiftText,
-                car.categoryText,
-                car.fuelText,
+                Car.getGearShiftText(car.gearShift),
+                Car.getCategoryText(car.category),
+                Car.getFuelText(car.fuel),
                 car.doors,
                 car.seats,
               ),

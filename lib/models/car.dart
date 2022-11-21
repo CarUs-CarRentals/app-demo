@@ -8,6 +8,7 @@ enum CarFuel {
   ETHANOL,
   ELECTRIC,
   HYBRID,
+  FLEX,
 }
 
 enum CarGearShift {
@@ -98,7 +99,39 @@ class Car {
     return '$brand $model';
   }
 
-  String get categoryText {
+  static String getGearShiftText(CarGearShift gearShift) {
+    switch (gearShift) {
+      case CarGearShift.AUTOMATIC:
+        return 'Automático';
+      case CarGearShift.MANUAL:
+        return 'Manual';
+      default:
+        return 'Desconhecido';
+    }
+  }
+
+  static String getFuelText(CarFuel fuel) {
+    switch (fuel) {
+      case CarFuel.GASOLINE:
+        return 'Gasolina';
+      case CarFuel.DIESEL:
+        return 'Diesel';
+      case CarFuel.CNG:
+        return 'GNV';
+      case CarFuel.ELECTRIC:
+        return 'Elétrico';
+      case CarFuel.ETHANOL:
+        return 'Etanol';
+      case CarFuel.HYBRID:
+        return 'Híbrido';
+      case CarFuel.FLEX:
+        return 'Flex';
+      default:
+        return 'Desconhecido';
+    }
+  }
+
+  static String getCategoryText(CarCategory category) {
     switch (category) {
       case CarCategory.SUV:
         return 'SUV';
@@ -119,84 +152,56 @@ class Car {
     }
   }
 
-  String get fuelText {
-    switch (fuel) {
-      case CarFuel.GASOLINE:
-        return 'Gasolina';
-      case CarFuel.DIESEL:
-        return 'Diesel';
-      case CarFuel.CNG:
-        return 'GNV';
-      case CarFuel.ELECTRIC:
-        return 'Elétrico';
-      case CarFuel.ETHANOL:
-        return 'Etanol';
-      case CarFuel.HYBRID:
-        return 'Híbrido';
-      default:
-        return 'Desconhecido';
-    }
-  }
+  // String get categoryText {
+  //   switch (category) {
+  //     case CarCategory.SUV:
+  //       return 'SUV';
+  //     case CarCategory.SEDAN:
+  //       return 'Sedã';
+  //     case CarCategory.HATCHBACK:
+  //       return 'Hatch';
+  //     case CarCategory.SPORT:
+  //       return 'Esportivo';
+  //     case CarCategory.CONVERTIBLE:
+  //       return 'Conversível';
+  //     case CarCategory.WAGON:
+  //       return 'Perua';
+  //     case CarCategory.TRUCK:
+  //       return 'Picape';
+  //     default:
+  //       return 'Desconhecido';
+  //   }
+  // }
 
-  String get gearShiftText {
-    switch (gearShift) {
-      case CarGearShift.AUTOMATIC:
-        return 'Automático';
-      case CarGearShift.MANUAL:
-        return 'Manual';
-      default:
-        return 'Desconhecido';
-    }
-  }
-}
+  // String get fuelText {
+  //   switch (fuel) {
+  //     case CarFuel.GASOLINE:
+  //       return 'Gasolina';
+  //     case CarFuel.DIESEL:
+  //       return 'Diesel';
+  //     case CarFuel.CNG:
+  //       return 'GNV';
+  //     case CarFuel.ELECTRIC:
+  //       return 'Elétrico';
+  //     case CarFuel.ETHANOL:
+  //       return 'Etanol';
+  //     case CarFuel.HYBRID:
+  //       return 'Híbrido';
+  //     case CarFuel.FLEX:
+  //       return 'Flex';
+  //     default:
+  //       return 'Desconhecido';
+  //   }
+  // }
 
-String getFuelText(CarFuel fuel) {
-  switch (fuel) {
-    case CarFuel.GASOLINE:
-      return 'Gasolina';
-    case CarFuel.DIESEL:
-      return 'Diesel';
-    case CarFuel.CNG:
-      return 'GNV';
-    case CarFuel.ELECTRIC:
-      return 'Elétrico';
-    case CarFuel.ETHANOL:
-      return 'Etanol';
-    case CarFuel.HYBRID:
-      return 'Híbrido';
-    default:
-      return 'Desconhecido';
-  }
-}
-
-String getGearShiftText(CarGearShift gearShift) {
-  switch (gearShift) {
-    case CarGearShift.AUTOMATIC:
-      return 'Automático';
-    case CarGearShift.MANUAL:
-      return 'Manual';
-    default:
-      return 'Desconhecido';
-  }
-}
-
-String getCategoryText(CarCategory category) {
-  switch (category) {
-    case CarCategory.SUV:
-      return 'SUV';
-    case CarCategory.SEDAN:
-      return 'Sedã';
-    case CarCategory.HATCHBACK:
-      return 'Hatch';
-    case CarCategory.SPORT:
-      return 'Esportivo';
-    case CarCategory.CONVERTIBLE:
-      return 'Conversível';
-    case CarCategory.WAGON:
-      return 'Perua';
-    case CarCategory.TRUCK:
-      return 'Picape';
-    default:
-      return 'Desconhecido';
-  }
+  // String get gearShiftText {
+  //   switch (gearShift) {
+  //     case CarGearShift.AUTOMATIC:
+  //       return 'Automático';
+  //     case CarGearShift.MANUAL:
+  //       return 'Manual';
+  //     default:
+  //       return 'Desconhecido';
+  //   }
+  // }
 }
