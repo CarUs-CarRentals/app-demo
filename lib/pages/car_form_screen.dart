@@ -1,7 +1,7 @@
 import 'package:carshare/components/car_form.dart';
 import 'package:carshare/exceptions/http_exceptions.dart';
 import 'package:carshare/models/car.dart';
-import 'package:carshare/models/car_list.dart';
+import 'package:carshare/providers/cars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
@@ -59,7 +59,7 @@ class _CarFormScreenState extends State<CarFormScreen> {
                   ).then((value) async {
                     if (value ?? false) {
                       try {
-                        await Provider.of<CarList>(context, listen: false)
+                        await Provider.of<Cars>(context, listen: false)
                             .removeCar(car);
                         Navigator.of(context).pop();
                       } on HttpException catch (error) {

@@ -1,8 +1,8 @@
 //import 'package:carshare/models/auth_old.dart';
 import 'package:carshare/models/auth.dart';
-import 'package:carshare/models/car_list.dart';
+import 'package:carshare/providers/cars.dart';
 import 'package:carshare/models/user.dart';
-import 'package:carshare/models/user_list.dart';
+import 'package:carshare/providers/users.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -62,14 +62,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<UserList>(context, listen: false).loadProfile();
+    Provider.of<Users>(context, listen: false).loadProfile();
   }
 
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final availableHeight = mediaQuery.size.height - mediaQuery.padding.top;
-    final userProvider = Provider.of<UserList>(context);
+    final userProvider = Provider.of<Users>(context);
 
     _currentUser = userProvider.userProfile;
 

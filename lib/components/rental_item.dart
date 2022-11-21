@@ -1,5 +1,5 @@
 import 'package:carshare/models/car.dart';
-import 'package:carshare/models/car_list.dart';
+import 'package:carshare/providers/cars.dart';
 import 'package:carshare/models/rental.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ class RentalItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<CarList>(context);
+    final provider = Provider.of<Cars>(context);
     final Car car =
         provider.cars.where((car) => car.id == rentalDetail.carId).elementAt(0);
 

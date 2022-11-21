@@ -2,14 +2,21 @@ import 'dart:io';
 
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:carshare/components/maskFormatters.dart';
+import 'package:carshare/data/store.dart';
 import 'package:carshare/models/address.dart';
 import 'package:carshare/models/user.dart';
+import 'package:carshare/providers/addresses.dart';
+import 'package:carshare/providers/drive_licenses.dart';
+import 'package:carshare/providers/users.dart';
 import 'package:carshare/widgets/image_input.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+import 'package:provider/provider.dart';
 
 class UserForm extends StatefulWidget {
   const UserForm({Key? key}) : super(key: key);
@@ -21,34 +28,27 @@ class UserForm extends StatefulWidget {
 class _UserFormState extends State<UserForm> {
   final _formKey = GlobalKey<FormState>();
   final _formData = <String, Object>{};
-  bool _editMode = false;
+  final _firebaseStorage = FirebaseStorage.instance;
   bool _isLoading = false;
 
   File _pickedImage = File('');
   String _profileImageUrl = '';
 
+  UploadTask? uploadTask;
+  String? _userId;
   UserGender? _dropdownGenderValue;
   BrazilStates? _dropdownStateValue;
   BrazilStates? _dropdownStateCNHValue;
 
-  String getUserGenderText(UserGender gender) {
-    switch (gender) {
-      case UserGender.MALE:
-        return 'Masculino';
-      case UserGender.FEMALE:
-        return 'Feminino';
-      case UserGender.UNKNOWN:
-        return '';
-      default:
-        return 'Desconhecido';
-    }
-  }
-
   void _selectImage(File pickedImage) {
-    _pickedImage = pickedImage;
-    if (_pickedImage.path == "") {
+    if (pickedImage.path == _pickedImage.path) {
+      _pickedImage = File('');
       return;
     }
+    _pickedImage = pickedImage;
+    // if (_pickedImage.path == "") {
+    //   return;
+    // }
   }
 
   _cnhTipDialog({required String title, required String imageUrl}) {
@@ -76,7 +76,132 @@ class _UserFormState extends State<UserForm> {
         });
   }
 
-  Future<void> _submitForm() async {}
+  void _getCurrentUserId() async {
+    final userData = await Store.getMap('userDataFb');
+    _userId = userData['localId'];
+    _formData['userId'] = _userId as String;
+  }
+
+  _uploadImage(File pickedImage) async {
+    final fileName =
+        pickedImage.path.substring(pickedImage.path.lastIndexOf('/'));
+    final path = 'images/$_userId/$fileName';
+
+    final ref = _firebaseStorage.ref().child(path);
+    uploadTask = ref.putFile(pickedImage);
+
+    final snapshot = await uploadTask!.whenComplete(() => null);
+
+    final urlDownload = await snapshot.ref.getDownloadURL();
+
+    if (urlDownload != '') {
+      _profileImageUrl = urlDownload;
+      _formData['profileImageUrl'] = _profileImageUrl;
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    if (_formData.isEmpty) {
+      final arg = ModalRoute.of(context)?.settings.arguments;
+
+      if (arg != null) {
+        final user = arg as User;
+        _formData['userID'] = user.id;
+        _formData['email'] = user.email;
+        _formData['firstName'] = user.firstName;
+        _formData['lastName'] = user.lastName;
+        _formData['about'] = user.about;
+        _formData['profileImageUrl'] = user.profileImageUrl;
+        _formData['gender'] = user.gender ?? '';
+        _formData['addressID'] = user.address?.id ?? '';
+        _formData['cep'] = user.address?.cep ?? '';
+        _formData['state'] = user.address?.state ?? '';
+        _formData['city'] = user.address?.city ?? '';
+        _formData['neighborhood'] = user.address?.neighborhood ?? '';
+        _formData['street'] = user.address?.street ?? '';
+        _formData['addressNumber'] = user.address?.number ?? '';
+        _formData['cnhID'] = user.cnh?.id ?? '';
+        _formData['rg'] = user.cnh?.rg ?? '';
+        _formData['birthDate'] = user.cnh?.birthDate ?? '';
+        _formData['cnhRegisterNumber'] = user.cnh?.registerNumber ?? '';
+        _formData['cnhNumber'] = user.cnh?.cnhNumber ?? '';
+        _formData['cnhExpirationDate'] = user.cnh?.expirationDate ?? '';
+        _formData['cnhState'] = user.cnh?.state ?? '';
+
+        _dropdownGenderValue = user.gender;
+        _dropdownStateValue = user.address?.state;
+        //_dropdownStateCNHValue = car.gearShift;
+      }
+    }
+  }
+
+  Future<void> _submitForm() async {
+    _getCurrentUserId();
+
+    final isValid = _formKey.currentState?.validate() ?? false;
+
+    if (!isValid) {
+      return;
+    }
+
+    context.loaderOverlay.show();
+    setState(() {
+      _isLoading = context.loaderOverlay.visible;
+    });
+
+    try {
+      // if (!_pickedImage.path.startsWith("https://") &&
+      //     _pickedImage.path.isNotEmpty) {
+      //   await _uploadImage(_pickedImage);
+      // } else {
+      _formData['profileImageUrl'] = _profileImageUrl;
+      //}
+    } catch (e) {
+      throw UnsupportedError('Erro ao fazer o upload');
+    }
+
+    _formKey.currentState?.save();
+
+    try {
+      await Provider.of<Users>(
+        context,
+        listen: false,
+      ).saveUser(_formData);
+      await Provider.of<Addresses>(
+        context,
+        listen: false,
+      ).saveAddress(_formData);
+      await Provider.of<DriverLicenses>(
+        context,
+        listen: false,
+      ).saveCNH(_formData);
+
+      Navigator.of(context).pop();
+    } catch (error) {
+      await showDialog<void>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('Ocorreu um erro!'),
+                content: Text(error.toString()),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'OK'),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ));
+    } finally {
+      if (_isLoading) {
+        context.loaderOverlay.hide();
+      }
+      setState(() {
+        _isLoading = context.loaderOverlay.visible;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +219,8 @@ class _UserFormState extends State<UserForm> {
               SizedBox(
                 height: 120,
                 width: 120,
-                child: ImageInput(_selectImage, '', 100),
+                child: ImageInput(_selectImage,
+                    _profileImageUrl.isEmpty ? "" : _profileImageUrl, 100),
               ),
               const SizedBox(
                 height: 30,
@@ -112,7 +238,7 @@ class _UserFormState extends State<UserForm> {
                   Expanded(
                     child: TextFormField(
                       decoration: const InputDecoration(
-                        labelText: 'Nome',
+                        labelText: 'Nome*',
                       ),
                       textInputAction: TextInputAction.next,
                       initialValue: _formData['firstName']?.toString(),
@@ -132,7 +258,8 @@ class _UserFormState extends State<UserForm> {
                   SizedBox(width: 10.0),
                   Expanded(
                     child: TextFormField(
-                      decoration: const InputDecoration(labelText: 'Sobrenome'),
+                      decoration:
+                          const InputDecoration(labelText: 'Sobrenome*'),
                       textInputAction: TextInputAction.next,
                       initialValue: _formData['lastName']?.toString(),
                       onSaved: (lastName) =>
@@ -180,7 +307,7 @@ class _UserFormState extends State<UserForm> {
                   CpfInputFormatter()
                 ],
                 decoration: const InputDecoration(
-                  labelText: 'CPF',
+                  labelText: 'CPF*',
                 ),
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
@@ -211,9 +338,9 @@ class _UserFormState extends State<UserForm> {
                 validator: (_phone) {
                   final phone = _phone ?? '';
 
-                  if (phone.trim().isEmpty) {
-                    return 'Telefone é obrigatório';
-                  }
+                  // if (phone.trim().isEmpty) {
+                  //   return 'Telefone é obrigatório';
+                  // }
 
                   return null;
                 },
@@ -231,12 +358,28 @@ class _UserFormState extends State<UserForm> {
                     value: gender,
                     child: Center(
                         child: Text(
-                      getUserGenderText(gender),
+                      User.getUserGenderText(gender),
                       textAlign: TextAlign.center,
                     )),
                   );
                 }).toList(),
-                onSaved: (gender) => _formData['gender'] = gender as UserGender,
+                onSaved: (gender) {
+                  if (gender == null) {
+                    _formData['gender'] = UserGender.UNKNOWN;
+                  } else {
+                    _formData['gender'] = gender as UserGender;
+                  }
+                },
+                validator: (_dropdownGenderValue) {
+                  var gender = _dropdownGenderValue;
+
+                  if (gender == null) {
+                    _formData['gender'] = UserGender.UNKNOWN;
+                    return null;
+                  }
+
+                  return null;
+                },
               ),
               const Divider(
                 height: 50,
@@ -254,21 +397,19 @@ class _UserFormState extends State<UserForm> {
                   CepInputFormatter()
                 ],
                 decoration: const InputDecoration(
-                  labelText: 'CEP',
+                  labelText: 'CEP*',
                 ),
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,
                 initialValue: _formData['cep']?.toString(),
                 onSaved: (cep) => _formData['cep'] = cep ?? '',
-                // validator: (_cep) {
-                //   final cep = _cep ?? '';
+                validator: (_cep) {
+                  final cep = _cep ?? '';
 
-                //   if (cep.trim().isEmpty) {
-                //     return 'CPF é obrigatório';
-                //   }
-
-                //   return null;
-                // },
+                  if (cep.trim().isEmpty) {
+                    return 'CEP é obrigatório';
+                  }
+                },
               ),
               Row(
                 children: [
@@ -276,45 +417,74 @@ class _UserFormState extends State<UserForm> {
                     flex: 2,
                     child: TextFormField(
                       decoration: const InputDecoration(
-                        labelText: 'Rua',
+                        labelText: 'Rua*',
                       ),
                       textInputAction: TextInputAction.next,
                       initialValue: _formData['street']?.toString(),
                       onSaved: (street) => _formData['street'] = street ?? '',
+                      validator: (_street) {
+                        final street = _street ?? '';
+
+                        if (street.trim().isEmpty) {
+                          return 'Rua é obrigatório';
+                        }
+                      },
                     ),
                   ),
                   SizedBox(width: 10.0),
                   Expanded(
                     child: TextFormField(
                       decoration: const InputDecoration(
-                        labelText: 'Numero',
+                        labelText: 'Numero*',
                       ),
                       textInputAction: TextInputAction.next,
-                      initialValue: _formData['number']?.toString(),
-                      onSaved: (number) => _formData['number'] = number ?? '',
+                      initialValue: _formData['addressNumber']?.toString(),
+                      onSaved: (number) =>
+                          _formData['addressNumber'] = number ?? '',
+                      validator: (_number) {
+                        final number = _number ?? '';
+
+                        if (number.trim().isEmpty) {
+                          return 'Nº é obrigatório';
+                        }
+                      },
                     ),
                   ),
                 ],
               ),
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'Bairro',
+                  labelText: 'Bairro*',
                 ),
                 textInputAction: TextInputAction.next,
                 initialValue: _formData['neighborhood']?.toString(),
                 onSaved: (neighborhood) =>
                     _formData['neighborhood'] = neighborhood ?? '',
+                validator: (_neighborhood) {
+                  final neighborhood = _neighborhood ?? '';
+
+                  if (neighborhood.trim().isEmpty) {
+                    return 'Bairro é obrigatório';
+                  }
+                },
               ),
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'Cidade',
+                  labelText: 'Cidade*',
                 ),
                 textInputAction: TextInputAction.next,
                 initialValue: _formData['city']?.toString(),
                 onSaved: (city) => _formData['city'] = city ?? '',
+                validator: (_city) {
+                  final city = _city ?? '';
+
+                  if (city.trim().isEmpty) {
+                    return 'Cidade é obrigatório';
+                  }
+                },
               ),
               DropdownButtonFormField<BrazilStates>(
-                decoration: const InputDecoration(labelText: 'Estado'),
+                decoration: const InputDecoration(labelText: 'Estado*'),
                 value: _dropdownStateValue,
                 onChanged: (BrazilStates? newValue) {
                   setState(() {
@@ -331,7 +501,20 @@ class _UserFormState extends State<UserForm> {
                     )),
                   );
                 }).toList(),
-                onSaved: (state) => _formData['state'] = state as BrazilStates,
+                onSaved: (state) {
+                  if (state == null) {
+                    _formData['state'] = BrazilStates.UNKNOWN;
+                  } else {
+                    _formData['state'] = state as BrazilStates;
+                  }
+                },
+                validator: (_dropdownStateValue) {
+                  var state = _dropdownStateValue;
+
+                  if (state == null) {
+                    return 'Estado é obrigatório';
+                  }
+                },
               ),
               const Divider(
                 height: 50,
@@ -412,9 +595,9 @@ class _UserFormState extends State<UserForm> {
                     )),
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
-                initialValue: _formData['registerNumber']?.toString(),
+                initialValue: _formData['cnhRegisterNumber']?.toString(),
                 onSaved: (registerNumber) =>
-                    _formData['registerNumber'] = registerNumber ?? '',
+                    _formData['cnhRegisterNumber'] = registerNumber ?? '',
                 // validator: (_rg) {
                 //   final rg = _rg ?? '';
 
@@ -464,9 +647,9 @@ class _UserFormState extends State<UserForm> {
                 ),
                 keyboardType: TextInputType.datetime,
                 textInputAction: TextInputAction.next,
-                initialValue: _formData['expirationDate']?.toString(),
+                initialValue: _formData['cnhExpirationDate']?.toString(),
                 onSaved: (expirationDate) =>
-                    _formData['expirationDate'] = expirationDate ?? '',
+                    _formData['cnhExpirationDate'] = expirationDate ?? '',
                 validator: (_expirationDate) {
                   if (_expirationDate == null || _expirationDate.isEmpty) {
                     return null;
@@ -491,8 +674,13 @@ class _UserFormState extends State<UserForm> {
                     )),
                   );
                 }).toList(),
-                onSaved: (state) =>
-                    _formData['stateCNH'] = state as BrazilStates,
+                onSaved: (state) {
+                  if (state == null) {
+                    _formData['cnhState'] = BrazilStates.UNKNOWN;
+                  } else {
+                    _formData['cnhState'] = state as BrazilStates;
+                  }
+                },
               ),
             ]),
             SizedBox(

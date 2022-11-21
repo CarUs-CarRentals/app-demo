@@ -5,11 +5,14 @@ import 'package:carshare/components/place_detail_item.dart';
 import 'package:carshare/components/rental_date_form.dart';
 import 'package:carshare/data/store.dart';
 import 'package:carshare/models/car.dart';
+import 'package:carshare/models/rental.dart';
 import 'package:carshare/models/user.dart';
-import 'package:carshare/models/user_list.dart';
+import 'package:carshare/providers/rentals.dart';
+import 'package:carshare/providers/users.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -19,6 +22,10 @@ class CarDetailScreen extends StatefulWidget {
 }
 
 class _CarDetailScreenState extends State<CarDetailScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _formData = <String, Object>{};
+  bool _isLoading = false;
+
   void _selectCarReview(BuildContext context, Car car) {
     Navigator.of(context).pushNamed(
       AppRoutes.CAR_REVIEW,
@@ -33,8 +40,53 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     );
   }
 
-  _submitRental() {
+  void _onSelectRentalDate(DateTime pickupDate, DateTime returnDate) {
+    _formData['rentalDate'] = pickupDate;
+    _formData['returnDate'] = returnDate;
+    print(_formData['rentalDate'].toString());
+    print(_formData['returnDate'].toString());
+  }
+
+  Future<void> _submitRental(Car car) async {
     print('Alugar');
+
+    _formData['carId'] = car.id;
+    _formData['userId'] = car.userId;
+    _formData['price'] = car.price;
+    _formData['location'] = car.location;
+    _formData['status'] = RentalStatus.PENDING;
+    _formData['isReview'] = false;
+
+    print(_formData['rentalDate'].toString());
+    print(_formData['returnDate'].toString());
+
+    try {
+      await Provider.of<Rentals>(
+        context,
+        listen: false,
+      ).saveRental(_formData);
+      Navigator.of(context).pop();
+    } catch (error) {
+      await showDialog<void>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('Ocorreu um erro!'),
+                content: Text(error.toString()),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'OK'),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ));
+    } finally {
+      if (_isLoading) {
+        context.loaderOverlay.hide();
+      }
+      setState(() {
+        _isLoading = context.loaderOverlay.visible;
+      });
+    }
   }
 
   _titleSection(
@@ -232,7 +284,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     );
   }
 
-  _rentalSection(BuildContext context, double carPrice, String userId) {
+  _rentalSection(BuildContext context, Car car) {
     //print("${_userConnected!.id} != ${userId}");
 
     return SizedBox(
@@ -240,14 +292,14 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(5),
-            child: "_userConnected!.id" != userId
+            child: "_userConnected!.id" != car.userId
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Column(
                         children: [
                           Text(
-                            UtilBrasilFields.obterReal(carPrice),
+                            UtilBrasilFields.obterReal(car.price),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -266,7 +318,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                       Row(
                         children: [
                           ElevatedButton(
-                            onPressed: _submitRental,
+                            onPressed: () => _submitRental(car),
                             style: ElevatedButton.styleFrom(
                               primary: Theme.of(context).colorScheme.primary,
                             ),
@@ -282,7 +334,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 : Column(
                     children: [
                       Text(
-                        'R\$ ${carPrice.toStringAsFixed(2)}',
+                        '${UtilBrasilFields.obterReal(car.price)}',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -307,7 +359,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Provider.of<UserList>(context, listen: false).loadProfile();
+    Provider.of<Users>(context, listen: false).loadProfile();
   }
 
   @override
@@ -355,7 +407,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 car.seats,
               ),
               Divider(),
-              RentalDateForm(),
+              RentalDateForm(_onSelectRentalDate),
               //LocationInput(),
               PlaceDetailItem(car.location.latitude, car.location.longitude,
                   car.location.address, car.imagesUrl[0].url),
@@ -374,7 +426,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 () => _selectOwnerProfile(context, carHost),
               ),
               Divider(),
-              _rentalSection(context, car.price, car.userId),
+              _rentalSection(context, car),
             ],
           ),
         ));

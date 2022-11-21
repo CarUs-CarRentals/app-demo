@@ -1,5 +1,5 @@
 import 'package:carshare/components/cars_list_view.dart';
-import 'package:carshare/models/car_list.dart';
+import 'package:carshare/providers/cars.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:outline_search_bar/outline_search_bar.dart';
@@ -14,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Future<void> _refreshCars(BuildContext context) {
-    return Provider.of<CarList>(
+    return Provider.of<Cars>(
       context,
       listen: false,
     ).loadCars();

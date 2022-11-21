@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:carshare/components/car_item.dart';
 import 'package:carshare/models/car.dart';
-import 'package:carshare/models/car_list.dart';
+import 'package:carshare/providers/cars.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -45,7 +45,7 @@ class _CarsListViewState extends State<CarsListView> {
       _isLoading = context.loaderOverlay.visible;
     });
 
-    Provider.of<CarList>(context, listen: false).loadCars().then((value) {
+    Provider.of<Cars>(context, listen: false).loadCars().then((value) {
       setState(() {
         if (_isLoading) {
           context.loaderOverlay.hide();
@@ -59,7 +59,7 @@ class _CarsListViewState extends State<CarsListView> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<CarList>(context);
+    final provider = Provider.of<Cars>(context);
     final List<Car> cars = provider.cars;
 
     return Scaffold(

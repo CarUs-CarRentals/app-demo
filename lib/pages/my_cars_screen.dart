@@ -3,9 +3,9 @@ import 'package:carshare/components/car_item_edit.dart';
 import 'package:carshare/components/cars_list_view.dart';
 import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/car.dart';
-import 'package:carshare/models/car_list.dart';
+import 'package:carshare/providers/cars.dart';
 import 'package:carshare/models/user.dart';
-import 'package:carshare/models/user_list.dart';
+import 'package:carshare/providers/users.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -35,7 +35,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
       _isLoading = context.loaderOverlay.visible;
     });
 
-    Provider.of<CarList>(context, listen: false).loadCarsByUser().then((value) {
+    Provider.of<Cars>(context, listen: false).loadCarsByUser().then((value) {
       setState(() {
         if (_isLoading) {
           context.loaderOverlay.hide();
@@ -52,7 +52,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
     final mediaQuery = MediaQuery.of(context);
     final availableHeight =
         mediaQuery.size.height - kToolbarHeight - mediaQuery.padding.top;
-    final provider = Provider.of<CarList>(context);
+    final provider = Provider.of<Cars>(context);
     final List<Car> carsUser = provider.carsFromUser;
 
     return Scaffold(

@@ -60,7 +60,10 @@ class ProfileDetail extends StatelessWidget {
   }
 
   void _selectEditProfile(BuildContext context) {
-    Navigator.of(context).pushNamed(AppRoutes.PROFILE_EDIT);
+    Navigator.of(context).pushNamed(
+      AppRoutes.PROFILE_EDIT,
+      arguments: user,
+    );
   }
 
   void _selectReviewsReceived(BuildContext context, User user) {

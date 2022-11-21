@@ -4,7 +4,7 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:carshare/components/maskFormatters.dart';
 import 'package:carshare/data/store.dart';
 import 'package:carshare/models/car.dart';
-import 'package:carshare/models/car_list.dart';
+import 'package:carshare/providers/cars.dart';
 import 'package:carshare/utils/location_util.dart';
 import 'package:carshare/widgets/image_input.dart';
 import 'package:carshare/widgets/location_input.dart';
@@ -120,7 +120,7 @@ class _CarFormState extends State<CarForm> {
     _formKey.currentState?.save();
 
     try {
-      await Provider.of<CarList>(
+      await Provider.of<Cars>(
         context,
         listen: false,
       ).saveCar(_formData);
@@ -559,8 +559,10 @@ class _CarFormState extends State<CarForm> {
                   CentavosInputFormatter(moeda: true)
                 ],
                 decoration: const InputDecoration(labelText: 'Preço'),
-                initialValue: UtilBrasilFields.obterReal(double.parse(
-                    "${_formData['price']?.toString()}")), //_formData['price']?.toString(),
+                initialValue: _formData['price'] == null
+                    ? ""
+                    : UtilBrasilFields.obterReal(double.parse(
+                        "${_formData['price']?.toString()}")), //_formData['price']?.toString(),
                 textInputAction: TextInputAction.next,
                 onSaved: (price) => _formData['price'] =
                     UtilBrasilFields.converterMoedaParaDouble(price!),

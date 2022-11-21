@@ -2,7 +2,7 @@ import 'package:brasil_fields/brasil_fields.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/place.dart';
 import 'package:carshare/models/user.dart';
-import 'package:carshare/models/user_list.dart';
+import 'package:carshare/providers/users.dart';
 import 'package:carshare/utils/location_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -50,8 +50,8 @@ class _CarItemState extends State<CarItem> {
   }
 
   Future<void> _getCarHost(String userId) async {
-    await Provider.of<UserList>(context, listen: false).loadUserById(userId);
-    final provider = Provider.of<UserList>(context, listen: false);
+    await Provider.of<Users>(context, listen: false).loadUserById(userId);
+    final provider = Provider.of<Users>(context, listen: false);
     carUser = provider.userByID;
   }
 

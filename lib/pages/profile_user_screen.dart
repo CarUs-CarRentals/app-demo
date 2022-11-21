@@ -3,7 +3,7 @@ import 'package:carshare/models/address.dart';
 import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/user.dart';
-import 'package:carshare/models/user_list.dart';
+import 'package:carshare/providers/users.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,12 +24,12 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Provider.of<UserList>(context, listen: false).loadProfile();
+    Provider.of<Users>(context, listen: false).loadProfile();
   }
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserList>(context);
+    final userProvider = Provider.of<Users>(context);
     _currentUser = userProvider.userProfile;
     _userId = "";
     final bool argumentIsNull =

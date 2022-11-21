@@ -1,7 +1,7 @@
 import 'package:carshare/models/car.dart';
-import 'package:carshare/models/car_list.dart';
+import 'package:carshare/providers/cars.dart';
 import 'package:carshare/models/user.dart';
-import 'package:carshare/models/user_list.dart';
+import 'package:carshare/providers/users.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -24,8 +24,8 @@ class _CarItemState extends State<CarItemEdit> {
   bool _isLoading = true;
 
   Future<void> _getCarHost(String userId) async {
-    await Provider.of<UserList>(context, listen: false).loadUserById(userId);
-    final provider = Provider.of<UserList>(context, listen: false);
+    await Provider.of<Users>(context, listen: false).loadUserById(userId);
+    final provider = Provider.of<Users>(context, listen: false);
     carUser = provider.userByID;
     print(carUser?.fullName);
   }
@@ -156,7 +156,7 @@ class _CarItemState extends State<CarItemEdit> {
       _isLoading = context.loaderOverlay.visible;
     });
 
-    Provider.of<UserList>(context, listen: false)
+    Provider.of<Users>(context, listen: false)
         .loadUserById(widget.car.userId)
         .then((value) {
       setState(() {

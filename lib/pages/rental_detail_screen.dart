@@ -1,7 +1,6 @@
 import 'package:carshare/models/car.dart';
-import 'package:carshare/models/car_list.dart';
+import 'package:carshare/providers/cars.dart';
 import 'package:carshare/models/rental.dart';
-import 'package:carshare/models/rental_list.dart';
 import 'package:carshare/models/review.dart';
 import 'package:carshare/models/review_list.dart';
 import 'package:carshare/utils/app_routes.dart';
@@ -37,7 +36,7 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
   Widget build(BuildContext context) {
     final rentalDetail = ModalRoute.of(context)?.settings.arguments as Rental;
 
-    final carProvider = Provider.of<CarList>(context);
+    final carProvider = Provider.of<Cars>(context);
     final reviewCarProvider = Provider.of<CarReviewList>(context);
 
     final Car car = carProvider.cars
@@ -89,7 +88,7 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                   Row(
                     children: [
                       Text(
-                          '${DateFormat('dd/MM/yyyy • H:m', 'pt_BR').format(rentalDetail.rentalDate)} ${rentalDetail.returnDate != null ? DateFormat('- dd/MM/yyyy • H:m', 'pt_BR').format(rentalDetail.returnDate!) : ''}'),
+                          '${DateFormat('dd/MM/yyyy • H:m', 'pt_BR').format(rentalDetail.rentalDate)} ${rentalDetail.returnDate != null ? DateFormat('- dd/MM/yyyy • H:m', 'pt_BR').format(rentalDetail.returnDate) : ''}'),
                     ],
                   ),
                   Row(children: [

@@ -5,7 +5,8 @@ import 'package:intl/date_symbol_data_file.dart';
 import 'package:intl/intl.dart';
 
 class RentalDateForm extends StatefulWidget {
-  const RentalDateForm({Key? key}) : super(key: key);
+  final Function onSelectDate;
+  const RentalDateForm(this.onSelectDate, {Key? key}) : super(key: key);
 
   @override
   State<RentalDateForm> createState() => _RentalDateFormState();
@@ -34,6 +35,7 @@ class _RentalDateFormState extends State<RentalDateForm> {
       _selectedPickupDate = dateTime;
       _selectedReturnDate = _selectedPickupDate;
       _currentDate = _selectedPickupDate;
+      widget.onSelectDate(_selectedPickupDate, _selectedReturnDate);
     });
   }
 
@@ -53,6 +55,7 @@ class _RentalDateFormState extends State<RentalDateForm> {
     );
     setState(() {
       _selectedReturnDate = dateTime;
+      widget.onSelectDate(_selectedPickupDate, _selectedReturnDate);
     });
   }
 

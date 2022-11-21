@@ -42,7 +42,7 @@ class _ImageInputState extends State<ImageInput> {
     final ImagePicker _picker = ImagePicker();
     XFile imageFile = await _picker.pickImage(
       source: ImageSource.camera,
-      maxWidth: 800,
+      maxWidth: 900,
     ) as XFile;
 
     setState(() {
@@ -56,7 +56,7 @@ class _ImageInputState extends State<ImageInput> {
     final ImagePicker _picker = ImagePicker();
     XFile imageFile = await _picker.pickImage(
       source: ImageSource.gallery,
-      maxWidth: 800,
+      maxWidth: 900,
     ) as XFile;
 
     setState(() {

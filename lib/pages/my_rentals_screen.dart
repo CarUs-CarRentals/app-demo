@@ -1,7 +1,7 @@
 import 'package:carshare/components/rental_item.dart';
 import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/rental.dart';
-import 'package:carshare/models/rental_list.dart';
+import 'package:carshare/providers/rentals.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -16,7 +16,7 @@ class MyRentalsScreen extends StatelessWidget {
     Auth auth = Provider.of(context, listen: false);
     String? myID = auth.userId;
 
-    final provider = Provider.of<RentalList>(context);
+    final provider = Provider.of<Rentals>(context);
     final List<Rental> rentalsUser =
         provider.rentals.where((rental) => rental.userId == myID).toList();
 
