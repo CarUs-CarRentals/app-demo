@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:carshare/components/maskFormatters.dart';
 import 'package:carshare/models/address.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/widgets/image_input.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
@@ -17,7 +19,6 @@ class UserForm extends StatefulWidget {
 }
 
 class _UserFormState extends State<UserForm> {
-  final _priceFocus = FocusNode();
   final _formKey = GlobalKey<FormState>();
   final _formData = <String, Object>{};
   bool _editMode = false;
@@ -174,10 +175,12 @@ class _UserFormState extends State<UserForm> {
                 ),
               ),
               TextFormField(
-                inputFormatters: [FieldTextMask.maskCPF],
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  CpfInputFormatter()
+                ],
                 decoration: const InputDecoration(
                   labelText: 'CPF',
-                  hintText: "___.___.___-__",
                 ),
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
@@ -194,10 +197,12 @@ class _UserFormState extends State<UserForm> {
                 },
               ),
               TextFormField(
-                inputFormatters: [FieldTextMask.maskPhoneNumber],
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  TelefoneInputFormatter()
+                ],
                 decoration: const InputDecoration(
                   labelText: 'Telefone',
-                  hintText: "(__) _____-____",
                 ),
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.phone,
@@ -244,10 +249,12 @@ class _UserFormState extends State<UserForm> {
                 ),
               ),
               TextFormField(
-                inputFormatters: [FieldTextMask.maskCEP],
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  CepInputFormatter()
+                ],
                 decoration: const InputDecoration(
                   labelText: 'CEP',
-                  hintText: "_____-___",
                 ),
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,
@@ -356,36 +363,39 @@ class _UserFormState extends State<UserForm> {
                 // },
               ),
               TextFormField(
-                  inputFormatters: [FieldTextMask.maskDate],
-                  decoration: const InputDecoration(
-                    labelText: 'Data de Nascimento',
-                    hintText: "__/__/____",
-                  ),
-                  keyboardType: TextInputType.datetime,
-                  textInputAction: TextInputAction.next,
-                  initialValue: _formData['birthDate']?.toString(),
-                  onSaved: (birthDate) =>
-                      _formData['birthDate'] = birthDate ?? '',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return null;
-                    }
-                    final components = value.split("/");
-                    if (components.length == 3) {
-                      final day = int.tryParse(components[0]);
-                      final month = int.tryParse(components[1]);
-                      final year = int.tryParse(components[2]);
-                      if (day != null && month != null && year != null) {
-                        final date = DateTime(year, month, day);
-                        if (date.year == year &&
-                            date.month == month &&
-                            date.day == day) {
-                          return null;
-                        }
-                      }
-                    }
-                    return "wrong date";
-                  }),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  DataInputFormatter()
+                ],
+                decoration: const InputDecoration(
+                  labelText: 'Data de Nascimento',
+                ),
+                keyboardType: TextInputType.datetime,
+                textInputAction: TextInputAction.next,
+                initialValue: _formData['birthDate']?.toString(),
+                onSaved: (birthDate) =>
+                    _formData['birthDate'] = birthDate ?? '',
+                // validator: (value) {
+                //   if (value == null || value.isEmpty) {
+                //     return null;
+                //   }
+                //   final components = value.split("/");
+                //   if (components.length == 3) {
+                //     final day = int.tryParse(components[0]);
+                //     final month = int.tryParse(components[1]);
+                //     final year = int.tryParse(components[2]);
+                //     if (day != null && month != null && year != null) {
+                //       final date = DateTime(year, month, day);
+                //       if (date.year == year &&
+                //           date.month == month &&
+                //           date.day == day) {
+                //         return null;
+                //       }
+                //     }
+                //   }
+                //   return "wrong date";
+                // }
+              ),
               TextFormField(
                 inputFormatters: [FieldTextMask.maskCNHRegisterNumb],
                 decoration: InputDecoration(
@@ -445,36 +455,24 @@ class _UserFormState extends State<UserForm> {
                 // },
               ),
               TextFormField(
-                  inputFormatters: [FieldTextMask.maskDate],
-                  decoration: const InputDecoration(
-                    labelText: 'Data de Validade',
-                    hintText: "__/__/____",
-                  ),
-                  keyboardType: TextInputType.datetime,
-                  textInputAction: TextInputAction.next,
-                  initialValue: _formData['expirationDate']?.toString(),
-                  onSaved: (expirationDate) =>
-                      _formData['expirationDate'] = expirationDate ?? '',
-                  validator: (_expirationDate) {
-                    if (_expirationDate == null || _expirationDate.isEmpty) {
-                      return null;
-                    }
-                    final components = _expirationDate.split("/");
-                    if (components.length == 3) {
-                      final day = int.tryParse(components[0]);
-                      final month = int.tryParse(components[1]);
-                      final year = int.tryParse(components[2]);
-                      if (day != null && month != null && year != null) {
-                        final date = DateTime(year, month, day);
-                        if (date.year == year &&
-                            date.month == month &&
-                            date.day == day) {
-                          return null;
-                        }
-                      }
-                    }
-                    return "wrong date";
-                  }),
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  DataInputFormatter()
+                ],
+                decoration: const InputDecoration(
+                  labelText: 'Data de Validade',
+                ),
+                keyboardType: TextInputType.datetime,
+                textInputAction: TextInputAction.next,
+                initialValue: _formData['expirationDate']?.toString(),
+                onSaved: (expirationDate) =>
+                    _formData['expirationDate'] = expirationDate ?? '',
+                validator: (_expirationDate) {
+                  if (_expirationDate == null || _expirationDate.isEmpty) {
+                    return null;
+                  }
+                },
+              ),
               DropdownButtonFormField<BrazilStates>(
                 decoration: const InputDecoration(labelText: 'Estado'),
                 value: _dropdownStateCNHValue,
