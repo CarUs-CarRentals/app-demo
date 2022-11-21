@@ -28,9 +28,11 @@ enum BrazilStates {
   SAO_PAULO,
   SERGIPE,
   TOCANTINS,
+  UNKNOWN,
 }
 
 class Address {
+  final int id;
   final String cep;
   final BrazilStates state;
   final String city;
@@ -39,6 +41,7 @@ class Address {
   final int number;
 
   Address(
+    this.id,
     this.cep,
     this.state,
     this.city,

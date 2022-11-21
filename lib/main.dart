@@ -1,9 +1,12 @@
 import 'package:carshare/firebase_options.dart';
+import 'package:carshare/models/address.dart';
 import 'package:carshare/models/auth.dart';
-import 'package:carshare/models/car_list.dart';
-import 'package:carshare/models/rental_list.dart';
+import 'package:carshare/providers/addresses.dart';
+import 'package:carshare/providers/cars.dart';
 import 'package:carshare/models/review_list.dart';
-import 'package:carshare/models/user_list.dart';
+import 'package:carshare/providers/drive_licenses.dart';
+import 'package:carshare/providers/rentals.dart';
+import 'package:carshare/providers/users.dart';
 import 'package:carshare/pages/car_detail_screen.dart';
 import 'package:carshare/pages/car_form_screen.dart';
 import 'package:carshare/pages/car_history_screen.dart';
@@ -52,13 +55,19 @@ class MyApp extends StatelessWidget {
           create: (_) => UserReviewList(),
         ),
         ChangeNotifierProvider(
-          create: (_) => CarList(),
+          create: (_) => Cars(),
         ),
         ChangeNotifierProvider(
-          create: (_) => UserList(),
+          create: (_) => Users(),
         ),
         ChangeNotifierProvider(
-          create: (_) => RentalList(),
+          create: (_) => Addresses(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => DriverLicenses(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => Rentals(),
         )
       ],
       child: MaterialApp(
