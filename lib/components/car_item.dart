@@ -1,3 +1,4 @@
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/place.dart';
 import 'package:carshare/models/user.dart';
@@ -103,7 +104,8 @@ class _CarItemState extends State<CarItem> {
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                     Row(children: [
-                      Text('R\$ ${widget.car.price}/dia'),
+                      Text(
+                          '${UtilBrasilFields.obterReal(widget.car.price)}/dia'),
                     ])
                   ],
                 ),

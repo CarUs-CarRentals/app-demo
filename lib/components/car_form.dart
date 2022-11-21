@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:carshare/components/maskFormatters.dart';
 import 'package:carshare/data/store.dart';
 import 'package:carshare/models/car.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 
@@ -366,7 +368,7 @@ class _CarFormState extends State<CarForm> {
                     value: fuel,
                     child: Center(
                         child: Text(
-                      getFuelText(fuel),
+                      Car.getFuelText(fuel),
                       textAlign: TextAlign.center,
                     )),
                   );
@@ -395,7 +397,7 @@ class _CarFormState extends State<CarForm> {
                     value: gear,
                     child: Center(
                         child: Text(
-                      getGearShiftText(gear),
+                      Car.getGearShiftText(gear),
                       textAlign: TextAlign.center,
                     )),
                   );
@@ -425,7 +427,7 @@ class _CarFormState extends State<CarForm> {
                     value: category,
                     child: Center(
                         child: Text(
-                      getCategoryText(category),
+                      Car.getCategoryText(category),
                       textAlign: TextAlign.center,
                     )),
                   );
@@ -552,21 +554,29 @@ class _CarFormState extends State<CarForm> {
                 height: 50,
               ),
               TextFormField(
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  CentavosInputFormatter(moeda: true)
+                ],
                 decoration: const InputDecoration(labelText: 'Preço'),
-                initialValue: _formData['price']?.toString(),
+                initialValue: UtilBrasilFields.obterReal(double.parse(
+                    "${_formData['price']?.toString()}")), //_formData['price']?.toString(),
                 textInputAction: TextInputAction.next,
-                onSaved: (price) => _formData['price'] = double.parse(price!),
+                onSaved: (price) => _formData['price'] =
+                    UtilBrasilFields.converterMoedaParaDouble(price!),
                 focusNode: _priceFocus,
                 keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                    const TextInputType.numberWithOptions(decimal: false),
                 validator: (_price) {
                   final price = _price ?? '';
-
+                  final pricedouble =
+                      UtilBrasilFields.converterMoedaParaDouble(price);
+                  print(pricedouble);
                   if (price.trim().isEmpty) {
                     return 'Preço é obrigatório';
                   }
 
-                  if (double.parse(price) <= 0) {
+                  if (pricedouble <= 0) {
                     return 'Preço deve ser maior que R\$ 0,00';
                   }
 
