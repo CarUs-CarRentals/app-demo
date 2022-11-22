@@ -104,8 +104,6 @@ class Cars with ChangeNotifier {
         carImages.add(CarImages(url: carData['carImages'][i]['url']));
       }
 
-      print(_carDistanceValue);
-      print(_carDistanceText);
       _cars.add(
         Car(
           id: carData['id'],
@@ -368,4 +366,88 @@ class Cars with ChangeNotifier {
       }
     });
   }
+
+  Future<void> loadCarsBySearch(String value, String parameter) async {
+
+    final userData = await Store.getMap('userData');
+    _refreshToken = userData['refreshToken'];
+
+    _cars.clear();
+
+    final response = await http.get(
+      Uri.parse('$_baseUrl/search?$parameter=$value'),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+      },
+    );
+
+    List<Map<String, dynamic>> map = [];
+
+    //Map<String, dynamic> data = jsonDecode(response.body);
+    String source = Utf8Decoder().convert(response.bodyBytes);
+    map = List<Map<String, dynamic>>.from(jsonDecode(source));
+    List<Map<String, dynamic>> data = map;
+    for (var carData in data) {
+      CarFuel fuel = CarFuel.values
+          .firstWhere((element) => element.name.toString() == carData['fuel']);
+
+      CarGearShift gearShift = CarGearShift.values.firstWhere(
+          (element) => element.name.toString() == carData['gearShift']);
+
+      CarCategory category = CarCategory.values.firstWhere(
+          (element) => element.name.toString() == carData['category']);
+
+      _userLocation = await _getCurrentUserLocation();
+
+      final carDistance = await LocationUtil.getDistance(
+          _userLocation!,
+          _getCarLocation(
+              carData['latitude'] as double, carData['longitude'] as double));
+      //carDistance.then((value) => _carDistanceValue = value['value']);
+      _carDistanceValue = carDistance['value'];
+      _carDistanceText = carDistance['text'];
+
+      //Adiciona as imagens do carro no objeto CarImages
+      List<CarImages> carImages = [];
+      final List<dynamic> imagesData = carData['carImages'];
+      for (var i = 0; i < imagesData.length; i++) {
+        carImages.add(CarImages(url: carData['carImages'][i]['url']));
+      }
+
+      _cars.add(
+        Car(
+          id: carData['id'],
+          brand: carData['brand'],
+          userId: carData['user'],
+          model: carData['model'],
+          year: carData['year'],
+          plate: carData['plate'],
+          fuel: fuel,
+          gearShift: gearShift,
+          category: category,
+          distance: _carDistanceValue,
+          distanceText: _carDistanceText,
+          doors: carData['doors'],
+          seats: carData['seats'],
+          trunk: carData['trunk'],
+          price: carData['price'],
+          location: CarLocation(
+              latitude: carData['latitude'],
+              longitude: carData['longitude'],
+              address: carData['address']),
+          description: carData['description'],
+          imagesUrl: carImages,
+        ),
+      );
+
+      _carDistanceValue = 0;
+      _carDistanceText = '';
+    }
+
+    notifyListeners();
+
+  }
+
 }
