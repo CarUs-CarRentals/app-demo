@@ -38,7 +38,7 @@ class RentalItem extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-            '${DateFormat('MMM dd • H:m', 'pt_BR').format(rentalDetail.rentalDate)} ${rentalDetail.returnDate != null ? DateFormat('- MMM dd • H:m', 'pt_BR').format(rentalDetail.returnDate!) : ''}\nR\$ ${rentalDetail.price.toStringAsFixed(2)}'),
+            '${DateFormat('MMM dd • H:m', 'pt_BR').format(rentalDetail.rentalDate)} ${DateFormat('- MMM dd • H:m', 'pt_BR').format(rentalDetail.returnDate)}\nR\$ ${rentalDetail.price.toStringAsFixed(2)}'),
         isThreeLine: true,
         trailing: Icon(
           Icons.keyboard_arrow_right_outlined,
