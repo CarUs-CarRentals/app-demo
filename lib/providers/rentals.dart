@@ -115,8 +115,8 @@ class Rentals with ChangeNotifier {
       body: jsonEncode({
         "user": rental.userId,
         "car": rental.carId,
-        "locationDate": rental.rentalDate.toIso8601String(),
-        "returnDate": rental.returnDate.toIso8601String(),
+        "locationDate": "${rental.rentalDate.toIso8601String()}Z",
+        "returnDate": "${rental.returnDate.toIso8601String()}Z",
         "price": rental.price,
         "latitude": rental.location.latitude,
         "longitude": rental.location.longitude,

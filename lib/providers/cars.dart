@@ -100,7 +100,7 @@ class Cars with ChangeNotifier {
   }
 
   Future<void> saveCar(Map<String, Object> data) {
-    bool hasId = data['id'] != null;
+    bool hasId = data['id'] != "";
 
     final car = Car(
       id: hasId ? data['id'] as int : 0,
@@ -172,50 +172,50 @@ class Cars with ChangeNotifier {
   }
 
   Future<void> updateCar(Car car) async {
-    int index = _carsFromUser.indexWhere((p) => p.id == car.id);
+    //int index = _carsFromUser.indexWhere((p) => p.id == car.id);
 
-    if (index >= 0) {
-      final userData = await Store.getMap('userData');
-      _refreshToken = userData['refreshToken'];
+    //if (index >= 0) {
+    final userData = await Store.getMap('userData');
+    _refreshToken = userData['refreshToken'];
 
-      final response = await http.put(
-        Uri.parse('$_baseUrl/${car.id}'),
-        headers: {
-          "content-type": "application/json",
-          "accept": "application/json",
-          HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
-        },
-        body: jsonEncode({
-          "user": car.userId,
-          "brand": car.brand,
-          "model": car.model,
-          "year": car.year,
-          "plate": car.plate,
-          "fuel": car.fuel.name,
-          "gearShift": car.gearShift.name,
-          "category": car.category.name,
-          "doors": car.doors,
-          "seats": car.seats,
-          "trunk": car.trunk,
-          "latitude": car.location.latitude,
-          "longitude": car.location.longitude,
-          "description": car.description,
-          "address": car.location.address,
-          "price": car.price,
-          "carImages": car.imagesUrl
-        }),
+    final response = await http.put(
+      Uri.parse('$_baseUrl/${car.id}'),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+      },
+      body: jsonEncode({
+        "user": car.userId,
+        "brand": car.brand,
+        "model": car.model,
+        "year": car.year,
+        "plate": car.plate,
+        "fuel": car.fuel.name,
+        "gearShift": car.gearShift.name,
+        "category": car.category.name,
+        "doors": car.doors,
+        "seats": car.seats,
+        "trunk": car.trunk,
+        "latitude": car.location.latitude,
+        "longitude": car.location.longitude,
+        "description": car.description,
+        "address": car.location.address,
+        "price": car.price,
+        "carImages": car.imagesUrl
+      }),
+    );
+
+    if (response.statusCode < 400) {
+      //_carsFromUser.where((element) => element.id == car.id) = car;
+      notifyListeners();
+    } else {
+      throw HttpException(
+        msg: "Não foi possível atualizar o veículo",
+        statusCode: response.statusCode,
       );
-
-      if (response.statusCode < 400) {
-        _carsFromUser[index] = car;
-        notifyListeners();
-      } else {
-        throw HttpException(
-          msg: "Não foi possível atualizar o veículo",
-          statusCode: response.statusCode,
-        );
-      }
     }
+    //}
   }
 
   Future<void> removeCar(Car car) async {

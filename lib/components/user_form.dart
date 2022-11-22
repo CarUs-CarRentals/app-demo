@@ -491,7 +491,9 @@ class _UserFormState extends State<UserForm> {
                     _dropdownStateValue = newValue;
                   });
                 },
-                items: BrazilStates.values.map((BrazilStates state) {
+                items: BrazilStates.values
+                    .where((e) => e != BrazilStates.UNKNOWN)
+                    .map((BrazilStates state) {
                   return DropdownMenuItem<BrazilStates>(
                     value: state,
                     child: Center(
@@ -664,7 +666,9 @@ class _UserFormState extends State<UserForm> {
                     _dropdownStateCNHValue = newValue;
                   });
                 },
-                items: BrazilStates.values.map((BrazilStates state) {
+                items: BrazilStates.values
+                    .where((e) => e != BrazilStates.UNKNOWN)
+                    .map((BrazilStates state) {
                   return DropdownMenuItem<BrazilStates>(
                     value: state,
                     child: Center(
