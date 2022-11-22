@@ -363,7 +363,7 @@ class Auth with ChangeNotifier {
     return _refreshToken;
   }
 
-  Future<User> getLoggedUser() async {
+  Future<Map<String, dynamic>> getLoggedUser() async {
     final userData = await Store.getMap('userData');
     //if (userData.isEmpty) return;
 
@@ -381,14 +381,15 @@ class Auth with ChangeNotifier {
     );
 
     Map<String, dynamic> userJson = jsonDecode(response.body);
-    return User(
-      id: userJson['uuid'],
-      email: userJson['email'],
-      firstName: userJson['firstName'],
-      lastName: userJson['lastName'],
-      memberSince: userJson['memberSince'],
-      about: userJson['about'],
-    );
+    return userJson;
+    // return User(
+    //   id: userJson['uuid'],
+    //   email: userJson['email'],
+    //   firstName: userJson['firstName'],
+    //   lastName: userJson['lastName'],
+    //   memberSince: userJson['memberSince'],
+    //   about: userJson['about'],
+    // );
     // return User(
     //   userJson['cpf'],
     //   userJson['rg'],
