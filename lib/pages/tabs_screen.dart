@@ -29,7 +29,10 @@ class _TabsScreenState extends State<TabsScreen> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        body: _screenOptions[_selectedIndex],
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _screenOptions,
+        ), //_screenOptions[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
           items: [
             BottomNavigationBarItem(
