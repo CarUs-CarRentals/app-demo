@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:carshare/data/store.dart';
 import 'package:carshare/exceptions/http_exceptions.dart';
+import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/rental.dart';
 import 'package:carshare/utils/constants.dart';
@@ -79,13 +80,16 @@ class Rentals with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveRental(Map<String, Object> data) {
+  Future<void> saveRental(Map<String, Object> data) async {
+    Map<String, dynamic> userLogged = await Auth().getLoggedUser();
+    //Map<String, dynamic> userData;
+
     bool hasId = data['id'] != null;
 
     final rental = Rental(
       id: hasId ? data['id'] as int : 0,
       carId: data['carId'] as int,
-      userId: data['userId'] as String,
+      userId: userLogged['uuid'] as String,
       rentalDate: data['rentalDate'] as DateTime,
       returnDate: data['returnDate'] as DateTime,
       price: data['price'] as double,
