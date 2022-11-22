@@ -25,6 +25,10 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   final _formKey = GlobalKey<FormState>();
   final _formData = <String, Object>{};
   bool _isLoading = false;
+  bool _validDateRange = true;
+  final _timeNow = DateTime.now();
+  DateTime? _rentalDate;
+  DateTime? _returnDate;
 
   void _selectCarReview(BuildContext context, Car car) {
     Navigator.of(context).pushNamed(
@@ -43,19 +47,80 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   void _onSelectRentalDate(DateTime pickupDate, DateTime returnDate) {
     _formData['rentalDate'] = pickupDate;
     _formData['returnDate'] = returnDate;
-    print(_formData['rentalDate'].toString());
-    print(_formData['returnDate'].toString());
+    _rentalDate = pickupDate;
+    _returnDate = returnDate;
+  }
+
+  void _validateRentalDateRange() {
+    _validDateRange = true;
+
+    if (_rentalDate!.compareTo(_returnDate!) == 0) {
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('Ocorreu um erro!'),
+                content: Text("A data inicial e final não podem ser iguais"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'OK'),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ));
+      _validDateRange = false;
+      return;
+    }
+
+    if (_rentalDate!.compareTo(DateTime.now()) < 0) {
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('Ocorreu um erro!'),
+                content: Text("A data inicial é inválida"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'OK'),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ));
+      _validDateRange = false;
+      return;
+    }
+
+    if (_rentalDate!.compareTo(_returnDate!) > 0) {
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('Ocorreu um erro!'),
+                content:
+                    Text("A data final da locação é inferior a data inicial"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'OK'),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ));
+      print("rentalDate is after returnDate");
+      _validDateRange = false;
+      return;
+    }
   }
 
   Future<void> _submitRental(Car car) async {
     print('Alugar');
 
     _formData['carId'] = car.id;
-    _formData['userId'] = car.userId;
+    //_formData['userId'] = currentUser.id;
     _formData['price'] = car.price;
     _formData['location'] = car.location;
     _formData['status'] = RentalStatus.PENDING;
     _formData['isReview'] = false;
+
+    _validateRentalDateRange();
+
+    if (!_validDateRange) return;
 
     print(_formData['rentalDate'].toString());
     print(_formData['returnDate'].toString());
@@ -360,6 +425,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     // TODO: implement initState
     super.initState();
     Provider.of<Users>(context, listen: false).loadProfile();
+    _onSelectRentalDate(_timeNow, _timeNow);
   }
 
   @override

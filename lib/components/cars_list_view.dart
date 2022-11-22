@@ -21,11 +21,11 @@ class _CarsListViewState extends State<CarsListView> {
   bool _isLoading = true;
   int? carDistance;
 
-  Future<LatLng> _getCurrentUserLocation() async {
-    final _locationData = await Location().getLocation();
-    return LatLng(
-        _locationData.latitude as double, _locationData.longitude as double);
-  }
+  // Future<LatLng> _getCurrentUserLocation() async {
+  //   final _locationData = await Location().getLocation();
+  //   return LatLng(
+  //       _locationData.latitude as double, _locationData.longitude as double);
+  // }
 
   int _calculateDistance(lat1, lon1, lat2, lon2) {
     var p = 0.017453292519943295;
@@ -39,7 +39,7 @@ class _CarsListViewState extends State<CarsListView> {
   @override
   void initState() {
     super.initState();
-    
+
     context.loaderOverlay.show();
     setState(() {
       _isLoading = context.loaderOverlay.visible;
@@ -63,59 +63,59 @@ class _CarsListViewState extends State<CarsListView> {
     final List<Car> cars = provider.cars;
 
     return Scaffold(
-      body: FutureBuilder<List<dynamic>>(
+      body: /*FutureBuilder<List<dynamic>>(
           future: Future.wait([_getCurrentUserLocation()]),
           builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
             if (snapshot.hasData) {
-              final myLocation = snapshot.data![0];
-              return ListView.builder(
-                  itemCount: cars.length,
-                  itemBuilder: (context, index) {
-                    if (cars[index].distance == 0) {
-                      cars.asMap().forEach((idx, value) {
-                        final distance = _calculateDistance(
-                            myLocation.latitude,
-                            myLocation.longitude,
-                            cars[idx].location.latitude,
-                            cars[idx].location.longitude);
+              final myLocation = snapshot.data![0];*/
+          //return
+          ListView.builder(
+              itemCount: cars.length,
+              itemBuilder: (context, index) {
+                // if (cars[index].distance == 0) {
+                //   cars.asMap().forEach((idx, value) {
+                //     final distance = _calculateDistance(
+                //         myLocation.latitude,
+                //         myLocation.longitude,
+                //         cars[idx].location.latitude,
+                //         cars[idx].location.longitude);
 
-                        cars[idx].distance = distance;
-                      });
-                    }
+                //     cars[idx].distance = distance;
+                //   });
+                // }
 
-                    final sortedCars = cars
-                      ..sort(((item1, item2) =>
-                          item1.distance.compareTo(item2.distance)));
-                    final car = sortedCars[index];
-                    return index == 0
-                        ? Column(
+                final sortedCars = cars
+                  ..sort(((item1, item2) =>
+                      item1.distance.compareTo(item2.distance)));
+                final car = sortedCars[index];
+                return index == 0
+                    ? Column(
+                        children: [
+                          Row(
                             children: [
-                              Row(
-                                children: [
-                                  const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                  ),
-                                  Text(
-                                    widget.titleList,
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ],
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
                               ),
-                              CarItem(car, myLocation),
+                              Text(
+                                widget.titleList,
+                                textAlign: TextAlign.left,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              ),
                             ],
-                          )
-                        : CarItem(car, myLocation);
-                  });
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }),
+                          ),
+                          CarItem(car), //, myLocation),
+                        ],
+                      )
+                    : CarItem(car); // myLocation);
+              }),
+      //   }
+      //   return const Center(
+      //     child: CircularProgressIndicator(),
+      //   );
+      // }),
     );
   }
 }

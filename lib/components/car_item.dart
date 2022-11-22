@@ -6,17 +6,17 @@ import 'package:carshare/providers/users.dart';
 import 'package:carshare/utils/location_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 
 import '../utils/app_routes.dart';
 
 class CarItem extends StatefulWidget {
   final Car car;
-  final LatLng currentLocation;
+  //final LatLng currentLocation;
 
   const CarItem(
-    this.car,
-    this.currentLocation, {
+    this.car, /*this.currentLocation,*/ {
     Key? key,
   }) : super(key: key);
 
@@ -27,39 +27,56 @@ class CarItem extends StatefulWidget {
 class _CarItemState extends State<CarItem> {
   String? carDistance = '';
   User? carUser;
+  bool _isLoading = false;
 
-  _getCarDistance() async {
-    final myLocation = widget.currentLocation;
+  // _getCarDistance() async {
+  //   final myLocation = widget.currentLocation;
 
-    final carLocation = PlaceLocation(
-            latitude: widget.car.location.latitude,
-            longitude: widget.car.location.longitude)
-        .toLatLng();
+  //   final carLocation = PlaceLocation(
+  //           latitude: widget.car.location.latitude,
+  //           longitude: widget.car.location.longitude)
+  //       .toLatLng();
 
-    await LocationUtil.getDistance(myLocation, carLocation)
-        .then((Map<String, dynamic> jsonString) {
-      setState(() {
-        carDistance = jsonString['text'];
-      });
-    });
-  }
+  //   await LocationUtil.getDistance(myLocation, carLocation)
+  //       .then((Map<String, dynamic> jsonString) {
+  //     setState(() {
+  //       carDistance = jsonString['text'];
+  //     });
+  //   });
+  //}
 
   @override
   void initState() {
     super.initState();
+
+    // context.loaderOverlay.show();
+    // setState(() {
+    //   _isLoading = context.loaderOverlay.visible;
+    // });
+
+    // Provider.of<Cars>(context, listen: false).loadCars().then((value) {
+    //   setState(() {
+    //     if (_isLoading) {
+    //       context.loaderOverlay.hide();
+    //     }
+    //     setState(() {
+    //       _isLoading = context.loaderOverlay.visible;
+    //     });
+    //   });
+    // });
   }
 
   Future<void> _getCarHost(String userId) async {
     await Provider.of<Users>(context, listen: false).loadUserById(userId);
+    // ignore: use_build_context_synchronously
     final provider = Provider.of<Users>(context, listen: false);
     carUser = provider.userByID;
   }
 
   @override
   void didChangeDependencies() {
+    //_getCarHost(widget.car.userId);
     super.didChangeDependencies();
-    _getCarHost(widget.car.userId);
-    _getCarDistance();
   }
 
   _bottomSection(BuildContext context) {
@@ -118,7 +135,10 @@ class _CarItemState extends State<CarItem> {
                       color: Colors.grey[500],
                     ),
                     Text(
-                      carDistance!.isEmpty ? '' : '$carDistance de distância',
+                      //carDistance!.isEmpty ? '' : '$carDistance de distância',
+                      widget.car.distanceText.isEmpty
+                          ? ''
+                          : '${widget.car.distanceText} de distância',
                       textScaleFactor: 0.9,
                       style: TextStyle(color: Colors.grey[500]),
                     ),
@@ -135,13 +155,28 @@ class _CarItemState extends State<CarItem> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.of(context).pushNamed(
-        AppRoutes.CAR_DETAIL,
-        arguments: {
-          'car': widget.car,
-          'user': carUser,
-        },
-      ),
+      onTap: () async {
+        setState(() {
+          _isLoading = true;
+        });
+
+        await _getCarHost(widget.car.userId);
+        final navigator = Navigator.of(context);
+
+        setState(() {
+          if (_isLoading) {
+            _isLoading = false;
+          }
+        });
+
+        navigator.pushNamed(
+          AppRoutes.CAR_DETAIL,
+          arguments: {
+            'car': widget.car,
+            'user': carUser,
+          },
+        );
+      },
       child: Column(
         children: [
           Card(
@@ -159,12 +194,19 @@ class _CarItemState extends State<CarItem> {
                       topLeft: Radius.circular(15),
                       topRight: Radius.circular(15),
                     ),
-                    child: Image.network(
-                      widget.car.imagesUrl[0].url,
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
+                    child: _isLoading
+                        ? SizedBox(
+                            height: 200,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        : Image.network(
+                            widget.car.imagesUrl[0].url,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ],
               ),

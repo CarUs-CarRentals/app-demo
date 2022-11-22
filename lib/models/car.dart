@@ -70,6 +70,7 @@ class Car {
   //final double review;
   final String description;
   int distance;
+  String distanceText;
   final CarLocation location;
 
   Car(
@@ -89,6 +90,7 @@ class Car {
       required this.price,
       this.description = '',
       this.distance = 0,
+      this.distanceText = '',
       required this.location});
 
   set setCurrentDistance(int distance) {

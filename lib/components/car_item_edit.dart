@@ -21,7 +21,7 @@ class CarItemEdit extends StatefulWidget {
 
 class _CarItemState extends State<CarItemEdit> {
   User? carUser;
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   Future<void> _getCarHost(String userId) async {
     await Provider.of<Users>(context, listen: false).loadUserById(userId);
@@ -33,7 +33,7 @@ class _CarItemState extends State<CarItemEdit> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _getCarHost(widget.car.userId);
+    //_getCarHost(widget.car.userId);
   }
 
   _bottomSection(BuildContext context) {
@@ -89,13 +89,28 @@ class _CarItemState extends State<CarItemEdit> {
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             minimumSize: Size(50, 30),
                           ),
-                          onPressed: () => Navigator.of(context).pushNamed(
-                            AppRoutes.CAR_DETAIL,
-                            arguments: {
-                              'car': widget.car,
-                              'user': carUser,
-                            },
-                          ),
+                          onPressed: () async {
+                            setState(() {
+                              _isLoading = true;
+                            });
+
+                            await _getCarHost(widget.car.userId);
+                            final navigator = Navigator.of(context);
+
+                            setState(() {
+                              if (_isLoading) {
+                                _isLoading = false;
+                              }
+                            });
+
+                            navigator.pushNamed(
+                              AppRoutes.CAR_DETAIL,
+                              arguments: {
+                                'car': widget.car,
+                                'user': carUser,
+                              },
+                            );
+                          },
                           child: const Text('Visualizar'),
                         ),
                         VerticalDivider(
@@ -151,25 +166,6 @@ class _CarItemState extends State<CarItemEdit> {
   void initState() {
     super.initState();
 
-    context.loaderOverlay.show();
-    setState(() {
-      _isLoading = context.loaderOverlay.visible;
-    });
-
-    Provider.of<Users>(context, listen: false)
-        .loadUserById(widget.car.userId)
-        .then((value) {
-      setState(() {
-        if (_isLoading) {
-          context.loaderOverlay.hide();
-        }
-        setState(() {
-          _isLoading = context.loaderOverlay.visible;
-          _getCarHost(widget.car.userId);
-        });
-      });
-    });
-
     // Provider.of<CarList>(context, listen: false).loadCarsByUser().then((value) {
     //   setState(() {
     //     if (_isLoading) {
@@ -202,12 +198,19 @@ class _CarItemState extends State<CarItemEdit> {
                       topLeft: Radius.circular(15),
                       topRight: Radius.circular(15),
                     ),
-                    child: Image.network(
-                      widget.car.imagesUrl[0].url,
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
+                    child: _isLoading
+                        ? SizedBox(
+                            height: 200,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        : Image.network(
+                            widget.car.imagesUrl[0].url,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ],
               ),

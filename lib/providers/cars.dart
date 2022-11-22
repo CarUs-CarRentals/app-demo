@@ -4,9 +4,13 @@ import 'dart:io';
 import 'package:carshare/data/store.dart';
 import 'package:carshare/exceptions/http_exceptions.dart';
 import 'package:carshare/models/car.dart';
+import 'package:carshare/models/place.dart';
 import 'package:carshare/utils/constants.dart';
+import 'package:carshare/utils/location_util.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:location/location.dart';
 
 class Cars with ChangeNotifier {
   final _baseUrl = Constants.CAR_BASE_URL;
@@ -16,6 +20,9 @@ class Cars with ChangeNotifier {
   String? _refreshToken;
   final List<Car> _carsFromUser = [];
   final List<Car> _cars = [];
+  int _carDistanceValue = 0;
+  String _carDistanceText = '';
+  LatLng? _userLocation;
 
   List<Car> get cars => [..._cars];
   List<Car> get carsFromUser => [..._carsFromUser];
@@ -31,6 +38,22 @@ class Cars with ChangeNotifier {
 
   int get carsCount {
     return _cars.length;
+  }
+
+  Future<LatLng> _getCurrentUserLocation() async {
+    final _locationData = await Location().getLocation();
+    return LatLng(
+        _locationData.latitude as double, _locationData.longitude as double);
+  }
+
+  LatLng _getCarLocation(double carLatitude, double carLongitude) {
+    //final myLocation = await _getCurrentUserLocation();
+
+    final carLocation =
+        PlaceLocation(latitude: carLatitude, longitude: carLongitude)
+            .toLatLng();
+
+    return carLocation;
   }
 
   Future<void> loadCars() async {
@@ -54,7 +77,7 @@ class Cars with ChangeNotifier {
     String source = Utf8Decoder().convert(response.bodyBytes);
     map = List<Map<String, dynamic>>.from(jsonDecode(source));
     List<Map<String, dynamic>> data = map;
-    data.forEach((carData) {
+    for (var carData in data) {
       CarFuel fuel = CarFuel.values
           .firstWhere((element) => element.name.toString() == carData['fuel']);
 
@@ -64,6 +87,16 @@ class Cars with ChangeNotifier {
       CarCategory category = CarCategory.values.firstWhere(
           (element) => element.name.toString() == carData['category']);
 
+      _userLocation = await _getCurrentUserLocation();
+
+      final carDistance = await LocationUtil.getDistance(
+          _userLocation!,
+          _getCarLocation(
+              carData['latitude'] as double, carData['longitude'] as double));
+      //carDistance.then((value) => _carDistanceValue = value['value']);
+      _carDistanceValue = carDistance['value'];
+      _carDistanceText = carDistance['text'];
+
       //Adiciona as imagens do carro no objeto CarImages
       List<CarImages> carImages = [];
       final List<dynamic> imagesData = carData['carImages'];
@@ -71,6 +104,8 @@ class Cars with ChangeNotifier {
         carImages.add(CarImages(url: carData['carImages'][i]['url']));
       }
 
+      print(_carDistanceValue);
+      print(_carDistanceText);
       _cars.add(
         Car(
           id: carData['id'],
@@ -82,6 +117,8 @@ class Cars with ChangeNotifier {
           fuel: fuel,
           gearShift: gearShift,
           category: category,
+          distance: _carDistanceValue,
+          distanceText: _carDistanceText,
           doors: carData['doors'],
           seats: carData['seats'],
           trunk: carData['trunk'],
@@ -94,13 +131,16 @@ class Cars with ChangeNotifier {
           imagesUrl: carImages,
         ),
       );
-    });
+
+      _carDistanceValue = 0;
+      _carDistanceText = '';
+    }
 
     notifyListeners();
   }
 
   Future<void> saveCar(Map<String, Object> data) {
-    bool hasId = data['id'] != "";
+    bool hasId = data['id'] != null;
 
     final car = Car(
       id: hasId ? data['id'] as int : 0,
@@ -207,7 +247,8 @@ class Cars with ChangeNotifier {
     );
 
     if (response.statusCode < 400) {
-      //_carsFromUser.where((element) => element.id == car.id) = car;
+      _carsFromUser[
+          _carsFromUser.indexWhere((element) => element.id == car.id)] = car;
       notifyListeners();
     } else {
       throw HttpException(

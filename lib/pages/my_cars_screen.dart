@@ -66,10 +66,10 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
               icon: Icon(Icons.add))
         ],
       ),
-      body: LoaderOverlay(
-        overlayOpacity: 1,
-        overlayColor: Colors.white,
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: LoaderOverlay(
+          overlayOpacity: 1,
+          overlayColor: Colors.white,
           child: SizedBox(
             width: mediaQuery.size.width,
             height: availableHeight,
