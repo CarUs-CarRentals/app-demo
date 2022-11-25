@@ -105,7 +105,6 @@ class _CarRentalsHistoryScreenState extends State<CarRentalsHistoryScreen> {
                             car: _car,
                             currentUserId: _userLogged,
                           ),
-                          Divider(),
                         ],
                       );
                     },

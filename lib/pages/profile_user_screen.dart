@@ -38,7 +38,6 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
     if (!argumentIsNull) {
       final userCar = ModalRoute.of(context)?.settings.arguments as User;
       _currentUser = userCar;
-
     } else {
       _currentUser = userProvider.userProfile;
     }
@@ -46,7 +45,7 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
     return Scaffold(
         appBar: AppBar(
           title: !argumentIsNull
-              ? const Text("Perfil do Proprietario")
+              ? const Text("Perfil do Usuário")
               : const Text("Meu Perfil"),
         ),
         body: _currentUser == null
@@ -54,7 +53,6 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
             : ProfileDetail(
                 isMyProfile: argumentIsNull ? true : false,
                 user: _currentUser!,
-              )       
-        );
+              ));
   }
 }

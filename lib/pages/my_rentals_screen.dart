@@ -104,7 +104,6 @@ class _MyRentalsScreenState extends State<MyRentalsScreen> {
                                 car: _rentalsUser[index].car,
                                 currentUserId: '',
                               ),
-                              Divider(),
                             ],
                           );
                         },

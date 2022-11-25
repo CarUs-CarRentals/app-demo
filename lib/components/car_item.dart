@@ -174,6 +174,7 @@ class _CarItemState extends State<CarItem> {
           arguments: {
             'car': widget.car,
             'user': carUser,
+            'viewMode': false,
           },
         );
       },

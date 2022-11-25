@@ -25,6 +25,7 @@ class Reviews with ChangeNotifier {
   final List<UserReview> _userReviewsFromUser = [];
 
   List<CarReview> get carReviews => [..._carReviews];
+  List<CarReview> get carReviewsFromCar => [..._carReviewsFromCar];
 
   // List<Car> get favoriteItems =>
   //     _cars.where((car) => car.isFavorite).toList();
@@ -82,8 +83,8 @@ class Reviews with ChangeNotifier {
       carId: data['carId'] as int,
       date: data['date'] as DateTime,
       description: data['description'] as String,
-      rate: data['rate'] as double,
-      rentalId: data[''] as int,
+      rate: data['rating'] as double,
+      rentalId: data['rentalId'] as int,
       userIdEvaluator: userLogged['uuid'] as String,
     );
 
@@ -98,10 +99,10 @@ class Reviews with ChangeNotifier {
     final userData = await Store.getMap('userData');
     _refreshToken = userData['refreshToken'];
 
-    final formatDate = DateFormat('yyyy-mm-dd');
+    final formatDate = DateFormat('yyyy-MM-dd');
 
     final response = await http.post(
-      Uri.parse('$_baseUrl-car/create'),
+      Uri.parse('${_baseUrl}car/create'),
       headers: {
         "content-type": "application/json",
         "accept": "application/json",
@@ -113,6 +114,7 @@ class Reviews with ChangeNotifier {
         "rate": carReview.rate,
         "description": carReview.description,
         "date": formatDate.format(carReview.date),
+        "rental": carReview.rentalId,
       }),
     );
 
@@ -134,7 +136,7 @@ class Reviews with ChangeNotifier {
     _carReviewsFromCar.clear();
 
     final response = await http.get(
-      Uri.parse('$_baseUrl-car/car/$carId'),
+      Uri.parse('${_baseUrl}car/car/$carId'),
       headers: {
         "content-type": "application/json",
         "accept": "application/json",
@@ -154,12 +156,12 @@ class Reviews with ChangeNotifier {
     data.forEach((reviewData) async {
       _carReviewsFromCar.add(CarReview(
         id: reviewData['id'],
-        rentalId: reviewData['rentalId'],
-        userIdEvaluator: reviewData['userIdEvaluator'],
+        rentalId: reviewData['rental'],
+        userIdEvaluator: reviewData['userUuid'],
         carId: reviewData['carId'],
         description: reviewData['description'],
         rate: reviewData['rate'],
-        date: reviewData['date'],
+        date: DateTime.parse(reviewData['date']),
       ));
     });
 
@@ -174,11 +176,11 @@ class Reviews with ChangeNotifier {
 
     final review = UserReview(
       id: hasId ? data['id'] as int : 0,
-      userIdRated: data['evaluatedUser'] as String,
+      userIdRated: userLogged['uuid'] as String,
       date: data['date'] as DateTime,
       description: data['description'] as String,
-      rate: data['rate'] as double,
-      rentalId: data[''] as int,
+      rate: data['rating'] as double,
+      rentalId: data['rentalId'] as int,
       userIdEvaluator: userLogged['uuid'] as String,
     );
 
@@ -191,10 +193,10 @@ class Reviews with ChangeNotifier {
     final userData = await Store.getMap('userData');
     _refreshToken = userData['refreshToken'];
 
-    final formatDate = DateFormat('yyyy-mm-dd');
+    final formatDate = DateFormat('yyyy-MM-dd');
 
     final response = await http.post(
-      Uri.parse('$_baseUrl-user/create'),
+      Uri.parse('${_baseUrl}user/create'),
       headers: {
         "content-type": "application/json",
         "accept": "application/json",
@@ -206,6 +208,7 @@ class Reviews with ChangeNotifier {
         "rate": userReview.rate,
         "description": userReview.description,
         "date": formatDate.format(userReview.date),
+        "rental": userReview.rentalId,
       }),
     );
 

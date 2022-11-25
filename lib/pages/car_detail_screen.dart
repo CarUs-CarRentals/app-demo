@@ -26,6 +26,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   final _formKey = GlobalKey<FormState>();
   final _formData = <String, Object>{};
   bool _isLoading = false;
+  bool _isOnlyView = false;
   bool _validDateRange = true;
   final _timeNow = DateTime.now();
   DateTime? _rentalDate;
@@ -423,7 +424,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(5),
-            child: "_userConnected!.id" != car.userId
+            child: !_isOnlyView
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -501,6 +502,9 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     final arg = ModalRoute.of(context)?.settings.arguments as Map;
     final car = arg['car'] as Car;
     final carHost = arg['user'] as User;
+    final viewMode = arg['viewMode'] as bool;
+
+    _isOnlyView = viewMode;
 
     return Scaffold(
         appBar: AppBar(
@@ -543,7 +547,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                   car.seats,
                 ),
                 Divider(),
-                RentalDateForm(_onSelectRentalDate),
+                _isOnlyView ? Center() : RentalDateForm(_onSelectRentalDate),
                 //LocationInput(),
                 PlaceDetailItem(car.location.latitude, car.location.longitude,
                     car.location.address, car.imagesUrl[0].url),

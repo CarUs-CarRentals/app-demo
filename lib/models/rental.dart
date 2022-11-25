@@ -18,7 +18,7 @@ class Rental {
   final DateTime returnDate;
   final double price;
   final CarLocation location;
-  final bool isReview;
+  bool isReview;
   RentalStatus status;
 
   Rental({

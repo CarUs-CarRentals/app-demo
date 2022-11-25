@@ -6,6 +6,7 @@ import 'package:carshare/providers/cars.dart';
 import 'package:carshare/models/review_list.dart';
 import 'package:carshare/providers/drive_licenses.dart';
 import 'package:carshare/providers/rentals.dart';
+import 'package:carshare/providers/reviews.dart';
 import 'package:carshare/providers/users.dart';
 import 'package:carshare/pages/car_detail_screen.dart';
 import 'package:carshare/pages/car_form_screen.dart';
@@ -68,6 +69,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => Rentals(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => Reviews(),
         )
       ],
       child: MaterialApp(

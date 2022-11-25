@@ -3,11 +3,13 @@ import 'package:carshare/components/rental_tile.dart';
 import 'package:carshare/data/store.dart';
 import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/car.dart';
+import 'package:carshare/models/user.dart';
 import 'package:carshare/providers/cars.dart';
 import 'package:carshare/models/rental.dart';
 import 'package:carshare/models/review.dart';
 import 'package:carshare/models/review_list.dart';
 import 'package:carshare/providers/rentals.dart';
+import 'package:carshare/providers/users.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:carshare/utils/location_util.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class RentalDetailScreen extends StatefulWidget {
   const RentalDetailScreen({Key? key}) : super(key: key);
@@ -28,7 +31,10 @@ class RentalDetailScreen extends StatefulWidget {
 
 class _RentalDetailScreenState extends State<RentalDetailScreen> {
   String _rentalAdress = '';
+  bool _isLoading = false;
   bool _isMyCarRental = false;
+  CarReview? _carReview;
+  User? _carUser;
 
   String _getImageRentalLocation(Rental rental) {
     final staticMapImageUrl = LocationUtil.generateLocationPreviewImage(
@@ -45,6 +51,20 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
     super.initState();
   }
 
+  Future<void> _getCarHost(String userId) async {
+    await Provider.of<Users>(context, listen: false).loadUserById(userId);
+    // ignore: use_build_context_synchronously
+    final provider = Provider.of<Users>(context, listen: false);
+    _carUser = provider.userByID;
+  }
+
+  _openReviewForm(Rental rental, bool isReviewCar) {
+    return Navigator.of(context).pushNamed(AppRoutes.REVIEW_FORM, arguments: {
+      'rental': rental,
+      'reviewCar': isReviewCar,
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     //final rentalDetail = ModalRoute.of(context)?.settings.arguments as Rental;
@@ -52,6 +72,15 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
     final car = arg['car'] as Car;
     final rental = arg['rental'] as Rental;
     final currentUserId = arg['currentUserId'] as String;
+    final rentalUser = arg['rentalUser'] as User;
+
+    if (rental.isReview == true) {
+      try {
+        final carReview = arg['carReview'] as CarReview;
+        _carReview = carReview;
+      } catch (e) {}
+      print("NOTA: ${_carReview?.rate}");
+    }
 
     //final _userId = userProvider.email;
     if (car.userId == currentUserId) {
@@ -105,22 +134,101 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                   );
                 }),
               ),
-              Container(
-                padding: EdgeInsets.all(15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                            '${DateFormat('dd/MM/yyyy • H:mm', 'pt_BR').format(rental.rentalDate)} ${DateFormat('- dd/MM/yyyy • H:mm', 'pt_BR').format(rental.returnDate)}'),
-                      ],
+              _isMyCarRental
+                  ? ListTile(
+                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 6),
+                      leading: Shimmer.fromColors(
+                        baseColor: Colors.grey,
+                        highlightColor: Color.fromARGB(255, 190, 190, 190),
+                        child: CircleAvatar(
+                          radius: 30,
+                        ),
+                      ),
+                      title: Text(
+                        "Motorista",
+                        style: const TextStyle(
+                          fontFamily: 'RobotCondensed',
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "${rentalUser.fullName}",
+                        style: const TextStyle(
+                          fontFamily: 'RobotCondensed',
+                          fontSize: 14,
+                        ),
+                      ),
+                      trailing: Icon(
+                        Icons.keyboard_arrow_right_outlined,
+                        size: 32,
+                      ),
+                      onTap: () {
+                        Navigator.of(context).pushNamed(
+                          AppRoutes.PROFILE_USER,
+                          arguments: rentalUser,
+                        );
+                      },
+                    )
+                  : ListTile(
+                      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 6),
+                      leading: CircleAvatar(
+                        radius: 30,
+                        backgroundImage: NetworkImage(car.imagesUrl[0].url),
+                      ),
+                      title: Text(
+                        "Veículo",
+                        style: const TextStyle(
+                          fontFamily: 'RobotCondensed',
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "${car.shortDescription}",
+                        style: const TextStyle(
+                          fontFamily: 'RobotCondensed',
+                          fontSize: 14,
+                        ),
+                      ),
+                      trailing: Icon(
+                        Icons.keyboard_arrow_right_outlined,
+                        size: 32,
+                      ),
+                      onTap: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        await _getCarHost(car.userId);
+                        Navigator.of(context).pushNamed(
+                          AppRoutes.CAR_DETAIL,
+                          arguments: {
+                            'car': car,
+                            'user': _carUser,
+                            'viewMode': true,
+                          },
+                        );
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      },
                     ),
-                    Row(children: [
-                      Text(UtilBrasilFields.obterReal(rental.price)),
-                    ])
-                  ],
-                ),
+              _isLoading
+                  ? LinearProgressIndicator(
+                      backgroundColor: Colors.transparent,
+                    )
+                  : Center(),
+              ListTile(
+                //contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                leading: Text(
+                    '${DateFormat('dd/MM/yyyy • H:mm', 'pt_BR').format(rental.rentalDate)} ${DateFormat('- dd/MM/yyyy • H:mm', 'pt_BR').format(rental.returnDate)}'),
+                trailing: Text(UtilBrasilFields.obterReal(rental.price)),
+              ),
+              Divider(
+                height: 0,
               ),
               ListTile(
                 leading: Icon(
@@ -151,14 +259,19 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
               Divider(),
               _isMyCarRental
                   ? ListTile(
-                      enabled:
-                          rental.status != RentalStatus.RENTED ? false : true,
+                      enabled: rental.status != RentalStatus.RENTED
+                          ? false
+                          : rental.isReview == true
+                              ? false
+                              : true,
                       leading: Icon(
                         Icons.person_rounded,
                         size: 24,
                       ),
                       title: Text(
-                        "Avalie o motorista",
+                        rental.isReview == true
+                            ? " Motorista avaliado"
+                            : "Avalie o motorista",
                         style: const TextStyle(
                             fontFamily: 'RobotCondensed',
                             fontSize: 18,
@@ -175,14 +288,14 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                         itemCount: 5,
                         itemSize: 16.0,
                       ),
-                      onTap: () => Navigator.of(context).pushNamed(
-                        AppRoutes.REVIEW_FORM,
-                        arguments: rental,
-                      ),
+                      onTap: () => _openReviewForm(rental, false),
                     )
                   : ListTile(
-                      enabled:
-                          rental.status != RentalStatus.RENTED ? false : true,
+                      enabled: rental.status != RentalStatus.RENTED
+                          ? false
+                          : rental.isReview == true
+                              ? false
+                              : true,
                       leading: Icon(
                         Icons.directions_car,
                         size: 24,
@@ -198,8 +311,9 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                       ),
                       dense: true,
                       trailing: RatingBarIndicator(
-                        rating:
-                            rental.isReview == false ? 0 : 0, //carReview.rate,
+                        rating: rental.isReview == false
+                            ? 0
+                            : _carReview!.rate, //carReview.rate,
                         itemBuilder: (context, _) => Icon(
                           Icons.star,
                           color: Theme.of(context).colorScheme.primary,
@@ -207,12 +321,11 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                         itemCount: 5,
                         itemSize: 16.0,
                       ),
-                      onTap: () => Navigator.of(context).pushNamed(
-                        AppRoutes.REVIEW_FORM,
-                        arguments: rental,
-                      ),
+                      onTap: () => _openReviewForm(rental, true),
                     ),
-              Divider(),
+              SizedBox(
+                height: 8,
+              ),
               RentalTile(
                 rental: rental,
                 rentalAction: _isMyCarRental,
