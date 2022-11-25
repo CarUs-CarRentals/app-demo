@@ -12,6 +12,7 @@ import 'package:carshare/providers/users.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -109,11 +110,10 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   }
 
   Future<void> _submitRental(Car car) async {
-    print('Alugar');
-
     _formData['carId'] = car.id;
     //_formData['userId'] = currentUser.id;
-    _formData['price'] = car.price;
+    _formData['price'] =
+        _calcRentalPrice(car.price, _returnDate!, _rentalDate!);
     _formData['location'] = car.location;
     _formData['status'] = RentalStatus.PENDING;
     _formData['isReview'] = false;
@@ -124,34 +124,86 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
 
     print(_formData['rentalDate'].toString());
     print(_formData['returnDate'].toString());
-
-    try {
-      await Provider.of<Rentals>(
-        context,
-        listen: false,
-      ).saveRental(_formData);
-      Navigator.of(context).pop();
-    } catch (error) {
-      await showDialog<void>(
-          context: context,
-          builder: (ctx) => AlertDialog(
-                title: Text('Ocorreu um erro!'),
-                content: Text(error.toString()),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, 'OK'),
-                    child: const Text('OK'),
+    showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            title: Text("Finalizar Locação"),
+            content: RichText(
+              text: TextSpan(
+                style: Theme.of(context).textTheme.bodyLarge,
+                children: <TextSpan>[
+                  TextSpan(
+                    text: "Período de locação:",
                   ),
+                  TextSpan(
+                    text:
+                        "\n${DateFormat('MMM dd • H:mm', 'pt_BR').format(_rentalDate!)} ${DateFormat('- MMM dd • H:mm', 'pt_BR').format(_returnDate!)}",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  TextSpan(
+                    text: "\n\nValor total estimado da locação:",
+                  ),
+                  TextSpan(
+                    text:
+                        "\n${UtilBrasilFields.obterReal(_calcRentalPrice(car.price, _returnDate!, _rentalDate!))}",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  TextSpan(
+                    text: "\n\nDeseja confirmar seu pedido de locação?",
+                  )
                 ],
-              ));
-    } finally {
-      if (_isLoading) {
-        context.loaderOverlay.hide();
-      }
-      setState(() {
-        _isLoading = context.loaderOverlay.visible;
-      });
-    }
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, 'Cancelar');
+                },
+                child: const Text('Cancelar'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(context, 'Confirmar');
+                  try {
+                    context.loaderOverlay.show();
+                    setState(() {
+                      _isLoading = context.loaderOverlay.visible;
+                    });
+                    await Provider.of<Rentals>(
+                      context,
+                      listen: false,
+                    ).saveRental(_formData);
+                    Navigator.of(context).pop();
+                  } catch (error) {
+                    await showDialog<void>(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                              title: Text('Ocorreu um erro!'),
+                              content: Text(error.toString()),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context, 'OK');
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ));
+                  } finally {
+                    if (_isLoading) {
+                      context.loaderOverlay.hide();
+                    }
+                    setState(() {
+                      _isLoading = context.loaderOverlay.visible;
+                    });
+                  }
+                },
+                child: const Text('Confirmar'),
+              ),
+            ],
+          );
+        });
   }
 
   _titleSection(
@@ -349,6 +401,18 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     );
   }
 
+  double _calcRentalPrice(
+      double carPrice, DateTime finalDate, DateTime initDate) {
+    final Duration differenceRentalDates;
+    final double estimateFinalPrice;
+
+    differenceRentalDates = finalDate.difference(initDate);
+    estimateFinalPrice =
+        carPrice * differenceRentalDates.inMilliseconds / 86400000;
+
+    return estimateFinalPrice;
+  }
+
   _rentalSection(BuildContext context, Car car) {
     //print("${_userConnected!.id} != ${userId}");
 
@@ -383,7 +447,9 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                       Row(
                         children: [
                           ElevatedButton(
-                            onPressed: () => _submitRental(car),
+                            onPressed: () {
+                              _submitRental(car);
+                            },
                             style: ElevatedButton.styleFrom(
                               primary: Theme.of(context).colorScheme.primary,
                             ),
@@ -438,62 +504,65 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
         appBar: AppBar(
           title: Text(car.shortDescription),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              CarouselCar(
-                  carsImages: [...car.imagesUrl].map((imageUrl) {
-                    return Builder(
-                      builder: (BuildContext context) {
-                        return SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Image.network(
-                            imageUrl.url,
-                            fit: BoxFit.cover,
-                          ),
-                        );
-                      },
-                    );
-                  }).toList(),
-                  imagesList: car.imagesUrl.map((image) => image.url).toList()),
+        body: LoaderOverlay(
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                CarouselCar(
+                    carsImages: [...car.imagesUrl].map((imageUrl) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: Image.network(
+                              imageUrl.url,
+                              fit: BoxFit.cover,
+                            ),
+                          );
+                        },
+                      );
+                    }).toList(),
+                    imagesList:
+                        car.imagesUrl.map((image) => image.url).toList()),
 
-              _titleSection(
-                context,
-                car.shortDescription,
-                99,
-                car.year,
-                carHost.fullName,
-              ),
-              _optionalCarSection(
-                context,
-                Car.getGearShiftText(car.gearShift),
-                Car.getCategoryText(car.category),
-                Car.getFuelText(car.fuel),
-                car.doors,
-                car.seats,
-              ),
-              Divider(),
-              RentalDateForm(_onSelectRentalDate),
-              //LocationInput(),
-              PlaceDetailItem(car.location.latitude, car.location.longitude,
-                  car.location.address, car.imagesUrl[0].url),
-              Divider(),
-              _descriptionSection(context, car.description),
-              Divider(),
-              _InfoItem(
-                Icons.reviews,
-                'Avaliações',
-                () => _selectCarReview(context, car),
-              ),
-              Divider(),
-              _InfoItem(
-                Icons.person,
-                'Visualizar proprietario do veículo',
-                () => _selectOwnerProfile(context, carHost),
-              ),
-              Divider(),
-              _rentalSection(context, car),
-            ],
+                _titleSection(
+                  context,
+                  car.shortDescription,
+                  99,
+                  car.year,
+                  carHost.fullName,
+                ),
+                _optionalCarSection(
+                  context,
+                  Car.getGearShiftText(car.gearShift),
+                  Car.getCategoryText(car.category),
+                  Car.getFuelText(car.fuel),
+                  car.doors,
+                  car.seats,
+                ),
+                Divider(),
+                RentalDateForm(_onSelectRentalDate),
+                //LocationInput(),
+                PlaceDetailItem(car.location.latitude, car.location.longitude,
+                    car.location.address, car.imagesUrl[0].url),
+                Divider(),
+                _descriptionSection(context, car.description),
+                Divider(),
+                _InfoItem(
+                  Icons.reviews,
+                  'Avaliações',
+                  () => _selectCarReview(context, car),
+                ),
+                Divider(),
+                _InfoItem(
+                  Icons.person,
+                  'Visualizar proprietario do veículo',
+                  () => _selectOwnerProfile(context, carHost),
+                ),
+                Divider(),
+                _rentalSection(context, car),
+              ],
+            ),
           ),
         ));
   }
