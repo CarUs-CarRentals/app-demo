@@ -365,7 +365,7 @@ class _UserFormState extends State<UserForm> {
                 }).toList(),
                 onSaved: (gender) {
                   if (gender == null) {
-                    _formData['gender'] = UserGender.UNKNOWN;
+                    _formData['gender'] = UserGender.OTHERS;
                   } else {
                     _formData['gender'] = gender as UserGender;
                   }
@@ -374,7 +374,7 @@ class _UserFormState extends State<UserForm> {
                   var gender = _dropdownGenderValue;
 
                   if (gender == null) {
-                    _formData['gender'] = UserGender.UNKNOWN;
+                    _formData['gender'] = UserGender.OTHERS;
                     return null;
                   }
 

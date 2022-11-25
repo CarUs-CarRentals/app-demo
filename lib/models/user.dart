@@ -4,7 +4,7 @@ import 'package:carshare/models/cnh.dart';
 enum UserGender {
   MALE,
   FEMALE,
-  UNKNOWN,
+  OTHERS,
 }
 
 class User {
