@@ -6,6 +6,7 @@ import 'package:carshare/exceptions/http_exceptions.dart';
 import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/rental.dart';
+import 'package:carshare/providers/cars.dart';
 import 'package:carshare/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -17,10 +18,12 @@ class Rentals with ChangeNotifier {
   // final String _userId;
   String? _refreshToken;
   final List<Rental> _rentalFromUser = [];
+  final List<Rental> _rentalFromCar = [];
   final List<Rental> _rentals = [];
 
   List<Rental> get rentals => [..._rentals];
   List<Rental> get rentalsFromUser => [..._rentalFromUser];
+  List<Rental> get rentalsFromCar => [..._rentalFromCar];
 
   // List<Car> get favoriteItems =>
   //     _cars.where((car) => car.isFavorite).toList();
@@ -63,6 +66,7 @@ class Rentals with ChangeNotifier {
       _rentals.add(Rental(
         id: rentalData['id'],
         carId: rentalData['car'],
+        car: null,
         userId: rentalData['user'],
         rentalDate: rentalData['locationDate'],
         returnDate: rentalData['returnDate'],
@@ -130,7 +134,7 @@ class Rentals with ChangeNotifier {
     );
 
     if (response.statusCode < 400) {
-      _rentalFromUser.add(rental);
+      //_rentalFromUser.add(rental);
       notifyListeners();
     } else {
       throw HttpException(
@@ -154,13 +158,13 @@ class Rentals with ChangeNotifier {
       body: jsonEncode({
         "user": rental.userId,
         "car": rental.carId,
-        "locationDate": rental.rentalDate,
-        "returnDate": rental.returnDate,
+        "locationDate": "${rental.rentalDate.toIso8601String()}",
+        "returnDate": "${rental.returnDate.toIso8601String()}",
         "price": rental.price,
         "latitude": rental.location.latitude,
         "longitude": rental.location.longitude,
         "address": rental.location.address,
-        "status": rental.status,
+        "status": rental.status.name,
         "isReview": rental.isReview,
       }),
     );
@@ -176,79 +180,101 @@ class Rentals with ChangeNotifier {
   }
 
   Future<void> loadRentalsByUser() async {
-    // _carsFromUser.clear();
+    final userData = await Store.getMap('userData');
+    _refreshToken = userData['refreshToken'];
 
-    // final userData = await Store.getMap('userData');
-    // _refreshToken = userData['refreshToken'];
+    _rentalFromUser.clear();
 
-    // final response = await http.get(
-    //   Uri.parse(_baseUrl),
-    //   headers: {
-    //     "content-type": "application/json",
-    //     "accept": "application/json",
-    //     HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
-    //   },
-    // );
+    final response = await http.get(
+      Uri.parse('$_baseUrl/user'),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+      },
+    );
 
-    // List<Map<String, dynamic>> map = [];
+    List<Map<String, dynamic>> map = [];
 
-    // //Map<String, dynamic> data = jsonDecode(response.body);
-    // String source = Utf8Decoder().convert(response.bodyBytes);
-    // map = List<Map<String, dynamic>>.from(jsonDecode(source));
-    // List<Map<String, dynamic>> data = map;
+    //Map<String, dynamic> data = jsonDecode(response.body);
+    String source = Utf8Decoder().convert(response.bodyBytes);
+    map = List<Map<String, dynamic>>.from(jsonDecode(source));
 
-    // print(jsonDecode(response.body));
+    print(jsonDecode(source));
 
-    // data.forEach((carData) {
-    // CarFuel fuel = CarFuel.values
-    //     .firstWhere((element) => element.name.toString() == carData['fuel']);
+    List<Map<String, dynamic>> data = map;
+    data.forEach((rentalData) async {
+      RentalStatus rentalStatus = RentalStatus.values.firstWhere(
+          (element) => element.name.toString() == rentalData['status']);
 
-    // CarGearShift gearShift = CarGearShift.values.firstWhere(
-    //     (element) => element.name.toString() == carData['gearShift']);
+      final car = await Cars().loadCarsById(rentalData['car']);
 
-    // CarCategory category = CarCategory.values.firstWhere(
-    //     (element) => element.name.toString() == carData['category']);
+      _rentalFromUser.add(Rental(
+        id: rentalData['id'],
+        carId: rentalData['car'],
+        car: car,
+        userId: rentalData['user'],
+        rentalDate: DateTime.parse(rentalData['locationDate']),
+        returnDate: DateTime.parse(rentalData['returnDate']),
+        price: rentalData['price'],
+        location: CarLocation(
+          latitude: rentalData['latitude'],
+          longitude: rentalData['longitude'],
+          address: rentalData['address'],
+        ),
+        isReview: rentalData['isReview'],
+        status: rentalStatus,
+      ));
+    });
 
-    // //Adiciona as imagens do carro no objeto CarImages
-    // List<CarImages> carImages = [];
-    // final List<dynamic> imagesData = carData['carImages'];
-    // for (var i = 0; i < imagesData.length; i++) {
-    //   carImages.add(CarImages(url: carData['carImages'][i]['url']));
-    // }
+    notifyListeners();
+  }
 
-    // //print(carData['id']);
+  Future<void> loadRentalsByCar(int carId) async {
+    final userData = await Store.getMap('userData');
+    _refreshToken = userData['refreshToken'];
 
-    // if (response.statusCode < 400) {
-    //   _carsFromUser.add(
-    //     Car(
-    //       id: carData['id'],
-    //       brand: carData['brand'],
-    //       userId: carData['user'],
-    //       model: carData['model'],
-    //       year: carData['year'],
-    //       plate: carData['plate'],
-    //       fuel: fuel,
-    //       gearShift: gearShift,
-    //       category: category,
-    //       doors: carData['doors'],
-    //       seats: carData['seats'],
-    //       trunk: carData['trunk'],
-    //       price: carData['price'],
-    //       location: CarLocation(
-    //           latitude: carData['latitude'],
-    //           longitude: carData['longitude'],
-    //           address: carData['address']),
-    //       description: carData['description'],
-    //       imagesUrl: carImages,
-    //     ),
-    //   );
-    //   notifyListeners();
-    // } else {
-    //   throw HttpException(
-    //     msg: "Não foi possível carrerar os seus veículos",
-    //     statusCode: response.statusCode,
-    //   );
-    // }
-    //});
+    _rentalFromCar.clear();
+
+    final response = await http.get(
+      Uri.parse('$_baseUrl/car/$carId'),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+      },
+    );
+
+    List<Map<String, dynamic>> map = [];
+
+    //Map<String, dynamic> data = jsonDecode(response.body);
+    String source = Utf8Decoder().convert(response.bodyBytes);
+    map = List<Map<String, dynamic>>.from(jsonDecode(source));
+
+    print(jsonDecode(source));
+
+    List<Map<String, dynamic>> data = map;
+    data.forEach((rentalData) {
+      RentalStatus rentalStatus = RentalStatus.values.firstWhere(
+          (element) => element.name.toString() == rentalData['status']);
+
+      _rentalFromCar.add(Rental(
+        id: rentalData['id'],
+        carId: rentalData['car'],
+        userId: rentalData['user'],
+        rentalDate: DateTime.parse(rentalData['locationDate']),
+        returnDate: DateTime.parse(rentalData['returnDate']),
+        price: rentalData['price'],
+        location: CarLocation(
+          latitude: rentalData['latitude'],
+          longitude: rentalData['longitude'],
+          address: rentalData['address'],
+        ),
+        isReview: rentalData['isReview'],
+        status: rentalStatus,
+      ));
+    });
+
+    notifyListeners();
   }
 }
