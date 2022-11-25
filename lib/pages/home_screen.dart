@@ -69,9 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: const LoaderOverlay(
                       overlayOpacity: 1,
                       overlayColor: Colors.white,
-                      child: CarsListView(
-                        titleList: 'Carros próximos de você',
-                      ),
+                      child: CarsListView(titleList: 'Carros próximos de você'),
                     ),
                   ),
                   const Positioned(

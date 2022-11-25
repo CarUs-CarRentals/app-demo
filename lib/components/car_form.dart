@@ -124,6 +124,7 @@ class _CarFormState extends State<CarForm> {
         context,
         listen: false,
       ).saveCar(_formData);
+      await Provider.of<Cars>(context, listen: false).loadCarsByUser();
       Navigator.of(context).pop();
     } catch (error) {
       await showDialog<void>(

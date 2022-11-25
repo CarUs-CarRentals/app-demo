@@ -26,6 +26,8 @@ class Auth with ChangeNotifier {
   bool get isAuth {
     final isValid = _expiryDate?.isAfter(DateTime.now()) ?? false;
     // final isValidBackend = _expiryDateBackend?.isAfter(DateTime.now()) ?? false;
+    print(
+        "$_token -------------------------------- e -------------------------------- $isValid");
 
     return _token != null && isValid; //&& isValidBackend;
   }
@@ -48,6 +50,10 @@ class Auth with ChangeNotifier {
 
   User? get currentUser {
     return isAuth ? _currentUser : null;
+  }
+
+  String getCurrentUser() {
+    return _userId.toString();
   }
 
   // Future<void> _authenticate(
@@ -133,7 +139,7 @@ class Auth with ChangeNotifier {
 
       _token = body['idToken'];
       _email = body['email'];
-      _userId = body['localId'];
+      //_userId = body['localId'];
       _refreshToken = body['refreshToken'];
 
       _expiryDate = DateTime.now().add(
@@ -145,7 +151,7 @@ class Auth with ChangeNotifier {
       Store.saveMap('userDataFb', {
         'token': _token,
         'email': _email,
-        'localId': _userId,
+        //'localId': _userId,
         'refreshToken': _refreshToken,
         'expireDate': _expiryDate?.toIso8601String(),
       });
@@ -194,7 +200,7 @@ class Auth with ChangeNotifier {
 
       _token = body['idToken'];
       _email = body['email'];
-      _userId = body['localId'];
+      //_userId = body['localId'];
       _refreshToken = body['refreshToken'];
 
       _expiryDate = DateTime.now().add(
@@ -217,11 +223,14 @@ class Auth with ChangeNotifier {
       Store.saveMap('userDataFb', {
         'token': _token,
         'email': _email,
-        'localId': _userId,
+        //'localId': _userId,
         'refreshToken': _refreshToken,
         'expireDate': _expiryDate?.toIso8601String(),
       });
       //_autoLogout();
+      Map<String, dynamic> userLogged = await Auth().getLoggedUser();
+      _userId = userLogged['uuid'] as String;
+      print(_userId);
       notifyListeners();
     }
   }
@@ -246,7 +255,7 @@ class Auth with ChangeNotifier {
     _token = userData['token'];
     //_tokenBackend = userData['token'];
     _email = userData['email'];
-    _userId = userData['localId'];
+    //_userId = userData['localId'];
     _refreshToken = userData['refreshToken'];
     //_refreshTokenBackend = userData['refreshToken'];
     _expiryDate = expiryDate;
