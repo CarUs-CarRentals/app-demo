@@ -174,6 +174,8 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                       context,
                       listen: false,
                     ).saveRental(_formData);
+                    await Provider.of<Rentals>(context, listen: false)
+                        .loadRentalsByUser();
                     Navigator.of(context).pop();
                   } catch (error) {
                     await showDialog<void>(

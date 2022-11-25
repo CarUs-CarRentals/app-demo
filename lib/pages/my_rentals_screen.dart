@@ -51,6 +51,7 @@ class _MyRentalsScreenState extends State<MyRentalsScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
     if (_rentalsUser.isEmpty && _tryCount < 3) {
       final provider = Provider.of<Rentals>(context);
       final List<Rental> rentalsUser = provider.rentalsFromUser;
