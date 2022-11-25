@@ -83,11 +83,13 @@ class MyApp extends StatelessWidget {
         title: _title,
         //home: const MainMenu(),
         theme: myTheme.copyWith(
-          colorScheme: myTheme.colorScheme.copyWith(
-            primary: Colors.deepPurple,
-            secondary: Colors.grey[700],
-          ),
-        ),
+            colorScheme: myTheme.colorScheme.copyWith(
+              primary: Colors.deepPurple,
+              secondary: Colors.grey[700],
+            ),
+            textTheme: myTheme.textTheme.copyWith(
+                subtitle2: TextStyle(
+                    color: Colors.grey[600], fontWeight: FontWeight.normal))),
         debugShowCheckedModeBanner: false,
         routes: {
           AppRoutes.IS_AUTH: (context) => const IsAuthScreen(),
