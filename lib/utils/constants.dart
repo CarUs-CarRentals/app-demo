@@ -6,4 +6,5 @@ class Constants {
   static const ADDR_BASE_URL = 'https://car-us.herokuapp.com/api/address';
   static const DRIVER_BASE_URL = 'https://car-us.herokuapp.com/api/cnh';
   static const RENTAL_BASE_URL = 'https://car-us.herokuapp.com/api/rental';
+  static const RATE_BASE_URL = 'https://car-us.herokuapp.com/api/rate-';
 }
