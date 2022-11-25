@@ -33,10 +33,10 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
     print("submit... ${_formData.values}");
 
     final newCarReview = CarReview(
-      id: Random().nextDouble().toString(),
-      rentalId: _formData['rentalId'] as String,
+      id: _formData['id'] as int,
+      rentalId: _formData['rentalId'] as int,
       userIdEvaluator: _formData['userIdEvaluator'] as String,
-      carId: _formData['carId'] as String,
+      carId: _formData['carId'] as int,
       description: _formData['description'] as String,
       rate: _formData['rating'] as double,
       date: DateTime.now(),

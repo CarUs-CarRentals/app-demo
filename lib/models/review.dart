@@ -1,8 +1,8 @@
 class CarReview {
-  final String id;
-  final String rentalId;
+  final int id;
+  final int rentalId;
   final String userIdEvaluator;
-  final String carId;
+  final int carId;
   final String description;
   final double rate;
   final DateTime date;
@@ -19,9 +19,10 @@ class CarReview {
 }
 
 class UserReview {
-  final String id;
+  final int id;
   final String userIdRated;
   final String userIdEvaluator;
+  final int rentalId;
   final String description;
   final double rate;
   final DateTime date;
@@ -30,9 +31,9 @@ class UserReview {
     required this.id,
     required this.userIdRated,
     required this.userIdEvaluator,
+    required this.rentalId,
     required this.description,
     required this.rate,
     required this.date,
   });
 }
-
