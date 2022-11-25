@@ -86,40 +86,6 @@ class _CarItemState extends State<CarItemEdit> {
                           style: TextButton.styleFrom(
                             textStyle: const TextStyle(fontSize: 16),
                             padding: EdgeInsets.symmetric(horizontal: 3),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            minimumSize: Size(50, 30),
-                          ),
-                          onPressed: () async {
-                            setState(() {
-                              _isLoading = true;
-                            });
-
-                            await _getCarHost(widget.car.userId);
-                            final navigator = Navigator.of(context);
-
-                            setState(() {
-                              if (_isLoading) {
-                                _isLoading = false;
-                              }
-                            });
-
-                            navigator.pushNamed(
-                              AppRoutes.CAR_DETAIL,
-                              arguments: {
-                                'car': widget.car,
-                                'user': carUser,
-                              },
-                            );
-                          },
-                          child: const Text('Visualizar'),
-                        ),
-                        VerticalDivider(
-                          width: 10,
-                        ),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            textStyle: const TextStyle(fontSize: 16),
-                            padding: EdgeInsets.symmetric(horizontal: 3),
                             minimumSize: Size(50, 30),
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
@@ -142,7 +108,7 @@ class _CarItemState extends State<CarItemEdit> {
                             AppRoutes.CAR_HISTORY,
                             arguments: widget.car,
                           ),
-                          child: const Text('Histórico'),
+                          child: const Text('Histórico de Locações'),
                         ),
                       ],
                     )
@@ -193,24 +159,48 @@ class _CarItemState extends State<CarItemEdit> {
             child: Column(children: [
               Stack(
                 children: [
-                  ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15),
-                    ),
-                    child: _isLoading
-                        ? SizedBox(
-                            height: 200,
-                            child: Center(
-                              child: CircularProgressIndicator(),
+                  InkWell(
+                    onTap: () async {
+                      setState(() {
+                        _isLoading = true;
+                      });
+
+                      await _getCarHost(widget.car.userId);
+                      final navigator = Navigator.of(context);
+
+                      setState(() {
+                        if (_isLoading) {
+                          _isLoading = false;
+                        }
+                      });
+
+                      navigator.pushNamed(
+                        AppRoutes.CAR_DETAIL,
+                        arguments: {
+                          'car': widget.car,
+                          'user': carUser,
+                        },
+                      );
+                    },
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15),
+                      ),
+                      child: _isLoading
+                          ? SizedBox(
+                              height: 200,
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            )
+                          : Image.network(
+                              widget.car.imagesUrl[0].url,
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
                             ),
-                          )
-                        : Image.network(
-                            widget.car.imagesUrl[0].url,
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
+                    ),
                   ),
                 ],
               ),

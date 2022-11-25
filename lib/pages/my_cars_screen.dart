@@ -21,8 +21,8 @@ class MyCarsScreen extends StatefulWidget {
 }
 
 class _MyCarsScreenState extends State<MyCarsScreen> {
-  //List<Car>? _myCars;
   bool _isLoading = true;
+  //List<Car>? _myCars;
   // Future<void> _getMyCars() async {
   //   Provider.of<CarList>(context, listen: false).loadCarsByUser;
   // }
@@ -30,19 +30,16 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
   @override
   void initState() {
     super.initState();
-    context.loaderOverlay.show();
+
     setState(() {
-      _isLoading = context.loaderOverlay.visible;
+      _isLoading = true;
     });
 
     Provider.of<Cars>(context, listen: false).loadCarsByUser().then((value) {
       setState(() {
         if (_isLoading) {
-          context.loaderOverlay.hide();
+          _isLoading = false;
         }
-        setState(() {
-          _isLoading = context.loaderOverlay.visible;
-        });
       });
     });
   }
@@ -73,14 +70,20 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
           child: SizedBox(
             width: mediaQuery.size.width,
             height: availableHeight,
-            child: ListView.builder(
-              itemCount: carsUser.length,
-              itemBuilder: (context, index) {
-                final car = carsUser[index];
-                print(car.id);
-                return CarItemEdit(car);
-              },
-            ),
+            child: _isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : carsUser.length > 0
+                    ? ListView.builder(
+                        itemCount: carsUser.length,
+                        itemBuilder: (context, index) {
+                          final car = carsUser[index];
+                          print(car.id);
+                          return CarItemEdit(car);
+                        },
+                      )
+                    : const Center(child: Text('Sem registros')),
           ),
         ),
       ),

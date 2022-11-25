@@ -23,9 +23,11 @@ class Cars with ChangeNotifier {
   int _carDistanceValue = 0;
   String _carDistanceText = '';
   LatLng? _userLocation;
+  Car? _car;
 
   List<Car> get cars => [..._cars];
   List<Car> get carsFromUser => [..._carsFromUser];
+  Car get car => _car!;
 
   // List<Car> get favoriteItems =>
   //     _cars.where((car) => car.isFavorite).toList();
@@ -367,8 +369,81 @@ class Cars with ChangeNotifier {
     });
   }
 
-  Future<void> loadCarsBySearch(String value, String parameter) async {
+  Future<Car> loadCarsById(int carId) async {
+    final userData = await Store.getMap('userData');
+    _refreshToken = userData['refreshToken'];
 
+    final response = await http.get(
+      Uri.parse('$_baseUrl/$carId'),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+      },
+    );
+
+    //List<Map<String, dynamic>> map = [];
+
+    //Map<String, dynamic> data = jsonDecode(response.body);
+    String source = Utf8Decoder().convert(response.bodyBytes);
+    final carData = Map<String, dynamic>.from(jsonDecode(source));
+    //List<Map<String, dynamic>> data = map;
+
+    print(jsonDecode(response.body));
+
+    //data.forEach((carData) {
+    CarFuel fuel = CarFuel.values
+        .firstWhere((element) => element.name.toString() == carData['fuel']);
+
+    CarGearShift gearShift = CarGearShift.values.firstWhere(
+        (element) => element.name.toString() == carData['gearShift']);
+
+    CarCategory category = CarCategory.values.firstWhere(
+        (element) => element.name.toString() == carData['category']);
+
+    //Adiciona as imagens do carro no objeto CarImages
+    List<CarImages> carImages = [];
+    final List<dynamic> imagesData = carData['carImages'];
+    for (var i = 0; i < imagesData.length; i++) {
+      carImages.add(CarImages(url: carData['carImages'][i]['url']));
+    }
+
+    //print(carData['id']);
+
+    if (response.statusCode < 400) {
+      _car = Car(
+        id: carData['id'],
+        brand: carData['brand'],
+        userId: carData['user'],
+        model: carData['model'],
+        year: carData['year'],
+        plate: carData['plate'],
+        fuel: fuel,
+        gearShift: gearShift,
+        category: category,
+        doors: carData['doors'],
+        seats: carData['seats'],
+        trunk: carData['trunk'],
+        price: carData['price'],
+        location: CarLocation(
+            latitude: carData['latitude'],
+            longitude: carData['longitude'],
+            address: carData['address']),
+        description: carData['description'],
+        imagesUrl: carImages,
+      );
+      notifyListeners();
+    } else {
+      throw HttpException(
+        msg: "Não foi possível carregar o veículo",
+        statusCode: response.statusCode,
+      );
+    }
+    return _car!;
+    //});
+  }
+
+  Future<void> loadCarsBySearch(String value, String parameter) async {
     final userData = await Store.getMap('userData');
     _refreshToken = userData['refreshToken'];
 
@@ -447,7 +522,5 @@ class Cars with ChangeNotifier {
     }
 
     notifyListeners();
-
   }
-
 }
