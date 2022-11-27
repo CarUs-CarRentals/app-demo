@@ -30,7 +30,9 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   bool _isLoading = false;
   bool _isOnlyView = false;
   bool _validDateRange = true;
+  bool _validRental = true;
   List<CarReview>? _carReviews;
+  int _carReviewsInProgress = 0;
   final _timeNow = DateTime.now();
   DateTime? _rentalDate;
   DateTime? _returnDate;
@@ -40,8 +42,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
         .loadCarReviewsByCar(carId);
     final provider = Provider.of<Reviews>(context, listen: false);
     _carReviews = provider.carReviewsFromCar;
-
-    print("_getCarReviews: ${_carReviews?.length}");
+    print("_carReviewsInProgress: $_carReviewsInProgress");
     //_carReviews = provider.carReviewsFromCar;
   }
 
@@ -126,9 +127,30 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     }
   }
 
+  void _validateRentalAllowed() {
+    _carReviewsInProgress =
+        Provider.of<Rentals>(context, listen: false).rentalsByUserCount;
+    if (_carReviewsInProgress > 0) {
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('Locação não autorizada!'),
+                content: Text(
+                    "Você já possui uma locação em processamento.\n\nFinalize sua locação para efetuar um novo pedido."),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'OK'),
+                    child: const Text('OK'),
+                  ),
+                ],
+              ));
+      _validRental = false;
+      return;
+    }
+  }
+
   Future<void> _submitRental(Car car) async {
     _formData['carId'] = car.id;
-    //_formData['userId'] = currentUser.id;
     _formData['price'] =
         _calcRentalPrice(car.price, _returnDate!, _rentalDate!);
     _formData['location'] = car.location;
@@ -136,11 +158,10 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     _formData['isReview'] = false;
 
     _validateRentalDateRange();
-
     if (!_validDateRange) return;
+    _validateRentalAllowed();
+    if (!_validRental) return;
 
-    print(_formData['rentalDate'].toString());
-    print(_formData['returnDate'].toString());
     showDialog(
         context: context,
         builder: (BuildContext ctx) {
