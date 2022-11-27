@@ -223,7 +223,7 @@ class Auth with ChangeNotifier {
       Store.saveMap('userDataFb', {
         'token': _token,
         'email': _email,
-        //'localId': _userId,
+        'localId': _userId,
         'refreshToken': _refreshToken,
         'expireDate': _expiryDate?.toIso8601String(),
       });
@@ -255,7 +255,7 @@ class Auth with ChangeNotifier {
     _token = userData['token'];
     //_tokenBackend = userData['token'];
     _email = userData['email'];
-    //_userId = userData['localId'];
+    _userId = userData['localId'];
     _refreshToken = userData['refreshToken'];
     //_refreshTokenBackend = userData['refreshToken'];
     _expiryDate = expiryDate;
