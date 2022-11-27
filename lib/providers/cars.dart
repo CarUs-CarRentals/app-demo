@@ -443,14 +443,23 @@ class Cars with ChangeNotifier {
     //});
   }
 
-  Future<void> loadCarsBySearch(String value, String parameter) async {
+  Future<void> loadCarsBySearch({
+    String address = '',
+    String category = '',
+    String gearShift = '',
+    String brand = '',
+    String model = '',
+    String year = '',
+    String seats = '',
+  }) async {
     final userData = await Store.getMap('userData');
     _refreshToken = userData['refreshToken'];
 
     _cars.clear();
 
     final response = await http.get(
-      Uri.parse('$_baseUrl/search?$parameter=$value'),
+      Uri.parse(
+          '$_baseUrl/search?gearShift=$gearShift&category=$category&address=$address&brand=$brand&model=$model&year=$year&seats=$seats'),
       headers: {
         "content-type": "application/json",
         "accept": "application/json",
