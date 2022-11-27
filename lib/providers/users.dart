@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 
-import 'package:carshare/data/dummy_users_data.dart';
 import 'package:carshare/data/store.dart';
 import 'package:carshare/exceptions/http_exceptions.dart';
 import 'package:carshare/models/address.dart';
@@ -11,7 +9,6 @@ import 'package:carshare/models/user.dart';
 import 'package:carshare/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 class Users with ChangeNotifier {
   final _baseUrl = Constants.USER_BASE_URL;
@@ -21,7 +18,7 @@ class Users with ChangeNotifier {
   String? _refreshToken;
   User? _userProfile;
   User? _userByID;
-  final List<User> _users = []; //= dummyUsers;
+  final List<User> _users = [];
 
   List<User> get users => [..._users];
   User? get userProfile => _userProfile;
@@ -29,28 +26,6 @@ class Users with ChangeNotifier {
   int get usersCount {
     return _users.length;
   }
-
-  // User userByID(String id) {
-  //   Iterable<User> selectedUser = _users.where((user) => user.id == id);
-  //   try {
-  //     return selectedUser.elementAt(0);
-  //   } catch (e) {
-  //     return User(
-  //       "88527046040",
-  //       "509581912",
-  //       "47999999999",
-  //       "Some mim",
-  //       UserGender.female,
-  //       Address(
-  //           "CEP", BrazilStates.SANTA_CATARINA, "Cidade", "Bairro", "Rua", 999),
-  //       "",
-  //       id: '1',
-  //       email: "meu_email@gmail.com",
-  //       firstName: "Nome",
-  //       lastName: "Sobrenome",
-  //     );
-  //   }
-  // }
 
   Future<void> saveUser(Map<String, Object> data) {
     bool hasId = data['userID'] != null;

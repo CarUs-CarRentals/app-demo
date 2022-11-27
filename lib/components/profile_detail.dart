@@ -1,6 +1,5 @@
 import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/review.dart';
-import 'package:carshare/models/review_list.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/providers/reviews.dart';
 import 'package:carshare/utils/app_routes.dart';
@@ -103,16 +102,6 @@ class _ProfileDetailState extends State<ProfileDetail> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-
-    Auth auth = Provider.of(context, listen: false);
-    String? myID = auth.userId;
-
-    final provider = Provider.of<UserReviewList>(context);
-    final qtdReviews =
-        0; /*provider.reviews
-        .where((review) => review.userIdRated == myID)
-        .toList()
-        .length;*/
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),

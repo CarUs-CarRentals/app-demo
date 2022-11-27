@@ -3,7 +3,6 @@ import 'package:carshare/models/address.dart';
 import 'package:carshare/models/auth.dart';
 import 'package:carshare/providers/addresses.dart';
 import 'package:carshare/providers/cars.dart';
-import 'package:carshare/models/review_list.dart';
 import 'package:carshare/providers/drive_licenses.dart';
 import 'package:carshare/providers/rentals.dart';
 import 'package:carshare/providers/reviews.dart';
@@ -48,12 +47,6 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => Auth(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => CarReviewList(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => UserReviewList(),
         ),
         ChangeNotifierProvider(
           create: (_) => Cars(),

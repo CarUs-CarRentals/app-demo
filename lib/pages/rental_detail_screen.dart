@@ -7,7 +7,6 @@ import 'package:carshare/models/user.dart';
 import 'package:carshare/providers/cars.dart';
 import 'package:carshare/models/rental.dart';
 import 'package:carshare/models/review.dart';
-import 'package:carshare/models/review_list.dart';
 import 'package:carshare/providers/rentals.dart';
 import 'package:carshare/providers/users.dart';
 import 'package:carshare/utils/app_routes.dart';

@@ -1,7 +1,6 @@
 import 'package:carshare/components/review_item.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/review.dart';
-import 'package:carshare/models/review_list.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/providers/reviews.dart';
 import 'package:carshare/providers/users.dart';
