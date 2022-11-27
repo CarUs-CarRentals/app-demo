@@ -68,7 +68,7 @@ class Rentals with ChangeNotifier {
         carId: rentalData['car'],
         car: null,
         userId: rentalData['user'],
-        rentalDate: rentalData['locationDate'],
+        rentalDate: rentalData['rentalDate'],
         returnDate: rentalData['returnDate'],
         price: rentalData['price'],
         location: CarLocation(
@@ -123,7 +123,7 @@ class Rentals with ChangeNotifier {
       body: jsonEncode({
         "user": rental.userId,
         "car": rental.carId,
-        "locationDate": "${rental.rentalDate.toIso8601String()}Z",
+        "rentalDate": "${rental.rentalDate.toIso8601String()}Z",
         "returnDate": "${rental.returnDate.toIso8601String()}Z",
         "price": rental.price,
         "latitude": rental.location.latitude,
@@ -158,7 +158,7 @@ class Rentals with ChangeNotifier {
       body: jsonEncode({
         "user": rental.userId,
         "car": rental.carId,
-        "locationDate": "${rental.rentalDate.toIso8601String()}",
+        "rentalDate": "${rental.rentalDate.toIso8601String()}",
         "returnDate": "${rental.returnDate.toIso8601String()}",
         "price": rental.price,
         "latitude": rental.location.latitude,
@@ -214,7 +214,7 @@ class Rentals with ChangeNotifier {
         carId: rentalData['car'],
         car: car,
         userId: rentalData['user'],
-        rentalDate: DateTime.parse(rentalData['locationDate']),
+        rentalDate: DateTime.parse(rentalData['rentalDate']),
         returnDate: DateTime.parse(rentalData['returnDate']),
         price: rentalData['price'],
         location: CarLocation(
@@ -262,7 +262,7 @@ class Rentals with ChangeNotifier {
         id: rentalData['id'],
         carId: rentalData['car'],
         userId: rentalData['user'],
-        rentalDate: DateTime.parse(rentalData['locationDate']),
+        rentalDate: DateTime.parse(rentalData['rentalDate']),
         returnDate: DateTime.parse(rentalData['returnDate']),
         price: rentalData['price'],
         location: CarLocation(
