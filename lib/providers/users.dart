@@ -55,6 +55,10 @@ class Users with ChangeNotifier {
   Future<void> saveUser(Map<String, Object> data) {
     bool hasId = data['userID'] != null;
 
+    if (data['profileImageUrl'] == "") {
+      data['profileImageUrl'] = Constants.DEFAULT_PROFILE_IMAGE;
+    }
+
     final user = User(
       id: hasId ? data['userID'] as String : "",
       email: data['email'] as String,
@@ -95,13 +99,15 @@ class Users with ChangeNotifier {
     }
 
     _userProfile = User(
-        id: "pz0pX3mJcsRN0u5yl5BSrvcB8a82", //profileData['id'] ?? "",
+        id: profileData['id'] ?? "",
         firstName: profileData['firstName'],
         lastName: profileData['lastName'],
         email: "igor.ponchielli@gmail.com", //profileData['email'] ?? "",
         memberSince: profileData['memberSince'],
         about: profileData['about'],
         rateNumber: profileData['rateNumber'],
+        profileImageUrl:
+            profileData['profileImageUrl'] ?? Constants.DEFAULT_PROFILE_IMAGE,
         address: profileData['address'] == null
             ? null
             : Address(
@@ -174,7 +180,7 @@ class Users with ChangeNotifier {
     }
   }
 
-  Future<void> loadUserById(String userId) async {
+  Future<User> loadUserById(String userId) async {
     _userByID = null;
 
     final userData = await Store.getMap('userData');
@@ -191,26 +197,31 @@ class Users with ChangeNotifier {
     String source = Utf8Decoder().convert(response.bodyBytes);
     Map<String, dynamic> profileData = jsonDecode(source);
 
-    // BrazilStates brazilStates = BrazilStates.values.firstWhere((element) =>
-    //     element.name.toString() == profileData['address']['state']);
+    BrazilStates brazilStates = BrazilStates.values.firstWhere((element) =>
+        element.name.toString() == profileData['address']['state']);
+    print(jsonDecode(source));
 
-    _userByID = User(
-        id: profileData['uuid'],
-        firstName: profileData['firstName'],
-        lastName: profileData['lastName'],
-        email: profileData['lastName'],
-        memberSince: profileData['memberSince'],
-        about: profileData['about'],
-        address: null //Address(
-        // profileData['address']['cep'],
-        // brazilStates,
-        // profileData['address']['city'],
-        // profileData['address']['neighborhood'],
-        // profileData['address']['street'],
-        // profileData['address']['number'],
-        //),
-        );
+    final userByID = User(
+      id: profileData['uuid'],
+      firstName: profileData['firstName'],
+      lastName: profileData['lastName'],
+      email: profileData['lastName'],
+      memberSince: profileData['memberSince'],
+      about: profileData['about'],
+      address: Address(
+        profileData['address']['id'],
+        profileData['address']['cep'],
+        brazilStates,
+        profileData['address']['city'],
+        profileData['address']['neighborhood'],
+        profileData['address']['street'],
+        profileData['address']['number'],
+      ),
+      profileImageUrl:
+          profileData['profileImageUrl'] ?? Constants.DEFAULT_PROFILE_IMAGE,
+    );
 
     notifyListeners();
+    return userByID;
   }
 }
