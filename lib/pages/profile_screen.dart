@@ -99,12 +99,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           contentPadding:
                               EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                           leading: CircleAvatar(
-                            radius: 30,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            child: Padding(
-                              padding: const EdgeInsets.all(6.0),
-                            ),
+                            radius: 30.0,
+                            backgroundImage:
+                                NetworkImage(_currentUser!.profileImageUrl),
+                            backgroundColor: Colors.transparent,
                           ),
                           title: Text(
                             'Olá ${_currentUser!.fullName}',
@@ -121,12 +119,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     () => _selectProfileEdit(context),
                   ),
                   const Divider(),
-                  _createItem(
-                    Icons.reviews,
-                    'Minhas avaliações',
-                    () => _selectMyReviews(context),
-                  ),
-                  const Divider(),
+                  // _createItem(
+                  //   Icons.reviews,
+                  //   'Minhas avaliações',
+                  //   () => _selectMyReviews(context),
+                  // ),
+                  // const Divider(),
                   _createItem(
                     Icons.directions_car,
                     'Meus carros',

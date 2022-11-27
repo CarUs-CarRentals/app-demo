@@ -52,10 +52,11 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
   }
 
   Future<void> _getCarHost(String userId) async {
-    await Provider.of<Users>(context, listen: false).loadUserById(userId);
+    _carUser =
+        await Provider.of<Users>(context, listen: false).loadUserById(userId);
     // ignore: use_build_context_synchronously
-    final provider = Provider.of<Users>(context, listen: false);
-    _carUser = provider.userByID;
+    //final provider = Provider.of<Users>(context, listen: false);
+    //_carUser = provider.userByID;
   }
 
   _openReviewForm(Rental rental, bool isReviewCar) {
@@ -138,12 +139,11 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                   ? ListTile(
                       visualDensity: VisualDensity(horizontal: 0, vertical: -4),
                       contentPadding: EdgeInsets.symmetric(horizontal: 6),
-                      leading: Shimmer.fromColors(
-                        baseColor: Colors.grey,
-                        highlightColor: Color.fromARGB(255, 190, 190, 190),
-                        child: CircleAvatar(
-                          radius: 30,
-                        ),
+                      leading: CircleAvatar(
+                        radius: 30.0,
+                        backgroundImage:
+                            NetworkImage(rentalUser.profileImageUrl),
+                        backgroundColor: Colors.transparent,
                       ),
                       title: Text(
                         "Motorista",

@@ -11,15 +11,8 @@ class UserReviewsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userInfo = ModalRoute.of(context)?.settings.arguments as User;
-
-    final provider = Provider.of<UserReviewList>(context);
-    final List<UserReview> userReviews = provider.reviews
-        .where((review) => review.userIdRated == userInfo.id)
-        .toList();
-
-    final userProvider = Provider.of<Users>(context);
-    //final userInfo = userProvider.userByID(review.userIdRated);
+    final userReviews =
+        ModalRoute.of(context)?.settings.arguments as List<UserReview>;
 
     return Scaffold(
       appBar: AppBar(
@@ -29,9 +22,9 @@ class UserReviewsScreen extends StatelessWidget {
           itemCount: userReviews.length,
           itemBuilder: (ctx, index) {
             final review = userReviews[index];
-            final userInfo = "userProvider.userByID(review.userIdEvaluator)";
             return ReviewItem(
-              userName: "userInfo.fullName",
+              imageProfile: review.evaluatorProfileImage,
+              userName: review.userEvaluatorName,
               rating: review.rate,
               description: review.description,
               date: review.date,

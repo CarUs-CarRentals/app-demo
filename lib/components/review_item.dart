@@ -9,12 +9,14 @@ class ReviewItem extends StatelessWidget {
   final double rating;
   final String description;
   final DateTime date;
+  final String imageProfile;
   const ReviewItem({
     Key? key,
     required this.userName,
     required this.rating,
     required this.description,
     required this.date,
+    required this.imageProfile,
   }) : super(key: key);
 
   _descriptionSection(BuildContext context, String description) {
@@ -49,12 +51,9 @@ class ReviewItem extends StatelessWidget {
         children: [
           ListTile(
               leading: CircleAvatar(
-                radius: 30,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: FittedBox(),
-                ),
+                radius: 30.0,
+                backgroundImage: NetworkImage(imageProfile),
+                backgroundColor: Colors.transparent,
               ),
               title: Text(
                 userName,
