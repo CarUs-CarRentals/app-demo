@@ -38,6 +38,14 @@ class Rentals with ChangeNotifier {
     return _rentals.length;
   }
 
+  int get rentalsByUserCount {
+    return _rentalFromUser
+        .where((element) =>
+            element.status != RentalStatus.RENTED &&
+            element.status != RentalStatus.REFUSED)
+        .length;
+  }
+
   Future<void> loadRentals() async {
     final userData = await Store.getMap('userData');
     _refreshToken = userData['refreshToken'];
