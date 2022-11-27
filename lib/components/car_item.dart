@@ -1,4 +1,5 @@
 import 'package:brasil_fields/brasil_fields.dart';
+import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/place.dart';
 import 'package:carshare/models/user.dart';
@@ -28,6 +29,7 @@ class _CarItemState extends State<CarItem> {
   String? carDistance = '';
   User? carUser;
   bool _isLoading = false;
+  bool _viewMode = false;
 
   // _getCarDistance() async {
   //   final myLocation = widget.currentLocation;
@@ -155,6 +157,15 @@ class _CarItemState extends State<CarItem> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<Auth>(context);
+    final currentUserId = provider.userId;
+
+    if (currentUserId == widget.car.userId) {
+      setState(() {
+        _viewMode = true;
+      });
+    }
+
     return InkWell(
       onTap: () async {
         setState(() {
@@ -175,7 +186,7 @@ class _CarItemState extends State<CarItem> {
           arguments: {
             'car': widget.car,
             'user': carUser,
-            'viewMode': false,
+            'viewMode': _viewMode,
           },
         );
       },
