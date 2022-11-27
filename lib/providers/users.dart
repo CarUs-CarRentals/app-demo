@@ -157,6 +157,7 @@ class Users with ChangeNotifier {
 
   Future<User> loadUserById(String userId) async {
     _userByID = null;
+    BrazilStates brazilStates = BrazilStates.UNKNOWN;
 
     final userData = await Store.getMap('userData');
     _refreshToken = userData['refreshToken'];
@@ -172,8 +173,10 @@ class Users with ChangeNotifier {
     String source = Utf8Decoder().convert(response.bodyBytes);
     Map<String, dynamic> profileData = jsonDecode(source);
 
-    BrazilStates brazilStates = BrazilStates.values.firstWhere((element) =>
-        element.name.toString() == profileData['address']['state']);
+    if (profileData['address'] != null) {
+      brazilStates = BrazilStates.values.firstWhere((element) =>
+          element.name.toString() == profileData['address']['state']);
+    }
     print(jsonDecode(source));
 
     final userByID = User(
@@ -183,15 +186,17 @@ class Users with ChangeNotifier {
       email: profileData['lastName'],
       memberSince: profileData['memberSince'],
       about: profileData['about'],
-      address: Address(
-        profileData['address']['id'],
-        profileData['address']['cep'],
-        brazilStates,
-        profileData['address']['city'],
-        profileData['address']['neighborhood'],
-        profileData['address']['street'],
-        profileData['address']['number'],
-      ),
+      address: profileData['address'] == null
+          ? null
+          : Address(
+              profileData['address']['id'],
+              profileData['address']['cep'],
+              brazilStates,
+              profileData['address']['city'],
+              profileData['address']['neighborhood'],
+              profileData['address']['street'],
+              profileData['address']['number'],
+            ),
       profileImageUrl:
           profileData['profileImageUrl'] ?? Constants.DEFAULT_PROFILE_IMAGE,
     );
