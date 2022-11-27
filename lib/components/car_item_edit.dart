@@ -24,10 +24,8 @@ class _CarItemState extends State<CarItemEdit> {
   bool _isLoading = false;
 
   Future<void> _getCarHost(String userId) async {
-    await Provider.of<Users>(context, listen: false).loadUserById(userId);
-    final provider = Provider.of<Users>(context, listen: false);
-    carUser = provider.userByID;
-    print(carUser?.fullName);
+    carUser =
+        await Provider.of<Users>(context, listen: false).loadUserById(userId);
   }
 
   @override

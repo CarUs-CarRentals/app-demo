@@ -50,18 +50,23 @@ class _RentalItemState extends State<RentalItem> {
   }
 
   Future<void> _getRentalUser(String userId) async {
-    await Provider.of<Users>(context, listen: false).loadUserById(userId);
+    _rentalUser =
+        await Provider.of<Users>(context, listen: false).loadUserById(userId);
     // ignore: use_build_context_synchronously
-    final provider = Provider.of<Users>(context, listen: false);
-    _rentalUser = provider.userByID;
+    //final provider = Provider.of<Users>(context, listen: false);
+    //_rentalUser = provider.userByID;
   }
 
   Future<void> _getCarReview(int carId) async {
     final provider = Provider.of<Reviews>(context, listen: false);
     await provider.loadCarReviewsByCar(carId);
-    _carReview = provider.carReviewsFromCar
-        .where((review) => review.rentalId == widget.rentalDetail.id)
-        .elementAt(0);
+    try {
+      _carReview = provider.carReviewsFromCar
+          .where((review) => review.rentalId == widget.rentalDetail.id)
+          .elementAt(0);
+    } catch (e) {
+      _carReview = null;
+    }
   }
 
   @override
@@ -118,9 +123,9 @@ class _RentalItemState extends State<RentalItem> {
             });
 
             await _getRentalUser(widget.rentalDetail.userId);
-            // if (widget.rentalDetail.isReview == true) {
-            //   await _getCarReview(widget.car!.id);
-            // }
+            if (widget.rentalDetail.isReview == true) {
+              await _getCarReview(widget.car!.id);
+            }
 
             final navigator = Navigator.of(context);
             Navigator.of(context)

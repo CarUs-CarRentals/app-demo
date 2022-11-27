@@ -67,10 +67,11 @@ class _CarItemState extends State<CarItem> {
   }
 
   Future<void> _getCarHost(String userId) async {
-    await Provider.of<Users>(context, listen: false).loadUserById(userId);
+    carUser =
+        await Provider.of<Users>(context, listen: false).loadUserById(userId);
     // ignore: use_build_context_synchronously
-    final provider = Provider.of<Users>(context, listen: false);
-    carUser = provider.userByID;
+    //final provider = Provider.of<Users>(context, listen: false);
+    //carUser = provider.userByID;
   }
 
   @override
