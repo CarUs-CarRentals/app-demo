@@ -393,7 +393,9 @@ class _CarFormState extends State<CarForm> {
                     _dropdownGearValue = newValue;
                   });
                 },
-                items: CarGearShift.values.map((CarGearShift gear) {
+                items: CarGearShift.values
+                    .where((e) => e != CarGearShift.BOTH)
+                    .map((CarGearShift gear) {
                   return DropdownMenuItem<CarGearShift>(
                     value: gear,
                     child: Center(
