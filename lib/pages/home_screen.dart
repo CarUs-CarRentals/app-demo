@@ -1,4 +1,6 @@
 import 'package:carshare/components/cars_list_view.dart';
+import 'package:carshare/components/filter_component.dart';
+import 'package:carshare/models/car.dart';
 import 'package:carshare/providers/cars.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -19,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Provider.of<Cars>(
       context,
       listen: false,
-    ).loadCars();
+    ).loadCarsBySearch();
   }
 
   Future<void> _searchButton(String value) async {
@@ -31,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await Provider.of<Cars>(
       context,
       listen: false,
-    ).loadCarsBySearch(value, "address");
+    ).loadCarsBySearch(address: value);
     setState(() {
       if (_isLoading) {
         context.loaderOverlay.hide();
@@ -69,8 +71,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: const LoaderOverlay(
                       overlayOpacity: 1,
                       overlayColor: Colors.white,
-                      child: CarsListView(
-                          titleList: 'Carros próximos de você'), // Center() //
+                      child: //Center(),
+                          CarsListView(
+                              titleList: 'Carros próximos de você'), //Center(),
                     ),
                   ),
                   const Positioned(
@@ -152,7 +155,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                     icon: const Icon(Icons.filter_list_alt),
                                     tooltip: 'Filtros Avaçados',
                                     onPressed: () {
-                                      print("Filtros");
+                                      showModalBottomSheet(
+                                          enableDrag: false,
+                                          isDismissible: false,
+                                          isScrollControlled: true,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.vertical(
+                                                      top:
+                                                          Radius.circular(20))),
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return FilterWidget();
+                                          });
+
+                                      // return buildAdvancedFilters();
                                     },
                                   ),
                                 ),
