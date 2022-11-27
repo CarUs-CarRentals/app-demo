@@ -8,10 +8,12 @@ import 'package:carshare/models/car.dart';
 import 'package:carshare/models/rental.dart';
 import 'package:carshare/models/review.dart';
 import 'package:carshare/providers/cars.dart';
+import 'package:carshare/providers/users.dart';
 import 'package:carshare/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class Reviews with ChangeNotifier {
   final _baseUrl = Constants.RATE_BASE_URL;
@@ -26,6 +28,7 @@ class Reviews with ChangeNotifier {
 
   List<CarReview> get carReviews => [..._carReviews];
   List<CarReview> get carReviewsFromCar => [..._carReviewsFromCar];
+  List<UserReview> get userReviewsFromUser => [..._userReviewsFromUser];
 
   // List<Car> get favoriteItems =>
   //     _cars.where((car) => car.isFavorite).toList();
@@ -130,10 +133,10 @@ class Reviews with ChangeNotifier {
   }
 
   Future<void> loadCarReviewsByCar(int carId) async {
+    _carReviewsFromCar.clear();
+
     final userData = await Store.getMap('userData');
     _refreshToken = userData['refreshToken'];
-
-    _carReviewsFromCar.clear();
 
     final response = await http.get(
       Uri.parse('${_baseUrl}car/car/$carId'),
@@ -153,7 +156,9 @@ class Reviews with ChangeNotifier {
     print(jsonDecode(source));
 
     List<Map<String, dynamic>> data = map;
-    data.forEach((reviewData) async {
+    for (var reviewData in data) {
+      final userFromReview = await Users().loadUserById(reviewData['userUuid']);
+
       _carReviewsFromCar.add(CarReview(
         id: reviewData['id'],
         rentalId: reviewData['rental'],
@@ -162,10 +167,13 @@ class Reviews with ChangeNotifier {
         description: reviewData['description'],
         rate: reviewData['rate'],
         date: DateTime.parse(reviewData['date']),
+        userEvaluatorName: userFromReview.fullName,
+        evaluatorProfileImage: userFromReview.profileImageUrl,
       ));
-    });
+    }
 
     notifyListeners();
+    //return _carReviewsFromCar;
   }
 
   Future<void> saveUserReview(Map<String, Object> data) async {
@@ -230,7 +238,7 @@ class Reviews with ChangeNotifier {
     _userReviewsFromUser.clear();
 
     final response = await http.get(
-      Uri.parse('$_baseUrl-user/user/$userId'),
+      Uri.parse('${_baseUrl}user/user/$userId'),
       headers: {
         "content-type": "application/json",
         "accept": "application/json",
@@ -247,17 +255,22 @@ class Reviews with ChangeNotifier {
     print(jsonDecode(source));
 
     List<Map<String, dynamic>> data = map;
-    data.forEach((reviewData) async {
+    for (var reviewData in data) {
+      final userFromReview =
+          await Users().loadUserById(reviewData['ratedUser']);
+
       _userReviewsFromUser.add(UserReview(
         id: reviewData['id'],
-        rentalId: reviewData['rentalId'],
+        rentalId: reviewData['rental'],
         userIdEvaluator: reviewData['evaluatedUser'],
         userIdRated: reviewData['ratedUser'],
         description: reviewData['description'],
         rate: reviewData['rate'],
-        date: reviewData['date'],
+        date: DateTime.parse(reviewData['date']),
+        userEvaluatorName: userFromReview.fullName,
+        evaluatorProfileImage: userFromReview.profileImageUrl,
       ));
-    });
+    }
 
     notifyListeners();
   }

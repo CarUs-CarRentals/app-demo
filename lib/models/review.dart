@@ -6,6 +6,8 @@ class CarReview {
   final String description;
   final double rate;
   final DateTime date;
+  String userEvaluatorName;
+  String evaluatorProfileImage;
 
   CarReview({
     required this.id,
@@ -15,6 +17,8 @@ class CarReview {
     required this.description,
     required this.rate,
     required this.date,
+    this.userEvaluatorName = '',
+    this.evaluatorProfileImage = '',
   });
 }
 
@@ -26,6 +30,8 @@ class UserReview {
   final String description;
   final double rate;
   final DateTime date;
+  String userEvaluatorName;
+  String evaluatorProfileImage;
 
   UserReview({
     required this.id,
@@ -35,5 +41,7 @@ class UserReview {
     required this.description,
     required this.rate,
     required this.date,
+    this.userEvaluatorName = '',
+    this.evaluatorProfileImage = '',
   });
 }
