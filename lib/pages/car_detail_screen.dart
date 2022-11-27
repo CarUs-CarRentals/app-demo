@@ -527,6 +527,8 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
           title: Text(car.shortDescription),
         ),
         body: LoaderOverlay(
+          overlayOpacity: 1,
+          overlayColor: Colors.white,
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[

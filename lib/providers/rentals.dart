@@ -123,8 +123,8 @@ class Rentals with ChangeNotifier {
       body: jsonEncode({
         "user": rental.userId,
         "car": rental.carId,
-        "rentalDate": "${rental.rentalDate.toIso8601String()}Z",
-        "returnDate": "${rental.returnDate.toIso8601String()}Z",
+        "rentalDate": rental.rentalDate.toIso8601String(),
+        "returnDate": rental.returnDate.toIso8601String(),
         "price": rental.price,
         "latitude": rental.location.latitude,
         "longitude": rental.location.longitude,
@@ -203,7 +203,7 @@ class Rentals with ChangeNotifier {
     print(jsonDecode(source));
 
     List<Map<String, dynamic>> data = map;
-    data.forEach((rentalData) async {
+    for (var rentalData in data) {
       RentalStatus rentalStatus = RentalStatus.values.firstWhere(
           (element) => element.name.toString() == rentalData['status']);
 
@@ -225,7 +225,7 @@ class Rentals with ChangeNotifier {
         isReview: rentalData['isReview'],
         status: rentalStatus,
       ));
-    });
+    }
 
     notifyListeners();
   }

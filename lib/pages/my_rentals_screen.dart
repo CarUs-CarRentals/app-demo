@@ -21,19 +21,23 @@ class _MyRentalsScreenState extends State<MyRentalsScreen> {
   void initState() {
     super.initState();
 
-    // setState(() {
-    //   _isLoading = true;
-    // });
+    context.loaderOverlay.show();
+    setState(() {
+      _isLoading = context.loaderOverlay.visible;
+    });
 
-    // Provider.of<Rentals>(context, listen: false)
-    //     .loadRentalsByUser()
-    //     .then((value) {
-    //   setState(() {
-    //     if (_isLoading) {
-    //       _isLoading = false;
-    //     }
-    //   });
-    // });
+    Provider.of<Rentals>(context, listen: false)
+        .loadRentalsByUser()
+        .then((value) {
+      setState(() {
+        if (_isLoading) {
+          context.loaderOverlay.hide();
+          _isLoading = context.loaderOverlay.visible;
+        }
+        /*setState(() {
+        });*/
+      });
+    });
   }
 
   Future<void> _refreshRentals(BuildContext context) {
@@ -52,23 +56,23 @@ class _MyRentalsScreenState extends State<MyRentalsScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (_rentalsUser.isEmpty && _tryCount < 3) {
-      final provider = Provider.of<Rentals>(context);
-      final List<Rental> rentalsUser = provider.rentalsFromUser;
-      _tryCount = _tryCount + 1;
-      if (rentalsUser.isEmpty) {
-        _rentalsUser = rentalsUser;
-        Provider.of<Rentals>(context, listen: false).loadRentalsByUser();
-      } else {
-        _rentalsUser = rentalsUser;
-      }
-    }
+    // if (_rentalsUser.isEmpty && _tryCount < 3) {
+    //   final provider = Provider.of<Rentals>(context);
+    //   final List<Rental> rentalsUser = provider.rentalsFromUser;
+    //   _tryCount = _tryCount + 1;
+    //   if (rentalsUser.isEmpty) {
+    //     _rentalsUser = rentalsUser;
+    //     Provider.of<Rentals>(context, listen: false).loadRentalsByUser();
+    //   } else {
+    //     _rentalsUser = rentalsUser;
+    //   }
+    // }
 
-    if (_rentalsUser.isNotEmpty || _tryCount >= 3) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+    // if (_rentalsUser.isNotEmpty || _tryCount >= 3) {
+    //   setState(() {
+    //     _isLoading = false;
+    //   });
+    // }
   }
 
   @override
@@ -77,8 +81,9 @@ class _MyRentalsScreenState extends State<MyRentalsScreen> {
     final availableHeight =
         mediaQuery.size.height - kToolbarHeight - mediaQuery.padding.top;
 
-    //final provider = Provider.of<Rentals>(context);
-    //final List<Rental> rentalsUser = provider.rentalsFromUser;
+    final provider = Provider.of<Rentals>(context);
+    final List<Rental> rentalsUser = provider.rentalsFromUser;
+    print(rentalsUser.length);
 
     return SingleChildScrollView(
       child: RefreshIndicator(
@@ -93,15 +98,15 @@ class _MyRentalsScreenState extends State<MyRentalsScreen> {
                 ? Center(
                     child: CircularProgressIndicator(),
                   )
-                : _rentalsUser.isNotEmpty
+                : rentalsUser.isNotEmpty
                     ? ListView.builder(
-                        itemCount: _rentalsUser.length,
+                        itemCount: rentalsUser.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Column(
                             children: [
                               RentalItem(
-                                rentalDetail: _rentalsUser[index],
-                                car: _rentalsUser[index].car,
+                                rentalDetail: rentalsUser[index],
+                                car: rentalsUser[index].car,
                                 currentUserId: '',
                               ),
                             ],
