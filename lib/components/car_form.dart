@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:carshare/components/maskFormatters.dart';
 import 'package:carshare/data/store.dart';
+import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/providers/cars.dart';
 import 'package:carshare/utils/location_util.dart';
@@ -152,6 +153,8 @@ class _CarFormState extends State<CarForm> {
   void _getCurrentUserId() async {
     final userData = await Store.getMap('userDataFb');
     _userId = userData['localId'];
+    //final provider = Provider.of<Auth>(context);
+    //final currentUserId = provider.userId;
     _formData['userId'] = _userId as String;
   }
 
