@@ -6,8 +6,10 @@ import 'package:carshare/components/rental_date_form.dart';
 import 'package:carshare/data/store.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/rental.dart';
+import 'package:carshare/models/review.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/providers/rentals.dart';
+import 'package:carshare/providers/reviews.dart';
 import 'package:carshare/providers/users.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -28,16 +30,30 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   bool _isLoading = false;
   bool _isOnlyView = false;
   bool _validDateRange = true;
+  List<CarReview>? _carReviews;
   final _timeNow = DateTime.now();
   DateTime? _rentalDate;
   DateTime? _returnDate;
 
-  void _selectCarReview(BuildContext context, Car car) {
-    Navigator.of(context).pushNamed(
-      AppRoutes.CAR_REVIEW,
-      arguments: car,
-    );
+  Future<void> _getCarReviews(int carId) async {
+    await Provider.of<Reviews>(context, listen: false)
+        .loadCarReviewsByCar(carId);
+    final provider = Provider.of<Reviews>(context, listen: false);
+    _carReviews = provider.carReviewsFromCar;
+
+    print("_getCarReviews: ${_carReviews?.length}");
+    //_carReviews = provider.carReviewsFromCar;
   }
+
+  // void _selectCarReviews(BuildContext context, Car car) async {
+  //   final navigator = Navigator.of(context);
+  //   await _getCarReviews(car.id);
+
+  //   navigator.pushNamed(
+  //     AppRoutes.CAR_REVIEW,
+  //     arguments: _carReviews,
+  //   );
+  // }
 
   void _selectOwnerProfile(BuildContext context, User carUser) {
     Navigator.of(context).pushNamed(
@@ -554,12 +570,48 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 Divider(),
                 _descriptionSection(context, car.description),
                 Divider(),
-                _InfoItem(
-                  Icons.reviews,
-                  'Avaliações',
-                  () => _selectCarReview(context, car),
+                ListTile(
+                  enabled: !_isLoading,
+                  leading: Icon(
+                    Icons.reviews,
+                    size: 24,
+                  ),
+                  title: Text(
+                    'Avaliações',
+                    style: const TextStyle(
+                      fontFamily: 'RobotCondensed',
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  trailing: Icon(
+                    Icons.keyboard_arrow_right_outlined,
+                    size: 32,
+                  ),
+                  onTap: () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    await _getCarReviews(car.id);
+                    print("antes de entrar na tela: ${_carReviews?.length}");
+                    Navigator.of(context).pushNamed(
+                      AppRoutes.CAR_REVIEW,
+                      arguments: {
+                        'carReviews': _carReviews,
+                      },
+                    );
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  },
                 ),
-                Divider(),
+                _isLoading
+                    ? LinearProgressIndicator(
+                        backgroundColor: Colors.transparent,
+                      )
+                    : Divider(
+                        height: 4,
+                      ),
                 _InfoItem(
                   Icons.person,
                   'Visualizar proprietario do veículo',

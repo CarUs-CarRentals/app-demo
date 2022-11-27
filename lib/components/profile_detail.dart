@@ -2,6 +2,7 @@ import 'package:carshare/models/auth.dart';
 import 'package:carshare/models/review.dart';
 import 'package:carshare/models/review_list.dart';
 import 'package:carshare/models/user.dart';
+import 'package:carshare/providers/reviews.dart';
 import 'package:carshare/utils/app_routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 
-class ProfileDetail extends StatelessWidget {
+class ProfileDetail extends StatefulWidget {
   final bool isMyProfile;
   final User user;
   // final String userFullname;
@@ -23,6 +24,14 @@ class ProfileDetail extends StatelessWidget {
     // required this.fullAddress,
     required this.user,
   }) : super(key: key);
+
+  @override
+  State<ProfileDetail> createState() => _ProfileDetailState();
+}
+
+class _ProfileDetailState extends State<ProfileDetail> {
+  bool _isLoading = false;
+  List<UserReview>? _userReviews;
 
   _descriptionSection(BuildContext context, String description) {
     return Container(
@@ -62,15 +71,33 @@ class ProfileDetail extends StatelessWidget {
   void _selectEditProfile(BuildContext context) {
     Navigator.of(context).pushNamed(
       AppRoutes.PROFILE_EDIT,
-      arguments: user,
+      arguments: widget.user,
     );
   }
 
-  void _selectReviewsReceived(BuildContext context, User user) {
+  Future<void> _getUserReviews(String userId) async {
+    await Provider.of<Reviews>(context, listen: false)
+        .loadUserReviewsByUser(userId);
+    final provider = Provider.of<Reviews>(context, listen: false);
+    _userReviews = provider.userReviewsFromUser;
+
+    print("_getUserReviews: ${_userReviews?.length}");
+    //_carReviews = provider.carReviewsFromCar;
+  }
+
+  Future<void> _selectReviewsReceived(BuildContext context, User user) async {
+    setState(() {
+      _isLoading = true;
+    });
+    await _getUserReviews(user.id);
+    print("antes de entrar na tela: ${_userReviews?.length}");
     Navigator.of(context).pushNamed(
       AppRoutes.USER_REVIEW,
-      arguments: user,
+      arguments: _userReviews,
     );
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -91,53 +118,59 @@ class ProfileDetail extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         children: <Widget>[
+          SizedBox(
+            height: 10,
+          ),
           ListTile(
-            trailing: Container(
-              height: 150,
-              width: mediaQuery.size.width / 4.5,
-              alignment: Alignment.topRight,
-              child: const CircleAvatar(radius: 150),
+            trailing: CircleAvatar(
+              radius: 30.0,
+              backgroundImage: NetworkImage(widget.user.profileImageUrl),
+              backgroundColor: Colors.transparent,
             ),
-            title: Container(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Text(user.fullName,
-                  style: TextStyle(
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold,
-                  )),
-            ),
-            subtitle: Container(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: Text("membro desde ${user.memberSince.substring(0, 4)}"),
-            ),
+            title: Text(widget.user.fullName,
+                style: TextStyle(
+                  fontSize: 23,
+                  fontWeight: FontWeight.bold,
+                )),
+            subtitle:
+                Text("membro desde ${widget.user.memberSince.substring(0, 4)}"),
             dense: false,
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 25.0),
-            child: isMyProfile
-                ? ListTile(
-                    leading: Container(
-                      width: 24,
-                      child: Icon(
-                        Icons.reviews,
-                        size: 24,
-                      ),
-                    ),
-                    title: Text(
-                      "$qtdReviews Avaliações",
-                      style: const TextStyle(
-                        fontFamily: 'RobotCondensed',
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    onTap: () => _selectReviewsReceived(context, user),
-                    dense: false,
-                  )
-                : null,
-          ),
-          Divider(),
-          _descriptionSection(context, "${user.about}"),
+              padding: const EdgeInsets.only(top: 25.0),
+              child: ListTile(
+                enabled: !_isLoading,
+                leading: Container(
+                  width: 24,
+                  child: Icon(
+                    Icons.reviews,
+                    size: 24,
+                  ),
+                ),
+                title: Text(
+                  widget.isMyProfile
+                      ? widget.user.rateNumber < 2
+                          ? "${widget.user.rateNumber} Avaliação"
+                          : "${widget.user.rateNumber} Avaliações"
+                      : "Avaliações",
+                  style: const TextStyle(
+                    fontFamily: 'RobotCondensed',
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onTap: () => _selectReviewsReceived(context, widget.user),
+                dense: false,
+              )),
+          _isLoading
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: LinearProgressIndicator(
+                    backgroundColor: Colors.transparent,
+                  ),
+                )
+              : Divider(),
+          _descriptionSection(context, "${widget.user.about}"),
           ListTile(
             leading: Container(
               width: 24,
@@ -147,7 +180,9 @@ class ProfileDetail extends StatelessWidget {
               ),
             ),
             title: Text(
-              user.address != null ? user.address!.fullAddress : '',
+              widget.user.address != null
+                  ? widget.user.address!.fullAddress
+                  : '',
               style: const TextStyle(
                 fontFamily: 'RobotCondensed',
                 fontSize: 14,
@@ -156,7 +191,7 @@ class ProfileDetail extends StatelessWidget {
             dense: false,
           ),
           Divider(),
-          if (isMyProfile)
+          if (widget.isMyProfile)
             ElevatedButton(
                 onPressed: () => _selectEditProfile(context),
                 style: ElevatedButton.styleFrom(

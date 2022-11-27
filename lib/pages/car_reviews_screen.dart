@@ -2,38 +2,47 @@ import 'package:carshare/components/review_item.dart';
 import 'package:carshare/models/car.dart';
 import 'package:carshare/models/review.dart';
 import 'package:carshare/models/review_list.dart';
+import 'package:carshare/models/user.dart';
+import 'package:carshare/providers/reviews.dart';
 import 'package:carshare/providers/users.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CarReviewsScreen extends StatelessWidget {
+class CarReviewsScreen extends StatefulWidget {
   const CarReviewsScreen({Key? key}) : super(key: key);
 
   @override
+  State<CarReviewsScreen> createState() => _CarReviewsScreenState();
+}
+
+class _CarReviewsScreenState extends State<CarReviewsScreen> {
+  bool _isLoading = true;
+  List<User> _usersInfo = [];
+  List<CarReview> _carReviews = [];
+  Car? _car;
+
+  @override
   Widget build(BuildContext context) {
-    final carInfo = ModalRoute.of(context)?.settings.arguments as Car;
-
-    final provider = Provider.of<CarReviewList>(context);
-    final List<CarReview> carReviews =
-        provider.reviews.where((review) => review.carId == carInfo.id).toList();
-    final userProvider = Provider.of<Users>(context);
-
-    print("carINFO: ${carInfo.id}");
+    final arg = ModalRoute.of(context)?.settings.arguments as Map;
+    final carReviews = arg['carReviews'] as List<CarReview>;
+    //final provider = Provider.of<Reviews>(context);
+    //final carReviews = provider.carReviewsFromCar;
+    _carReviews = carReviews;
+    print("${carReviews.length}");
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Avaliações do Veículo'),
       ),
       body: ListView.builder(
-          itemCount: carReviews.length,
+          itemCount: _carReviews.length,
           itemBuilder: (ctx, index) {
-            final review = carReviews[index];
-            final userInfo = "userProvider.userByID(review.userIdEvaluator)";
             return ReviewItem(
-              userName: "userInfo.fullName",
-              rating: review.rate,
-              description: review.description,
-              date: review.date,
+              imageProfile: _carReviews[index].evaluatorProfileImage,
+              userName: _carReviews[index].userEvaluatorName,
+              rating: _carReviews[index].rate,
+              description: _carReviews[index].description,
+              date: _carReviews[index].date,
             );
           }),
     );
