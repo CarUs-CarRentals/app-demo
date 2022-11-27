@@ -14,6 +14,7 @@ enum CarFuel {
 enum CarGearShift {
   MANUAL,
   AUTOMATIC,
+  BOTH,
 }
 
 enum CarCategory {
@@ -107,6 +108,8 @@ class Car {
         return 'Automático';
       case CarGearShift.MANUAL:
         return 'Manual';
+      case CarGearShift.BOTH:
+        return 'Ambos';
       default:
         return 'Desconhecido';
     }

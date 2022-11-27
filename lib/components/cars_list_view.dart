@@ -45,7 +45,7 @@ class _CarsListViewState extends State<CarsListView> {
       _isLoading = context.loaderOverlay.visible;
     });
 
-    Provider.of<Cars>(context, listen: false).loadCars().then((value) {
+    Provider.of<Cars>(context, listen: false).loadCarsBySearch().then((value) {
       setState(() {
         if (_isLoading) {
           context.loaderOverlay.hide();
