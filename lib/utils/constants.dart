@@ -7,4 +7,7 @@ class Constants {
   static const DRIVER_BASE_URL = 'https://car-us.herokuapp.com/api/cnh';
   static const RENTAL_BASE_URL = 'https://car-us.herokuapp.com/api/rental';
   static const RATE_BASE_URL = 'https://car-us.herokuapp.com/api/rate-';
+
+  static const DEFAULT_PROFILE_IMAGE =
+      "https://firebasestorage.googleapis.com/v0/b/carus-app-363822.appspot.com/o/Default%20Images%2Fblank-profile.png?alt=media&token=adea62ac-fdb0-4278-907d-721090b9aa80";
 }
