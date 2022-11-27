@@ -41,11 +41,6 @@ class _MyRentalsScreenState extends State<MyRentalsScreen> {
   }
 
   Future<void> _refreshRentals(BuildContext context) {
-    setState(() {
-      _isLoading = true;
-      _rentalsUser = [];
-      _tryCount = 0;
-    });
     return Provider.of<Rentals>(
       context,
       listen: false,
@@ -55,24 +50,6 @@ class _MyRentalsScreenState extends State<MyRentalsScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    // if (_rentalsUser.isEmpty && _tryCount < 3) {
-    //   final provider = Provider.of<Rentals>(context);
-    //   final List<Rental> rentalsUser = provider.rentalsFromUser;
-    //   _tryCount = _tryCount + 1;
-    //   if (rentalsUser.isEmpty) {
-    //     _rentalsUser = rentalsUser;
-    //     Provider.of<Rentals>(context, listen: false).loadRentalsByUser();
-    //   } else {
-    //     _rentalsUser = rentalsUser;
-    //   }
-    // }
-
-    // if (_rentalsUser.isNotEmpty || _tryCount >= 3) {
-    //   setState(() {
-    //     _isLoading = false;
-    //   });
-    // }
   }
 
   @override
