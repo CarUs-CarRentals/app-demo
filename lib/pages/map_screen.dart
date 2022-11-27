@@ -15,7 +15,7 @@ class MapScreen extends StatefulWidget {
     required this.initialLocation,
     this.isReadOnly = false,
     this.imageUrlMarker =
-        "https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/256x256/question.png",
+        "https://firebasestorage.googleapis.com/v0/b/carus-app-363822.appspot.com/o/Default%20Images%2Fcar-pin-icon.png?alt=media&token=48c90a91-dc8c-4577-b23b-08b42d11a591",
   });
 
   final PlaceLocation initialLocation;
