@@ -33,6 +33,7 @@ class _RentalItemState extends State<RentalItem> {
   bool _isLoading = false;
   User? _rentalUser;
   CarReview? _carReview;
+  UserReview? _userReview;
 
   @override
   void initState() {
@@ -60,6 +61,18 @@ class _RentalItemState extends State<RentalItem> {
   Future<void> _getCarReview(int carId) async {
     final provider = Provider.of<Reviews>(context, listen: false);
     await provider.loadCarReviewsByCar(carId);
+    try {
+      _userReview = provider.userReviewsFromUser
+          .where((review) => review.rentalId == widget.rentalDetail.id)
+          .elementAt(0);
+    } catch (e) {
+      _userReview = null;
+    }
+  }
+
+  Future<void> _getUserReview(String userId) async {
+    final provider = Provider.of<Reviews>(context, listen: false);
+    await provider.loadUserReviewsByUser(userId);
     try {
       _carReview = provider.carReviewsFromCar
           .where((review) => review.rentalId == widget.rentalDetail.id)
@@ -123,8 +136,11 @@ class _RentalItemState extends State<RentalItem> {
             });
 
             await _getRentalUser(widget.rentalDetail.userId);
-            if (widget.rentalDetail.isReview == true) {
+            if (widget.rentalDetail.isReviewCar == true) {
               await _getCarReview(widget.car!.id);
+            }
+            if (widget.rentalDetail.isReviewUser == true) {
+              await _getUserReview(widget.rentalDetail.userId);
             }
 
             final navigator = Navigator.of(context);
@@ -135,6 +151,7 @@ class _RentalItemState extends State<RentalItem> {
               'currentUserId': widget.currentUserId,
               'rentalUser': _rentalUser,
               'carReview': _carReview,
+              'userReview': _userReview,
             });
 
             setState(() {

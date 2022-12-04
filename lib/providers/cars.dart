@@ -242,7 +242,8 @@ class Cars with ChangeNotifier {
         "description": car.description,
         "address": car.location.address,
         "price": car.price,
-        "carImages": car.imagesUrl
+        "carImages": car.imagesUrl,
+        "active": car.active,
       }),
     );
 
@@ -259,37 +260,36 @@ class Cars with ChangeNotifier {
     //}
   }
 
-  Future<void> removeCar(Car car) async {
-    int index = _carsFromUser.indexWhere((p) => p.id == car.id);
+  Future<void> inactivateCar(Car car) async {
+    //int index = _carsFromUser.indexWhere((p) => p.id == car.id);
 
-    if (index >= 0) {
-      final myCar = _carsFromUser[index];
-      _carsFromUser.remove(myCar);
+    //if (index >= 0) {
+    //final myCar = _carsFromUser[index];
+    //_carsFromUser.remove(myCar);
+    //notifyListeners();
+
+    final userData = await Store.getMap('userData');
+    _refreshToken = userData['refreshToken'];
+
+    final response = await http.post(
+      Uri.parse('$_baseUrl/inactivate/${car.id}'),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+      },
+    );
+    print(response.statusCode);
+
+    if (response.statusCode >= 400) {
+      _carsFromUser[
+          _carsFromUser.indexWhere((element) => element.id == car.id)] = car;
       notifyListeners();
-
-      final userData = await Store.getMap('userData');
-      _refreshToken = userData['refreshToken'];
-
-      print(car.id);
-
-      final response = await http.delete(
-        Uri.parse('$_baseUrl/${car.id}'),
-        headers: {
-          "content-type": "application/json",
-          "accept": "application/json",
-          HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
-        },
-      );
-      print(response.statusCode);
-
-      if (response.statusCode >= 400) {
-        _carsFromUser.insert(index, myCar);
-        notifyListeners();
-        throw HttpException(
-            msg: "Não foi possível deletar o veículo",
-            statusCode: response.statusCode);
-      }
+      throw HttpException(
+          msg: "Não foi possível Inativar o veículo",
+          statusCode: response.statusCode);
     }
+    //}
   }
 
   Future<void> loadCarsByUser() async {
@@ -351,6 +351,9 @@ class Cars with ChangeNotifier {
             seats: carData['seats'],
             trunk: carData['trunk'],
             price: carData['price'],
+            active: carData['active'],
+            qtCarRentals: carData['qtCarRentals'],
+            rateCarAverage: carData['rateCarAverage'],
             location: CarLocation(
                 latitude: carData['latitude'],
                 longitude: carData['longitude'],
@@ -517,6 +520,8 @@ class Cars with ChangeNotifier {
           seats: carData['seats'],
           trunk: carData['trunk'],
           price: carData['price'],
+          rateCarAverage: carData['rateCarAverage'],
+          qtCarRentals: carData['qtCarRentals'],
           location: CarLocation(
               latitude: carData['latitude'],
               longitude: carData['longitude'],

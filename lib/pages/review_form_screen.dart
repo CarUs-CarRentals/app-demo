@@ -67,7 +67,7 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
           context,
           listen: false,
         ).saveCarReview(_formData).then((_) {
-          _rental?.isReview = true;
+          _rental?.isReviewCar = true;
           Provider.of<Rentals>(context, listen: false).updateRental(_rental!);
         });
       } else {
@@ -75,13 +75,12 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
           context,
           listen: false,
         ).saveUserReview(_formData).then((_) {
-          _rental?.isReview = true;
+          _rental?.isReviewUser = true;
           Provider.of<Rentals>(context, listen: false).updateRental(_rental!);
         });
       }
-
-      //await Provider.of<Cars>(context, listen: false).loadCarsByUser();
-      Navigator.of(context).pop();
+      await Provider.of<Rentals>(context, listen: false)
+          .loadRentalById(_rental!.id);
     } catch (error) {
       if (_isLoading) {
         context.loaderOverlay.hide();
@@ -102,6 +101,9 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
                 ],
               ));
     } finally {
+      int count = 0;
+      Navigator.of(context).popUntil((_) => count++ >= 3);
+      //Navigator.of(context).pop();
       if (_isLoading) {
         context.loaderOverlay.hide();
       }

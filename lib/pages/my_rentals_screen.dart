@@ -48,11 +48,6 @@ class _MyRentalsScreenState extends State<MyRentalsScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final availableHeight =

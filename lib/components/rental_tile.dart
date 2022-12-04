@@ -240,9 +240,11 @@ class _RentalTileState extends State<RentalTile> {
               textAlign: TextAlign.center,
             ),
           ),
+          
           dense: true,
           onTap: () {
             print("Mudar status para concluído");
+             _updateRentalStatus(widget.rental, RentalStatus.RENTED);
           },
         );
       case RentalStatus.PENDING:

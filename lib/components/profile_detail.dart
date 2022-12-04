@@ -75,9 +75,8 @@ class _ProfileDetailState extends State<ProfileDetail> {
   }
 
   Future<void> _getUserReviews(String userId) async {
-    await Provider.of<Reviews>(context, listen: false)
-        .loadUserReviewsByUser(userId);
     final provider = Provider.of<Reviews>(context, listen: false);
+    await provider.loadUserReviewsByUser(userId);
     _userReviews = provider.userReviewsFromUser;
 
     print("_getUserReviews: ${_userReviews?.length}");

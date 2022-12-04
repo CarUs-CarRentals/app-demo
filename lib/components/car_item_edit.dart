@@ -63,15 +63,28 @@ class _CarItemState extends State<CarItemEdit> {
                           Icons.star,
                           size: 16,
                         ),
-                        Text(('widget.car.review').toString()),
+                        Text((widget.car.rateCarAverage).toString()),
                         const VerticalDivider(
                           width: 10,
                         ),
                         Text(
-                          "99 Locações",
+                          widget.car.qtCarRentals == 0.0
+                              ? "Nenhuma Locação"
+                              : widget.car.qtCarRentals < 2
+                                  ? "${widget.car.qtCarRentals} Locação"
+                                  : "${widget.car.qtCarRentals} Locações",
                         ),
+                        //Text(" ${widget.car.active}"),
                       ],
                     ),
+                    VerticalDivider(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    Row(children: [
+                      widget.car.active == true
+                          ? Text('Ativo')
+                          : Text('Inativo'),
+                    ])
                   ],
                 ),
                 Divider(),

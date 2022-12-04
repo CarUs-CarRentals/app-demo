@@ -155,7 +155,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
         _calcRentalPrice(car.price, _returnDate!, _rentalDate!);
     _formData['location'] = car.location;
     _formData['status'] = RentalStatus.PENDING;
-    _formData['isReview'] = false;
+    //_formData['isReview'] = false;
 
     _validateRentalDateRange();
     if (!_validDateRange) return;
@@ -573,7 +573,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 _titleSection(
                   context,
                   car.shortDescription,
-                  99,
+                  car.rateCarAverage,
                   car.year,
                   carHost.fullName,
                 ),

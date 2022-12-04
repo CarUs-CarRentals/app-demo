@@ -18,6 +18,7 @@ class Users with ChangeNotifier {
   String? _refreshToken;
   User? _userProfile;
   User? _userByID;
+  String? _userId;
   final List<User> _users = [];
 
   List<User> get users => [..._users];
@@ -52,6 +53,9 @@ class Users with ChangeNotifier {
   Future<void> loadProfile() async {
     _userProfile = null;
 
+    final userDataFb = await Store.getMap('userDataFb');
+    _userId = userDataFb['localId'];
+
     final userData = await Store.getMap('userData');
     _refreshToken = userData['refreshToken'];
 
@@ -72,6 +76,8 @@ class Users with ChangeNotifier {
       brazilStates = BrazilStates.values.firstWhere((element) =>
           element.name.toString() == profileData['address']['state']);
     }
+
+    profileData['id'] = _userId as String;
 
     _userProfile = User(
         id: profileData['id'] ?? "",

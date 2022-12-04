@@ -72,6 +72,9 @@ class Car {
   final String description;
   int distance;
   String distanceText;
+  double rateCarAverage;
+  int qtCarRentals;
+  bool active;
   final CarLocation location;
 
   Car(
@@ -92,6 +95,9 @@ class Car {
       this.description = '',
       this.distance = 0,
       this.distanceText = '',
+      this.rateCarAverage = 0.0,
+      this.qtCarRentals = 0,
+      this.active = true,
       required this.location});
 
   set setCurrentDistance(int distance) {

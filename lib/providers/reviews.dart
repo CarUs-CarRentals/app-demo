@@ -250,9 +250,8 @@ class Reviews with ChangeNotifier {
 
     //Map<String, dynamic> data = jsonDecode(response.body);
     String source = Utf8Decoder().convert(response.bodyBytes);
-    map = List<Map<String, dynamic>>.from(jsonDecode(source));
-
     print(jsonDecode(source));
+    map = List<Map<String, dynamic>>.from(jsonDecode(source));
 
     List<Map<String, dynamic>> data = map;
     for (var reviewData in data) {

@@ -20,10 +20,12 @@ class Rentals with ChangeNotifier {
   final List<Rental> _rentalFromUser = [];
   final List<Rental> _rentalFromCar = [];
   final List<Rental> _rentals = [];
+  Rental? _rental;
 
   List<Rental> get rentals => [..._rentals];
   List<Rental> get rentalsFromUser => [..._rentalFromUser];
   List<Rental> get rentalsFromCar => [..._rentalFromCar];
+  Rental? get rentalById => _rental;
 
   // List<Car> get favoriteItems =>
   //     _cars.where((car) => car.isFavorite).toList();
@@ -67,7 +69,7 @@ class Rentals with ChangeNotifier {
     String source = Utf8Decoder().convert(response.bodyBytes);
     map = List<Map<String, dynamic>>.from(jsonDecode(source));
     List<Map<String, dynamic>> data = map;
-    data.forEach((rentalData) {
+    for (var rentalData in data) {
       RentalStatus rentalStatus = RentalStatus.values.firstWhere(
           (element) => element.name.toString() == rentalData['status']);
 
@@ -84,10 +86,11 @@ class Rentals with ChangeNotifier {
           longitude: rentalData['longitude'],
           address: rentalData['address'],
         ),
-        isReview: rentalData['isReview'],
+        isReviewUser: rentalData['isReviewUser'],
+        isReviewCar: rentalData['isReviewCar'],
         status: rentalStatus,
       ));
-    });
+    }
 
     notifyListeners();
   }
@@ -106,7 +109,8 @@ class Rentals with ChangeNotifier {
       returnDate: data['returnDate'] as DateTime,
       price: data['price'] as double,
       location: data['location'] as CarLocation,
-      isReview: data['isReview'] as bool,
+      //isReviewUser: data['isReviewUser'] as bool,
+      //isReviewCar: data['isReviewCar'] as bool,
       status: data['status'] as RentalStatus,
     );
 
@@ -166,14 +170,15 @@ class Rentals with ChangeNotifier {
       body: jsonEncode({
         "user": rental.userId,
         "car": rental.carId,
-        "rentalDate": "${rental.rentalDate.toIso8601String()}",
-        "returnDate": "${rental.returnDate.toIso8601String()}",
+        "rentalDate": rental.rentalDate.toIso8601String(),
+        "returnDate": rental.returnDate.toIso8601String(),
         "price": rental.price,
         "latitude": rental.location.latitude,
         "longitude": rental.location.longitude,
         "address": rental.location.address,
         "status": rental.status.name,
-        "isReview": rental.isReview,
+        "isReviewUser": rental.isReviewUser,
+        "isReviewCar": rental.isReviewCar,
       }),
     );
 
@@ -230,7 +235,8 @@ class Rentals with ChangeNotifier {
           longitude: rentalData['longitude'],
           address: rentalData['address'],
         ),
-        isReview: rentalData['isReview'],
+        isReviewUser: rentalData['isReviewUser'],
+        isReviewCar: rentalData['isReviewCar'],
         status: rentalStatus,
       ));
     }
@@ -262,7 +268,7 @@ class Rentals with ChangeNotifier {
     print(jsonDecode(source));
 
     List<Map<String, dynamic>> data = map;
-    data.forEach((rentalData) {
+    for (var rentalData in data) {
       RentalStatus rentalStatus = RentalStatus.values.firstWhere(
           (element) => element.name.toString() == rentalData['status']);
 
@@ -278,10 +284,58 @@ class Rentals with ChangeNotifier {
           longitude: rentalData['longitude'],
           address: rentalData['address'],
         ),
-        isReview: rentalData['isReview'],
+        isReviewUser: rentalData['isReviewUser'],
+        isReviewCar: rentalData['isReviewCar'],
         status: rentalStatus,
       ));
-    });
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> loadRentalById(int rentalId) async {
+    final userData = await Store.getMap('userData');
+    _refreshToken = userData['refreshToken'];
+
+    final response = await http.get(
+      Uri.parse('$_baseUrl/$rentalId'),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
+      },
+    );
+
+    //List<Map<String, dynamic>> map = [];
+
+    //Map<String, dynamic> data = jsonDecode(response.body);
+    String source = Utf8Decoder().convert(response.bodyBytes);
+    final rentalData = Map<String, dynamic>.from(jsonDecode(source));
+
+    print(jsonDecode(source));
+
+    //List<Map<String, dynamic>> data = map;
+    //for (var rentalData in data) {
+    RentalStatus rentalStatus = RentalStatus.values.firstWhere(
+        (element) => element.name.toString() == rentalData['status']);
+
+    _rental = Rental(
+      id: rentalData['id'],
+      carId: rentalData['car'],
+      userId: rentalData['user'],
+      rentalDate: DateTime.parse(rentalData['rentalDate']),
+      returnDate: DateTime.parse(rentalData['returnDate']),
+      price: rentalData['price'],
+      location: CarLocation(
+        latitude: rentalData['latitude'],
+        longitude: rentalData['longitude'],
+        address: rentalData['address'],
+      ),
+      isReviewUser: rentalData['isReviewUser'],
+      isReviewCar: rentalData['isReviewCar'],
+      status: rentalStatus,
+    );
+    //}
 
     notifyListeners();
   }

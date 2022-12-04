@@ -18,7 +18,8 @@ class Rental {
   final DateTime returnDate;
   final double price;
   final CarLocation location;
-  bool isReview;
+  bool isReviewUser;
+  bool isReviewCar;
   RentalStatus status;
 
   Rental({
@@ -30,7 +31,8 @@ class Rental {
     required this.rentalDate,
     required this.returnDate,
     required this.location,
-    required this.isReview,
+    this.isReviewUser = false,
+    this.isReviewCar = false,
     required this.status,
   });
 

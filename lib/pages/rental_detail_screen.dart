@@ -33,6 +33,7 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
   bool _isLoading = false;
   bool _isMyCarRental = false;
   CarReview? _carReview;
+  UserReview? _userReview;
   User? _carUser;
 
   String _getImageRentalLocation(Rental rental) {
@@ -48,6 +49,11 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    if (_isLoading) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   Future<void> _getCarHost(String userId) async {
@@ -74,12 +80,20 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
     final currentUserId = arg['currentUserId'] as String;
     final rentalUser = arg['rentalUser'] as User;
 
-    if (rental.isReview == true) {
+    if (rental.isReviewCar == true) {
       try {
         final carReview = arg['carReview'] as CarReview;
         _carReview = carReview;
       } catch (e) {}
-      print("NOTA: ${_carReview?.rate}");
+      print("NOTA carro: ${_carReview?.rate}");
+    }
+
+    if (rental.isReviewUser == true) {
+      try {
+        final userReview = arg['userReview'] as UserReview;
+        _userReview = userReview;
+      } catch (e) {}
+      print("NOTA motorista: ${_userReview?.rate}");
     }
 
     //final _userId = userProvider.email;
@@ -242,25 +256,13 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                   ),
                 ),
                 dense: true,
-                trailing: rental.status != RentalStatus.RENTED
-                    ? null
-                    : ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                            primary: Theme.of(context).colorScheme.primary,
-                            padding: EdgeInsets.all(0)),
-                        child: const Text(
-                          'Recibo',
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ),
               ),
               Divider(),
               _isMyCarRental
                   ? ListTile(
                       enabled: rental.status != RentalStatus.RENTED
                           ? false
-                          : rental.isReview == true
+                          : rental.isReviewUser == true
                               ? false
                               : true,
                       leading: Icon(
@@ -268,7 +270,7 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                         size: 24,
                       ),
                       title: Text(
-                        rental.isReview == true
+                        rental.isReviewUser == true
                             ? " Motorista avaliado"
                             : "Avalie o motorista",
                         style: const TextStyle(
@@ -278,8 +280,11 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                       ),
                       dense: true,
                       trailing: RatingBarIndicator(
-                        rating:
-                            rental.isReview == false ? 0 : 0, //carReview.rate,
+                        rating: rental.isReviewUser == false
+                            ? 0
+                            : _userReview?.rate == null
+                                ? 0
+                                : _userReview!.rate, //carReview.rate,
                         itemBuilder: (context, _) => Icon(
                           Icons.star,
                           color: Theme.of(context).colorScheme.primary,
@@ -292,7 +297,7 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                   : ListTile(
                       enabled: rental.status != RentalStatus.RENTED
                           ? false
-                          : rental.isReview == true
+                          : rental.isReviewCar == true
                               ? false
                               : true,
                       leading: Icon(
@@ -300,7 +305,7 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                         size: 24,
                       ),
                       title: Text(
-                        rental.isReview == false
+                        rental.isReviewCar == false
                             ? "Avalie o veículo"
                             : "Veículo avaliado",
                         style: const TextStyle(
@@ -310,9 +315,11 @@ class _RentalDetailScreenState extends State<RentalDetailScreen> {
                       ),
                       dense: true,
                       trailing: RatingBarIndicator(
-                        rating: rental.isReview == false
+                        rating: rental.isReviewCar == false
                             ? 0
-                            : _carReview!.rate, //carReview.rate,
+                            : _carReview?.rate == null
+                                ? 0
+                                : _carReview!.rate, //carReview.rate,
                         itemBuilder: (context, _) => Icon(
                           Icons.star,
                           color: Theme.of(context).colorScheme.primary,

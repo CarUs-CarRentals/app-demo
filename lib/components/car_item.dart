@@ -111,12 +111,17 @@ class _CarItemState extends State<CarItem> {
                           Icons.star,
                           size: 16,
                         ),
-                        Text(('widget.car.review').toString()),
+                        Text((widget.car.rateCarAverage).toString()),
                         const VerticalDivider(
                           width: 10,
                         ),
                         Text(
-                          "99 Locações",
+                          widget.car.qtCarRentals == 0.0
+                              ? "Nenhuma Locação"
+                              : widget.car.qtCarRentals < 2
+                                  ? "${widget.car.qtCarRentals} Locação"
+                                  : "${widget.car.qtCarRentals} Locações",
+                          //"${widget.car.qtCarRentals} Locações",
                         ),
                       ],
                     ),

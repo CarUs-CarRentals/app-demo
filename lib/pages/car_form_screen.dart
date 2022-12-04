@@ -29,51 +29,98 @@ class _CarFormScreenState extends State<CarFormScreen> {
     final mediaQuery = MediaQuery.of(context);
     final arg = ModalRoute.of(context)?.settings.arguments;
     final snackMsg = ScaffoldMessenger.of(context);
+    final car = arg as Car;
 
     return Scaffold(
         appBar: AppBar(
           title: const Text('Formulario Carro'),
           actions: [
             if (arg != null)
-              IconButton(
-                onPressed: () {
-                  final car = arg as Car;
-                  showDialog<bool>(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: Text("Excluir carro"),
-                      content: Text("Deseja confirmar a exclusão?"),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(false),
-                          child: Text("Não"),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(true);
-                          },
-                          child: Text("Sim"),
-                        )
-                      ],
-                    ),
-                  ).then((value) async {
-                    if (value ?? false) {
-                      try {
-                        await Provider.of<Cars>(context, listen: false)
-                            .removeCar(car);
-                        Navigator.of(context).pop();
-                      } on HttpException catch (error) {
-                        snackMsg.showSnackBar(SnackBar(
-                          content: Text(
-                            error.toString(),
+              car.active == true
+                  ? IconButton(
+                      onPressed: () {
+                        showDialog<bool>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text("Inativar carro"),
+                            content: Text(
+                                "Deseja confirmar a inativação?\n\nO carro não estará mais disponivel para locação ao inativa-lo."),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: Text("Não"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(true);
+                                },
+                                child: Text("Sim"),
+                              )
+                            ],
                           ),
-                        ));
-                      }
-                    }
-                  });
-                },
-                icon: const Icon(Icons.delete),
-              )
+                        ).then((value) async {
+                          if (value ?? false) {
+                            try {
+                              car.active = false;
+                              await Provider.of<Cars>(context, listen: false)
+                                  .inactivateCar(car);
+                              await Provider.of<Cars>(context, listen: false)
+                                  .updateCar(car);
+                              Navigator.of(context).pop();
+                            } on HttpException catch (error) {
+                              snackMsg.showSnackBar(SnackBar(
+                                content: Text(
+                                  error.toString(),
+                                ),
+                              ));
+                            }
+                          }
+                        });
+                      },
+                      icon: Icon(Icons.lock),
+                    )
+                  : IconButton(
+                      onPressed: () {
+                        showDialog<bool>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text("Ativar carro"),
+                            content: Text(
+                                "Deseja confirmar a ativação?\n\nO carro estará disponivel para locação novamente."),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: Text("Não"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(true);
+                                },
+                                child: Text("Sim"),
+                              )
+                            ],
+                          ),
+                        ).then((value) async {
+                          if (value ?? false) {
+                            try {
+                              car.active = true;
+                              await Provider.of<Cars>(context, listen: false)
+                                  .updateCar(car);
+                              Navigator.of(context).pop();
+                            } on HttpException catch (error) {
+                              snackMsg.showSnackBar(SnackBar(
+                                content: Text(
+                                  error.toString(),
+                                ),
+                              ));
+                            }
+                          }
+                        });
+                      },
+                      icon: Icon(Icons.lock_open),
+                    )
           ],
         ),
         body: const LoaderOverlay(
