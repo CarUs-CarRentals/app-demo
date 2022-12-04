@@ -116,6 +116,8 @@ class _UserFormState extends State<UserForm> {
         _formData['about'] = user.about;
         _formData['profileImageUrl'] = user.profileImageUrl;
         _formData['gender'] = user.gender ?? '';
+        _formData['cpf'] = user.cpf;
+        _formData['phone'] = user.phone;
         _formData['addressID'] = user.address?.id ?? '';
         _formData['cep'] = user.address?.cep ?? '';
         _formData['state'] = user.address?.state ?? '';
@@ -133,7 +135,7 @@ class _UserFormState extends State<UserForm> {
 
         _dropdownGenderValue = user.gender;
         _dropdownStateValue = user.address?.state;
-        //_dropdownStateCNHValue = car.gearShift;
+        _dropdownStateCNHValue = user.cnh?.state;
       }
     }
   }
@@ -219,8 +221,12 @@ class _UserFormState extends State<UserForm> {
               SizedBox(
                 height: 120,
                 width: 120,
-                child: ImageInput(_selectImage,
-                    _profileImageUrl.isEmpty ? "" : _profileImageUrl, 100),
+                child: ImageInput(
+                    _selectImage,
+                    _profileImageUrl.isEmpty
+                        ? "${_formData['profileImageUrl']}"
+                        : _profileImageUrl,
+                    100),
               ),
               const SizedBox(
                 height: 30,
@@ -311,7 +317,10 @@ class _UserFormState extends State<UserForm> {
                 ),
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
-                initialValue: _formData['cpf']?.toString(),
+                initialValue: _formData['cpf']?.toString() != ""
+                    ? UtilBrasilFields.obterCpf(
+                        "${_formData['cpf']?.toString()}")
+                    : "",
                 onSaved: (cpf) => _formData['cpf'] = cpf ?? '',
                 validator: (_cpf) {
                   final cpf = _cpf ?? '';
@@ -329,18 +338,23 @@ class _UserFormState extends State<UserForm> {
                   TelefoneInputFormatter()
                 ],
                 decoration: const InputDecoration(
-                  labelText: 'Telefone',
+                  labelText: 'Telefone*',
                 ),
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.phone,
-                initialValue: _formData['phone']?.toString(),
+                initialValue: _formData['phone']?.toString() != ""
+                    ? UtilBrasilFields.obterTelefone(
+                        "${_formData['phone']?.toString()}",
+                        ddd: true,
+                        mascara: true)
+                    : "",
                 onSaved: (phone) => _formData['phone'] = phone ?? '',
                 validator: (_phone) {
                   final phone = _phone ?? '';
 
-                  // if (phone.trim().isEmpty) {
-                  //   return 'Telefone é obrigatório';
-                  // }
+                  if (phone.trim().isEmpty) {
+                    return 'Telefone é obrigatório';
+                  }
 
                   return null;
                 },
@@ -365,7 +379,7 @@ class _UserFormState extends State<UserForm> {
                 }).toList(),
                 onSaved: (gender) {
                   if (gender == null) {
-                    _formData['gender'] = UserGender.OTHERS;
+                    _formData['gender'] = UserGender.OTHER;
                   } else {
                     _formData['gender'] = gender as UserGender;
                   }
@@ -374,7 +388,7 @@ class _UserFormState extends State<UserForm> {
                   var gender = _dropdownGenderValue;
 
                   if (gender == null) {
-                    _formData['gender'] = UserGender.OTHERS;
+                    _formData['gender'] = UserGender.OTHER;
                     return null;
                   }
 
@@ -401,7 +415,8 @@ class _UserFormState extends State<UserForm> {
                 ),
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,
-                initialValue: _formData['cep']?.toString(),
+                initialValue: UtilBrasilFields.obterCep(
+                    "${_formData['cep']?.toString()}"),
                 onSaved: (cep) => _formData['cep'] = cep ?? '',
                 validator: (_cep) {
                   final cep = _cep ?? '';
@@ -557,7 +572,10 @@ class _UserFormState extends State<UserForm> {
                 ),
                 keyboardType: TextInputType.datetime,
                 textInputAction: TextInputAction.next,
-                initialValue: _formData['birthDate']?.toString(),
+                initialValue: _formData['birthDate']?.toString() != ""
+                    ? UtilData.obterDataDDMMAAAA(
+                        DateTime.parse("${_formData['birthDate']?.toString()}"))
+                    : "",
                 onSaved: (birthDate) =>
                     _formData['birthDate'] = birthDate ?? '',
                 // validator: (value) {
@@ -649,7 +667,10 @@ class _UserFormState extends State<UserForm> {
                 ),
                 keyboardType: TextInputType.datetime,
                 textInputAction: TextInputAction.next,
-                initialValue: _formData['cnhExpirationDate']?.toString(),
+                initialValue: _formData['cnhExpirationDate']?.toString() != ""
+                    ? UtilData.obterDataDDMMAAAA(DateTime.parse(
+                        "${_formData['cnhExpirationDate']?.toString()}"))
+                    : "",
                 onSaved: (expirationDate) =>
                     _formData['cnhExpirationDate'] = expirationDate ?? '',
                 validator: (_expirationDate) {

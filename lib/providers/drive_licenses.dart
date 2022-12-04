@@ -30,6 +30,7 @@ class DriverLicenses with ChangeNotifier {
 
     final cnh = Cnh(
       hasId ? data['cnhID'] as int : 0,
+      userId: data['userId'] as String,
       rg: data['rg'] as String,
       birthDate: data['birthDate'] as DateTime,
       registerNumber: data['cnhRegisterNumber'] as String,

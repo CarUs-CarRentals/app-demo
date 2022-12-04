@@ -3,6 +3,7 @@ import 'package:carshare/models/user.dart';
 
 class Cnh {
   final int id;
+  final String userId;
   final String rg;
   final String registerNumber;
   final String cnhNumber;
@@ -12,6 +13,7 @@ class Cnh {
 
   Cnh(
     this.id, {
+    required this.userId,
     required this.rg,
     required this.registerNumber,
     required this.cnhNumber,

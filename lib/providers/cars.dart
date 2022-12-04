@@ -316,7 +316,7 @@ class Cars with ChangeNotifier {
 
     print(jsonDecode(response.body));
 
-    data.forEach((carData) {
+    for (var carData in data) {
       CarFuel fuel = CarFuel.values
           .firstWhere((element) => element.name.toString() == carData['fuel']);
 
@@ -369,7 +369,7 @@ class Cars with ChangeNotifier {
           statusCode: response.statusCode,
         );
       }
-    });
+    }
   }
 
   Future<Car> loadCarsById(int carId) async {

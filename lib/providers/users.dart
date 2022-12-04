@@ -9,6 +9,7 @@ import 'package:carshare/models/user.dart';
 import 'package:carshare/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class Users with ChangeNotifier {
   final _baseUrl = Constants.USER_BASE_URL;
@@ -71,21 +72,36 @@ class Users with ChangeNotifier {
     Map<String, dynamic> profileData = jsonDecode(source);
 
     BrazilStates? brazilStates;
+    BrazilStates? brazilCNHStates;
 
     if (profileData['address'] != null) {
       brazilStates = BrazilStates.values.firstWhere((element) =>
           element.name.toString() == profileData['address']['state']);
     }
 
+    if (profileData['cnh'] != null) {
+      brazilCNHStates = BrazilStates.values.firstWhere(
+          (element) => element.name.toString() == profileData['cnh']['state']);
+    }
+
+    if (profileData['gender'] == null) {
+      profileData['gender'] = UserGender.OTHER.name;
+    }
+
+    UserGender userGender = UserGender.values.firstWhere(
+        (element) => element.name.toString() == profileData['gender']);
     profileData['id'] = _userId as String;
 
     _userProfile = User(
         id: profileData['id'] ?? "",
         firstName: profileData['firstName'],
         lastName: profileData['lastName'],
-        email: "igor.ponchielli@gmail.com", //profileData['email'] ?? "",
+        email: profileData['email'] ?? "",
         memberSince: profileData['memberSince'],
         about: profileData['about'],
+        cpf: profileData['cpf'] ?? "",
+        gender: userGender,
+        phone: profileData['phone'] ?? "",
         rateNumber: profileData['rateNumber'],
         profileImageUrl:
             profileData['profileImageUrl'] ?? Constants.DEFAULT_PROFILE_IMAGE,
@@ -104,12 +120,14 @@ class Users with ChangeNotifier {
             ? null
             : Cnh(
                 profileData['cnh']['id'],
+                userId: profileData['cnh']['userId'],
                 rg: profileData['cnh']['rg'],
                 registerNumber: profileData['cnh']['registerNumber'],
                 cnhNumber: profileData['cnh']['cnhNumber'],
-                expirationDate: profileData['cnh']['expirationDate'],
-                birthDate: profileData['cnh']['birthDate'],
-                state: profileData['cnh']['state'],
+                expirationDate:
+                    DateTime.parse(profileData['cnh']['expirationDate']),
+                birthDate: DateTime.parse(profileData['cnh']['birthDate']),
+                state: brazilCNHStates!,
               ));
 
     notifyListeners();
