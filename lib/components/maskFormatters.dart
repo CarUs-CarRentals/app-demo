@@ -17,7 +17,7 @@ class FieldTextMask {
 
   static MaskTextInputFormatter get maskRG {
     return MaskTextInputFormatter(
-        mask: '#########',
+        mask: '########',
         filter: {"#": RegExp(r'[0-9]')},
         type: MaskAutoCompletionType.lazy);
   }
@@ -38,7 +38,7 @@ class FieldTextMask {
 
   static MaskTextInputFormatter get maskCNHRegisterNumb {
     return MaskTextInputFormatter(
-        mask: '############',
+        mask: '###########',
         filter: {"#": RegExp(r'[0-9]')},
         type: MaskAutoCompletionType.lazy);
   }
