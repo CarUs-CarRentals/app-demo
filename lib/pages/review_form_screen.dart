@@ -102,8 +102,11 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
               ));
     } finally {
       int count = 0;
-      Navigator.of(context).popUntil((_) => count++ >= 3);
-      //Navigator.of(context).pop();
+      if (reviewCar) {
+        Navigator.of(context).popUntil((_) => count++ >= 2);
+      } else {
+        Navigator.of(context).popUntil((_) => count++ >= 3);
+      }
       if (_isLoading) {
         context.loaderOverlay.hide();
       }
