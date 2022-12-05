@@ -319,7 +319,7 @@ class _UserFormState extends State<UserForm> {
                         "${_formData['cpf']?.toString()}")
                     : "",
                 onSaved: (cpf) => _formData['cpf'] =
-                    UtilBrasilFields.removeCaracteres(cpf.toString()) ?? '',
+                    UtilBrasilFields.removeCaracteres(cpf.toString()),
                 validator: (_cpf) {
                   final cpf = _cpf ?? '';
 
@@ -349,7 +349,7 @@ class _UserFormState extends State<UserForm> {
                         mascara: true)
                     : "",
                 onSaved: (phone) => _formData['phone'] =
-                    UtilBrasilFields.removeCaracteres(phone.toString()) ?? '',
+                    UtilBrasilFields.removeCaracteres(phone.toString()),
                 validator: (_phone) {
                   final phone;
                   if (_phone != "") {
@@ -429,7 +429,7 @@ class _UserFormState extends State<UserForm> {
                 initialValue: UtilBrasilFields.obterCep(
                     "${_formData['cep']?.toString()}"),
                 onSaved: (cep) => _formData['cep'] =
-                    UtilBrasilFields.removeCaracteres(cep.toString()) ?? '',
+                    UtilBrasilFields.removeCaracteres(cep.toString()),
                 validator: (_cep) {
                   final cep =
                       UtilBrasilFields.removeCaracteres(_cep.toString());
@@ -592,7 +592,7 @@ class _UserFormState extends State<UserForm> {
                         DateTime.parse("${_formData['birthDate']?.toString()}"))
                     : "",
                 onSaved: (birthDate) => _formData['birthDate'] =
-                    UtilData.obterDateTime(birthDate.toString()) ?? '',
+                    UtilData.obterDateTime(birthDate.toString()),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Data de Nascimento é obrigatório";
@@ -684,7 +684,7 @@ class _UserFormState extends State<UserForm> {
                         "${_formData['cnhExpirationDate']?.toString()}"))
                     : "",
                 onSaved: (expirationDate) => _formData['cnhExpirationDate'] =
-                    UtilData.obterDateTime(expirationDate.toString()) ?? '',
+                    UtilData.obterDateTime(expirationDate.toString()),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Data de Validade é obrigatório";
