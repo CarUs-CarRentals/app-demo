@@ -85,7 +85,7 @@ class _UserFormState extends State<UserForm> {
   _uploadImage(File pickedImage) async {
     final fileName =
         pickedImage.path.substring(pickedImage.path.lastIndexOf('/'));
-    final path = 'images/$_userId/$fileName';
+    final path = 'images/${_formData['userId']}/$fileName';
 
     final ref = _firebaseStorage.ref().child(path);
     uploadTask = ref.putFile(pickedImage);
@@ -142,7 +142,10 @@ class _UserFormState extends State<UserForm> {
 
   Future<void> _submitForm() async {
     _getCurrentUserId();
-
+    final driverLicenseProvider =
+        Provider.of<DriverLicenses>(context, listen: false);
+    final userProvider = Provider.of<Users>(context, listen: false);
+    final navigator = Navigator.of(context);
     final isValid = _formKey.currentState?.validate() ?? false;
 
     if (!isValid) {
@@ -155,12 +158,12 @@ class _UserFormState extends State<UserForm> {
     });
 
     try {
-      // if (!_pickedImage.path.startsWith("https://") &&
-      //     _pickedImage.path.isNotEmpty) {
-      //   await _uploadImage(_pickedImage);
-      // } else {
-      _formData['profileImageUrl'] = _profileImageUrl;
-      //}
+      if (!_pickedImage.path.startsWith("https://") &&
+          _pickedImage.path.isNotEmpty) {
+        await _uploadImage(_pickedImage);
+      } else {
+        _formData['profileImageUrl'] = _profileImageUrl;
+      }
     } catch (e) {
       throw UnsupportedError('Erro ao fazer o upload');
     }
@@ -172,16 +175,10 @@ class _UserFormState extends State<UserForm> {
         context,
         listen: false,
       ).saveUser(_formData);
-      await Provider.of<Addresses>(
-        context,
-        listen: false,
-      ).saveAddress(_formData);
-      await Provider.of<DriverLicenses>(
-        context,
-        listen: false,
-      ).saveCNH(_formData);
-
-      Navigator.of(context).pop();
+      await userProvider.loadProfile();
+      await driverLicenseProvider.saveCNH(_formData);
+      int count = 0;
+      navigator.popUntil((_) => count++ >= 2);
     } catch (error) {
       await showDialog<void>(
           context: context,
@@ -321,7 +318,8 @@ class _UserFormState extends State<UserForm> {
                     ? UtilBrasilFields.obterCpf(
                         "${_formData['cpf']?.toString()}")
                     : "",
-                onSaved: (cpf) => _formData['cpf'] = cpf ?? '',
+                onSaved: (cpf) => _formData['cpf'] =
+                    UtilBrasilFields.removeCaracteres(cpf.toString()) ?? '',
                 validator: (_cpf) {
                   final cpf = _cpf ?? '';
 
@@ -329,7 +327,9 @@ class _UserFormState extends State<UserForm> {
                     return 'CPF é obrigatório';
                   }
 
-                  return null;
+                  if (!UtilBrasilFields.isCPFValido(cpf)) {
+                    return 'CPF Inválido';
+                  }
                 },
               ),
               TextFormField(
@@ -348,15 +348,26 @@ class _UserFormState extends State<UserForm> {
                         ddd: true,
                         mascara: true)
                     : "",
-                onSaved: (phone) => _formData['phone'] = phone ?? '',
+                onSaved: (phone) => _formData['phone'] =
+                    UtilBrasilFields.removeCaracteres(phone.toString()) ?? '',
                 validator: (_phone) {
-                  final phone = _phone ?? '';
+                  final phone;
+                  if (_phone != "") {
+                    phone = UtilBrasilFields.obterTelefone(_phone.toString(),
+                        mascara: false);
+                  } else {
+                    phone = _phone;
+                  }
+
+                  print(phone);
 
                   if (phone.trim().isEmpty) {
                     return 'Telefone é obrigatório';
                   }
 
-                  return null;
+                  if (phone.length != 10 && phone.length != 11) {
+                    return 'Telefone é inválido';
+                  }
                 },
               ),
               DropdownButtonFormField<UserGender>(
@@ -417,12 +428,18 @@ class _UserFormState extends State<UserForm> {
                 keyboardType: TextInputType.number,
                 initialValue: UtilBrasilFields.obterCep(
                     "${_formData['cep']?.toString()}"),
-                onSaved: (cep) => _formData['cep'] = cep ?? '',
+                onSaved: (cep) => _formData['cep'] =
+                    UtilBrasilFields.removeCaracteres(cep.toString()) ?? '',
                 validator: (_cep) {
-                  final cep = _cep ?? '';
+                  final cep =
+                      UtilBrasilFields.removeCaracteres(_cep.toString());
 
                   if (cep.trim().isEmpty) {
                     return 'CEP é obrigatório';
+                  }
+
+                  if (cep.length != 8) {
+                    return 'CEP é inválido';
                   }
                 },
               ),
@@ -454,8 +471,8 @@ class _UserFormState extends State<UserForm> {
                       ),
                       textInputAction: TextInputAction.next,
                       initialValue: _formData['addressNumber']?.toString(),
-                      onSaved: (number) =>
-                          _formData['addressNumber'] = number ?? '',
+                      onSaved: (number) => _formData['addressNumber'] =
+                          int.parse(number.toString()),
                       validator: (_number) {
                         final number = _number ?? '';
 
@@ -546,21 +563,19 @@ class _UserFormState extends State<UserForm> {
               TextFormField(
                 inputFormatters: [FieldTextMask.maskRG],
                 decoration: const InputDecoration(
-                  labelText: 'RG',
+                  labelText: 'RG*',
                 ),
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
                 initialValue: _formData['rg']?.toString(),
                 onSaved: (rg) => _formData['rg'] = rg ?? '',
-                // validator: (_rg) {
-                //   final rg = _rg ?? '';
+                validator: (_rg) {
+                  final rg = _rg ?? '';
 
-                //   if (rg.trim().isNotEmpty) {
-                //     return 'CPF é obrigatório';
-                //   }
-
-                //   return null;
-                // },
+                  if (rg.trim().isEmpty) {
+                    return 'RG é obrigatório';
+                  }
+                },
               ),
               TextFormField(
                 inputFormatters: [
@@ -568,7 +583,7 @@ class _UserFormState extends State<UserForm> {
                   DataInputFormatter()
                 ],
                 decoration: const InputDecoration(
-                  labelText: 'Data de Nascimento',
+                  labelText: 'Data de Nascimento*',
                 ),
                 keyboardType: TextInputType.datetime,
                 textInputAction: TextInputAction.next,
@@ -576,33 +591,33 @@ class _UserFormState extends State<UserForm> {
                     ? UtilData.obterDataDDMMAAAA(
                         DateTime.parse("${_formData['birthDate']?.toString()}"))
                     : "",
-                onSaved: (birthDate) =>
-                    _formData['birthDate'] = birthDate ?? '',
-                // validator: (value) {
-                //   if (value == null || value.isEmpty) {
-                //     return null;
-                //   }
-                //   final components = value.split("/");
-                //   if (components.length == 3) {
-                //     final day = int.tryParse(components[0]);
-                //     final month = int.tryParse(components[1]);
-                //     final year = int.tryParse(components[2]);
-                //     if (day != null && month != null && year != null) {
-                //       final date = DateTime(year, month, day);
-                //       if (date.year == year &&
-                //           date.month == month &&
-                //           date.day == day) {
-                //         return null;
-                //       }
-                //     }
-                //   }
-                //   return "wrong date";
-                // }
+                onSaved: (birthDate) => _formData['birthDate'] =
+                    UtilData.obterDateTime(birthDate.toString()) ?? '',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Data de Nascimento é obrigatório";
+                  }
+                  final components = value.split("/");
+                  if (components.length == 3) {
+                    final day = int.tryParse(components[0]);
+                    final month = int.tryParse(components[1]);
+                    final year = int.tryParse(components[2]);
+                    if (day != null && month != null && year != null) {
+                      final date = DateTime(year, month, day);
+                      if (date.year == year &&
+                          date.month == month &&
+                          date.day == day) {
+                        return null;
+                      }
+                    }
+                  }
+                  return "Data Inválida";
+                },
               ),
               TextFormField(
                 inputFormatters: [FieldTextMask.maskCNHRegisterNumb],
                 decoration: InputDecoration(
-                    labelText: 'Número do Registro',
+                    labelText: 'Número do Registro*',
                     suffixIcon: IconButton(
                       icon: Icon(Icons.help),
                       onPressed: () {
@@ -618,20 +633,18 @@ class _UserFormState extends State<UserForm> {
                 initialValue: _formData['cnhRegisterNumber']?.toString(),
                 onSaved: (registerNumber) =>
                     _formData['cnhRegisterNumber'] = registerNumber ?? '',
-                // validator: (_rg) {
-                //   final rg = _rg ?? '';
+                validator: (_cnhRegisterNumber) {
+                  final cnhRegisterNumber = _cnhRegisterNumber ?? '';
 
-                //   if (rg.trim().isNotEmpty) {
-                //     return 'CPF é obrigatório';
-                //   }
-
-                //   return null;
-                // },
+                  if (cnhRegisterNumber.trim().isEmpty) {
+                    return 'Número do Registro é obrigatório';
+                  }
+                },
               ),
               TextFormField(
                 inputFormatters: [FieldTextMask.maskCNHNumb],
                 decoration: InputDecoration(
-                    labelText: 'Número da CNH',
+                    labelText: 'Número da CNH*',
                     suffixIcon: IconButton(
                       icon: Icon(Icons.help),
                       onPressed: () {
@@ -647,14 +660,13 @@ class _UserFormState extends State<UserForm> {
                 initialValue: _formData['cnhNumber']?.toString(),
                 onSaved: (cnhNumber) =>
                     _formData['cnhNumber'] = cnhNumber ?? '',
-                // validator: (_rg) {
-                //   final rg = _rg ?? '';
+                validator: (_cnhNumber) {
+                  final cnhNumber = _cnhNumber ?? '';
 
-                //   if (rg.trim().isNotEmpty) {
-                //     return 'CPF é obrigatório';
-                //   }
-
-                //   return null;
+                  if (cnhNumber.trim().isEmpty) {
+                    return 'Número da CNH é obrigatório';
+                  }
+                },
                 // },
               ),
               TextFormField(
@@ -663,7 +675,7 @@ class _UserFormState extends State<UserForm> {
                   DataInputFormatter()
                 ],
                 decoration: const InputDecoration(
-                  labelText: 'Data de Validade',
+                  labelText: 'Data de Validade*',
                 ),
                 keyboardType: TextInputType.datetime,
                 textInputAction: TextInputAction.next,
@@ -671,16 +683,31 @@ class _UserFormState extends State<UserForm> {
                     ? UtilData.obterDataDDMMAAAA(DateTime.parse(
                         "${_formData['cnhExpirationDate']?.toString()}"))
                     : "",
-                onSaved: (expirationDate) =>
-                    _formData['cnhExpirationDate'] = expirationDate ?? '',
-                validator: (_expirationDate) {
-                  if (_expirationDate == null || _expirationDate.isEmpty) {
-                    return null;
+                onSaved: (expirationDate) => _formData['cnhExpirationDate'] =
+                    UtilData.obterDateTime(expirationDate.toString()) ?? '',
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Data de Validade é obrigatório";
                   }
+                  final components = value.split("/");
+                  if (components.length == 3) {
+                    final day = int.tryParse(components[0]);
+                    final month = int.tryParse(components[1]);
+                    final year = int.tryParse(components[2]);
+                    if (day != null && month != null && year != null) {
+                      final date = DateTime(year, month, day);
+                      if (date.year == year &&
+                          date.month == month &&
+                          date.day == day) {
+                        return null;
+                      }
+                    }
+                  }
+                  return "Data Inválida";
                 },
               ),
               DropdownButtonFormField<BrazilStates>(
-                decoration: const InputDecoration(labelText: 'Estado'),
+                decoration: const InputDecoration(labelText: 'Estado*'),
                 value: _dropdownStateCNHValue,
                 onChanged: (BrazilStates? newValue) {
                   setState(() {
@@ -704,6 +731,13 @@ class _UserFormState extends State<UserForm> {
                     _formData['cnhState'] = BrazilStates.UNKNOWN;
                   } else {
                     _formData['cnhState'] = state as BrazilStates;
+                  }
+                },
+                validator: (_dropdownStateCNHValue) {
+                  var state = _dropdownStateCNHValue;
+
+                  if (state == null) {
+                    return 'Estado é obrigatório';
                   }
                 },
               ),

@@ -17,6 +17,7 @@ class CarFormScreen extends StatefulWidget {
 }
 
 class _CarFormScreenState extends State<CarFormScreen> {
+  Car? _car;
   @override
   void dispose() {
     // TODO: implement dispose
@@ -29,14 +30,16 @@ class _CarFormScreenState extends State<CarFormScreen> {
     final mediaQuery = MediaQuery.of(context);
     final arg = ModalRoute.of(context)?.settings.arguments;
     final snackMsg = ScaffoldMessenger.of(context);
-    final car = arg as Car;
+    if (arg != null) {
+      _car = arg as Car;
+    }
 
     return Scaffold(
         appBar: AppBar(
           title: const Text('Formulario Carro'),
           actions: [
             if (arg != null)
-              car.active == true
+              _car?.active == true
                   ? IconButton(
                       onPressed: () {
                         showDialog<bool>(
@@ -62,11 +65,11 @@ class _CarFormScreenState extends State<CarFormScreen> {
                         ).then((value) async {
                           if (value ?? false) {
                             try {
-                              car.active = false;
+                              _car!.active = false;
                               await Provider.of<Cars>(context, listen: false)
-                                  .inactivateCar(car);
+                                  .inactivateCar(_car!);
                               await Provider.of<Cars>(context, listen: false)
-                                  .updateCar(car);
+                                  .updateCar(_car!);
                               Navigator.of(context).pop();
                             } on HttpException catch (error) {
                               snackMsg.showSnackBar(SnackBar(
@@ -105,9 +108,9 @@ class _CarFormScreenState extends State<CarFormScreen> {
                         ).then((value) async {
                           if (value ?? false) {
                             try {
-                              car.active = true;
+                              _car!.active = true;
                               await Provider.of<Cars>(context, listen: false)
-                                  .updateCar(car);
+                                  .updateCar(_car!);
                               Navigator.of(context).pop();
                             } on HttpException catch (error) {
                               snackMsg.showSnackBar(SnackBar(

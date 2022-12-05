@@ -45,6 +45,15 @@ class Users with ChangeNotifier {
       phone: data['phone'] as String,
       gender: data['gender'] as UserGender,
       about: data['about'] as String,
+      address: Address(
+        data['addressID'] as int,
+        data['cep'] as String,
+        data['state'] as BrazilStates,
+        data['city'] as String,
+        data['neighborhood'] as String,
+        data['street'] as String,
+        data['addressNumber'] as int,
+      ),
       profileImageUrl: data['profileImageUrl'] as String,
     );
 
@@ -146,7 +155,7 @@ class Users with ChangeNotifier {
     final userData = await Store.getMap('userData');
     _refreshToken = userData['refreshToken'];
 
-    final response = await http.patch(
+    final response = await http.put(
       Uri.parse('$_baseUrl/${user.id}'),
       headers: {
         "content-type": "application/json",
@@ -159,10 +168,18 @@ class Users with ChangeNotifier {
           "firstName": user.firstName,
           "lastName": user.lastName,
           "cpf": user.cpf,
-          "rg": user.rg,
           "phone": user.phone,
           "gender": user.gender?.name,
           "about": user.about,
+          "address": {
+            "id": user.address?.id,
+            "cep": user.address?.cep,
+            "state": user.address?.state.name,
+            "city": user.address?.city,
+            "neighborhood": user.address?.neighborhood,
+            "street": user.address?.street,
+            "number": user.address?.number,
+          },
           "profileImageUrl": user.profileImageUrl,
         },
       ),

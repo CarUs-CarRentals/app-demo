@@ -37,7 +37,7 @@ class Addresses with ChangeNotifier {
       data['city'] as String,
       data['neighborhood'] as String,
       data['street'] as String,
-      int.parse(data['addressNumber'].toString()),
+      data['addressNumber'] as int,
     );
 
     if (hasId) {

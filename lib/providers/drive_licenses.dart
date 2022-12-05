@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:carshare/exceptions/http_exceptions.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class DriverLicenses with ChangeNotifier {
   final _baseUrl = Constants.DRIVER_BASE_URL;
@@ -50,8 +51,10 @@ class DriverLicenses with ChangeNotifier {
     final userData = await Store.getMap('userData');
     _refreshToken = userData['refreshToken'];
 
+    final formatDate = DateFormat('yyyy-MM-dd');
+
     final response = await http.post(
-      Uri.parse('$_baseUrl/create'),
+      Uri.parse(_baseUrl),
       headers: {
         "content-type": "application/json",
         "accept": "application/json",
@@ -62,11 +65,12 @@ class DriverLicenses with ChangeNotifier {
         "rg": cnh.rg,
         "registerNumber": cnh.registerNumber,
         "cnhNumber": cnh.cnhNumber,
-        "expirationDate": cnh.expirationDate,
-        "birthDate": cnh.birthDate,
-        "state": cnh.state,
+        "expirationDate": formatDate.format(cnh.expirationDate),
+        "birthDate": formatDate.format(cnh.birthDate),
+        "state": cnh.state.name,
       }),
     );
+    print("erro: ${response.request.toString()}");
 
     if (response.statusCode < 400) {
       notifyListeners();
@@ -82,7 +86,9 @@ class DriverLicenses with ChangeNotifier {
     final userData = await Store.getMap('userData');
     _refreshToken = userData['refreshToken'];
 
-    final response = await http.post(
+    final formatDate = DateFormat('yyyy-MM-dd');
+
+    final response = await http.put(
       Uri.parse('$_baseUrl/${cnh.id}'),
       headers: {
         "content-type": "application/json",
@@ -94,9 +100,9 @@ class DriverLicenses with ChangeNotifier {
         "rg": cnh.rg,
         "registerNumber": cnh.registerNumber,
         "cnhNumber": cnh.cnhNumber,
-        "expirationDate": cnh.expirationDate,
-        "birthDate": cnh.birthDate,
-        "state": cnh.state,
+        "expirationDate": formatDate.format(cnh.expirationDate),
+        "birthDate": formatDate.format(cnh.birthDate),
+        "state": cnh.state.name,
       }),
     );
 
