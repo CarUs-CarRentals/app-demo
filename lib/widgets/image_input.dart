@@ -99,7 +99,7 @@ class _ImageInputState extends State<ImageInput> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text("Selecione uma opção"),
-                content: Text("Como deseja enviar a foto do seu carro?"),
+                content: Text("Como deseja enviar a foto?"),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () {

@@ -8,6 +8,7 @@ import 'package:carshare/models/user.dart';
 import 'package:carshare/providers/addresses.dart';
 import 'package:carshare/providers/drive_licenses.dart';
 import 'package:carshare/providers/users.dart';
+import 'package:carshare/utils/constants.dart';
 import 'package:carshare/widgets/image_input.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -85,7 +86,7 @@ class _UserFormState extends State<UserForm> {
   _uploadImage(File pickedImage) async {
     final fileName =
         pickedImage.path.substring(pickedImage.path.lastIndexOf('/'));
-    final path = 'images/${_formData['userId']}/$fileName';
+    final path = 'images/${_formData['userID']}$fileName';
 
     final ref = _firebaseStorage.ref().child(path);
     uploadTask = ref.putFile(pickedImage);
@@ -133,6 +134,9 @@ class _UserFormState extends State<UserForm> {
         _formData['cnhExpirationDate'] = user.cnh?.expirationDate ?? '';
         _formData['cnhState'] = user.cnh?.state ?? '';
 
+        if (_formData['profileImageUrl'] != Constants.DEFAULT_PROFILE_IMAGE) {
+          _profileImageUrl = _formData['profileImageUrl'] as String;
+        }
         _dropdownGenderValue = user.gender;
         _dropdownStateValue = user.address?.state;
         _dropdownStateCNHValue = user.cnh?.state;
