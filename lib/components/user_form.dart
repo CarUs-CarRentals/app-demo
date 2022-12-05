@@ -149,6 +149,7 @@ class _UserFormState extends State<UserForm> {
     final driverLicenseProvider =
         Provider.of<DriverLicenses>(context, listen: false);
     final userProvider = Provider.of<Users>(context, listen: false);
+    final addressProvider = Provider.of<Addresses>(context, listen: false);
     final navigator = Navigator.of(context);
     final isValid = _formKey.currentState?.validate() ?? false;
 
@@ -430,13 +431,16 @@ class _UserFormState extends State<UserForm> {
                 ),
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,
-                initialValue: UtilBrasilFields.obterCep(
-                    "${_formData['cep']?.toString()}"),
+                initialValue: _formData['cep'] != ""
+                    ? UtilBrasilFields.obterCep(
+                        "${_formData['cep']?.toString()}")
+                    : "",
                 onSaved: (cep) => _formData['cep'] =
                     UtilBrasilFields.removeCaracteres(cep.toString()),
                 validator: (_cep) {
-                  final cep =
-                      UtilBrasilFields.removeCaracteres(_cep.toString());
+                  final cep = _cep != ""
+                      ? UtilBrasilFields.removeCaracteres(_cep.toString())
+                      : "";
 
                   if (cep.trim().isEmpty) {
                     return 'CEP é obrigatório';
@@ -470,9 +474,13 @@ class _UserFormState extends State<UserForm> {
                   SizedBox(width: 10.0),
                   Expanded(
                     child: TextFormField(
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
                       decoration: const InputDecoration(
                         labelText: 'Numero*',
                       ),
+                      keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
                       initialValue: _formData['addressNumber']?.toString(),
                       onSaved: (number) => _formData['addressNumber'] =

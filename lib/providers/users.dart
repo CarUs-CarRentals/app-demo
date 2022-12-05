@@ -46,7 +46,7 @@ class Users with ChangeNotifier {
       gender: data['gender'] as UserGender,
       about: data['about'] as String,
       address: Address(
-        data['addressID'] as int,
+        data['addressID'] == "" ? 0 : data['addressID'] as int,
         data['cep'] as String,
         data['state'] as BrazilStates,
         data['city'] as String,
@@ -171,15 +171,17 @@ class Users with ChangeNotifier {
           "phone": user.phone,
           "gender": user.gender?.name,
           "about": user.about,
-          "address": {
-            "id": user.address?.id,
-            "cep": user.address?.cep,
-            "state": user.address?.state.name,
-            "city": user.address?.city,
-            "neighborhood": user.address?.neighborhood,
-            "street": user.address?.street,
-            "number": user.address?.number,
-          },
+          "address": user.address != null
+              ? {
+                  "id": user.address?.id,
+                  "cep": user.address?.cep,
+                  "state": user.address?.state.name,
+                  "city": user.address?.city,
+                  "neighborhood": user.address?.neighborhood,
+                  "street": user.address?.street,
+                  "number": user.address?.number,
+                }
+              : null,
           "profileImageUrl": user.profileImageUrl,
         },
       ),

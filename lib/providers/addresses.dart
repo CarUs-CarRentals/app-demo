@@ -43,11 +43,11 @@ class Addresses with ChangeNotifier {
     if (hasId) {
       return updateAddress(address, userId);
     } else {
-      return addAddress(address, userId);
+      return addAddress(address);
     }
   }
 
-  Future<void> addAddress(Address address, String userId) async {
+  Future<void> addAddress(Address address) async {
     final userData = await Store.getMap('userData');
     _refreshToken = userData['refreshToken'];
 
@@ -59,9 +59,8 @@ class Addresses with ChangeNotifier {
         HttpHeaders.authorizationHeader: "Bearer $_refreshToken",
       },
       body: jsonEncode({
-        "user": userId,
         "cep": address.cep,
-        "state": address.state,
+        "state": address.state.name,
         "city": address.city,
         "neighborhood": address.neighborhood,
         "street": address.street,
@@ -94,7 +93,7 @@ class Addresses with ChangeNotifier {
         "id": address.id,
         "user": userId,
         "cep": address.cep,
-        "state": address.state,
+        "state": address.state.name,
         "city": address.city,
         "neighborhood": address.neighborhood,
         "street": address.street,
