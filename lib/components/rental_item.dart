@@ -62,11 +62,11 @@ class _RentalItemState extends State<RentalItem> {
     final provider = Provider.of<Reviews>(context, listen: false);
     await provider.loadCarReviewsByCar(carId);
     try {
-      _userReview = provider.userReviewsFromUser
+      _carReview = provider.carReviewsFromCar
           .where((review) => review.rentalId == widget.rentalDetail.id)
           .elementAt(0);
     } catch (e) {
-      _userReview = null;
+      _carReview = null;
     }
   }
 
@@ -74,11 +74,11 @@ class _RentalItemState extends State<RentalItem> {
     final provider = Provider.of<Reviews>(context, listen: false);
     await provider.loadUserReviewsByUser(userId);
     try {
-      _carReview = provider.carReviewsFromCar
+      _userReview = provider.userReviewsFromUser
           .where((review) => review.rentalId == widget.rentalDetail.id)
           .elementAt(0);
     } catch (e) {
-      _carReview = null;
+      _userReview = null;
     }
   }
 
