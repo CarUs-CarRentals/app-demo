@@ -149,6 +149,47 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     }
   }
 
+  Future<void> _validateUserProfile() async {
+    final userProvider = Provider.of<Users>(context, listen: false);
+    context.loaderOverlay.show();
+    setState(() {
+      _isLoading = context.loaderOverlay.visible;
+    });
+    await userProvider.loadProfile();
+    final userProfile = userProvider.userProfile;
+    if (_isLoading) {
+      context.loaderOverlay.hide();
+    }
+    setState(() {
+      _isLoading = context.loaderOverlay.visible;
+    });
+    if (userProfile?.address == null || userProfile?.cnh == null) {
+      showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                title: Text('Locação não autorizada!'),
+                content: Text(
+                    "Cadastro do usuário incompleto.\n\nFinalize o cadastro para efetuar uma locação."),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, 'Cancelar'),
+                    child: const Text('Cancelar'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      int count = 0;
+                      Navigator.of(context).popUntil((_) => count++ >= 2);
+                      Navigator.of(context).pushNamed(AppRoutes.PROFILE_USER);
+                    },
+                    child: const Text('Finalizar cadastro'),
+                  ),
+                ],
+              ));
+      _validRental = false;
+      return;
+    }
+  }
+
   Future<void> _submitRental(Car car) async {
     _formData['carId'] = car.id;
     _formData['price'] =
@@ -160,6 +201,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     _validateRentalDateRange();
     if (!_validDateRange) return;
     _validateRentalAllowed();
+    await _validateUserProfile();
     if (!_validRental) return;
 
     showDialog(
