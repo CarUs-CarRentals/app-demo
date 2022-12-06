@@ -229,6 +229,7 @@ class Users with ChangeNotifier {
       email: profileData['lastName'],
       memberSince: profileData['memberSince'],
       about: profileData['about'],
+      phone: profileData['phone'] ?? '',
       address: profileData['address'] == null
           ? null
           : Address(

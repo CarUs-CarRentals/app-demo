@@ -1,13 +1,13 @@
-import 'package:carshare/models/auth.dart';
+import 'dart:io';
+
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:carshare/models/review.dart';
 import 'package:carshare/models/user.dart';
 import 'package:carshare/providers/reviews.dart';
 import 'package:carshare/utils/app_routes.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileDetail extends StatefulWidget {
   final bool isMyProfile;
@@ -98,6 +98,28 @@ class _ProfileDetailState extends State<ProfileDetail> {
     });
   }
 
+  Future<void> _openWhatsapp(String phone) async {
+    final whatsapp = "+55$phone";
+    var whatsappURL_android = Uri.parse("whatsapp://send?phone=$whatsapp");
+    var whatsappURL_ios = Uri.parse("https://wa.me/$whatsapp");
+
+    if (Platform.isIOS) {
+      if (await canLaunchUrl(whatsappURL_ios)) {
+        await launchUrl(whatsappURL_ios);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: new Text("Whatsapp não está instalado")));
+      }
+    } else {
+      if (await canLaunchUrl(whatsappURL_android)) {
+        await launchUrl(whatsappURL_android);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: new Text("Whatsapp não está instalado")));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -158,7 +180,32 @@ class _ProfileDetailState extends State<ProfileDetail> {
                   ),
                 )
               : Divider(),
-          _descriptionSection(context, "${widget.user.about}"),
+          _descriptionSection(context, widget.user.about),
+          !widget.isMyProfile
+              ? widget.user.phone != ""
+                  ? ListTile(
+                      leading: Container(
+                        width: 24,
+                        child: Icon(
+                          Icons.whatsapp_rounded,
+                          size: 24,
+                        ),
+                      ),
+                      title: Text(
+                        UtilBrasilFields.obterTelefone(widget.user.phone,
+                            mascara: true),
+                        style: const TextStyle(
+                          fontFamily: 'RobotCondensed',
+                          fontSize: 14,
+                        ),
+                      ),
+                      onTap: () {
+                        _openWhatsapp(widget.user.phone);
+                      },
+                      dense: false,
+                    )
+                  : const Center()
+              : const Center(),
           ListTile(
             leading: Container(
               width: 24,
