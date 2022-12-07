@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
         //home: const MainMenu(),
         theme: myTheme.copyWith(
             colorScheme: myTheme.colorScheme.copyWith(
-              primary: Colors.deepPurple,
+              primary: Color.fromARGB(255, 24, 64, 165), //Colors.deepPurple,
               secondary: Colors.grey[700],
             ),
             textTheme: myTheme.textTheme.copyWith(

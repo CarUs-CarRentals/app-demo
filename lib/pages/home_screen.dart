@@ -102,14 +102,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 115,
                       child: Column(
                         children: [
-                          Text(
-                            "CarUs",
-                            style: TextStyle(
-                              fontSize: 40,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Image(
+                            image: AssetImage('assets/images/CarUs.png'),
+                            width: 110,
                           ),
+                          // Text(
+                          //   "CarUs",
+                          //   style: TextStyle(
+                          //     fontSize: 40,
+                          //     color: Colors.white,
+                          //     fontWeight: FontWeight.bold,
+                          //   ),
+                          // ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
