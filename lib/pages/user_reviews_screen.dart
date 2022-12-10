@@ -10,6 +10,9 @@ class UserReviewsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final availableHeight =
+        mediaQuery.size.height - kToolbarHeight - mediaQuery.padding.top;
     final userReviews =
         ModalRoute.of(context)?.settings.arguments as List<UserReview>;
 
@@ -17,18 +20,26 @@ class UserReviewsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Avaliações Recebidas'),
       ),
-      body: ListView.builder(
-          itemCount: userReviews.length,
-          itemBuilder: (ctx, index) {
-            final review = userReviews[index];
-            return ReviewItem(
-              imageProfile: review.evaluatorProfileImage,
-              userName: review.userEvaluatorName,
-              rating: review.rate,
-              description: review.description,
-              date: review.date,
-            );
-          }),
+      body: userReviews.length == 0
+          ? SizedBox(
+              width: mediaQuery.size.width,
+              height: availableHeight,
+              child: Center(
+                child: Text('Sem registros'),
+              ),
+            )
+          : ListView.builder(
+              itemCount: userReviews.length,
+              itemBuilder: (ctx, index) {
+                final review = userReviews[index];
+                return ReviewItem(
+                  imageProfile: review.evaluatorProfileImage,
+                  userName: review.userEvaluatorName,
+                  rating: review.rate,
+                  description: review.description,
+                  date: review.date,
+                );
+              }),
     );
   }
 }

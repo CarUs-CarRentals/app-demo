@@ -22,28 +22,39 @@ class _CarReviewsScreenState extends State<CarReviewsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final availableHeight =
+        mediaQuery.size.height - kToolbarHeight - mediaQuery.padding.top;
+
     final arg = ModalRoute.of(context)?.settings.arguments as Map;
     final carReviews = arg['carReviews'] as List<CarReview>;
     //final provider = Provider.of<Reviews>(context);
     //final carReviews = provider.carReviewsFromCar;
     _carReviews = carReviews;
-    print("${carReviews.length}");
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Avaliações do Veículo'),
       ),
-      body: ListView.builder(
-          itemCount: _carReviews.length,
-          itemBuilder: (ctx, index) {
-            return ReviewItem(
-              imageProfile: _carReviews[index].evaluatorProfileImage,
-              userName: _carReviews[index].userEvaluatorName,
-              rating: _carReviews[index].rate,
-              description: _carReviews[index].description,
-              date: _carReviews[index].date,
-            );
-          }),
+      body: _carReviews.length == 0
+          ? SizedBox(
+              width: mediaQuery.size.width,
+              height: availableHeight,
+              child: Center(
+                child: Text('Sem registros'),
+              ),
+            )
+          : ListView.builder(
+              itemCount: _carReviews.length,
+              itemBuilder: (ctx, index) {
+                return ReviewItem(
+                  imageProfile: _carReviews[index].evaluatorProfileImage,
+                  userName: _carReviews[index].userEvaluatorName,
+                  rating: _carReviews[index].rate,
+                  description: _carReviews[index].description,
+                  date: _carReviews[index].date,
+                );
+              }),
     );
   }
 }
