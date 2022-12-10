@@ -63,27 +63,13 @@ class _CarsListViewState extends State<CarsListView> {
     final List<Car> cars = provider.cars;
 
     return Scaffold(
-      body: /*FutureBuilder<List<dynamic>>(
-          future: Future.wait([_getCurrentUserLocation()]),
-          builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-            if (snapshot.hasData) {
-              final myLocation = snapshot.data![0];*/
-          //return
-          ListView.builder(
+      body: cars.length == 0
+          ? Center(
+              child: Text("Nenhum carro encontrado"),
+            )
+          : ListView.builder(
               itemCount: cars.length,
               itemBuilder: (context, index) {
-                // if (cars[index].distance == 0) {
-                //   cars.asMap().forEach((idx, value) {
-                //     final distance = _calculateDistance(
-                //         myLocation.latitude,
-                //         myLocation.longitude,
-                //         cars[idx].location.latitude,
-                //         cars[idx].location.longitude);
-
-                //     cars[idx].distance = distance;
-                //   });
-                // }
-
                 final sortedCars = cars
                   ..sort(((item1, item2) =>
                       item1.distance.compareTo(item2.distance)));
