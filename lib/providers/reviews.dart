@@ -184,7 +184,7 @@ class Reviews with ChangeNotifier {
 
     final review = UserReview(
       id: hasId ? data['id'] as int : 0,
-      userIdRated: userLogged['uuid'] as String,
+      userIdRated: data['userIdRated'] as String,
       date: data['date'] as DateTime,
       description: data['description'] as String,
       rate: data['rating'] as double,
@@ -256,7 +256,7 @@ class Reviews with ChangeNotifier {
     List<Map<String, dynamic>> data = map;
     for (var reviewData in data) {
       final userFromReview =
-          await Users().loadUserById(reviewData['ratedUser']);
+          await Users().loadUserById(reviewData['evaluatedUser']);
 
       _userReviewsFromUser.add(UserReview(
         id: reviewData['id'],

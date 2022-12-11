@@ -89,13 +89,17 @@ class _ProfileDetailState extends State<ProfileDetail> {
     });
     await _getUserReviews(user.id);
     print("antes de entrar na tela: ${_userReviews?.length}");
-    Navigator.of(context).pushNamed(
-      AppRoutes.USER_REVIEW,
-      arguments: _userReviews,
-    );
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      Navigator.of(context).pushNamed(
+        AppRoutes.USER_REVIEW,
+        arguments: _userReviews,
+      );
+    } catch (e) {
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   Future<void> _openWhatsapp(String phone) async {
